@@ -5,8 +5,7 @@ A monitoring tool for collecting metrics from your Chia nodes and getting notifi
 ![grafana](.readme/grafana.png)
 
 ## Metrics
-The following statistics are collected from your local [Chia](https://chia.net) node using the [RPC
-API](https://github.com/Chia-Network/chia-blockchain/wiki/RPC-Interfaces) and are exported via a [Prometheus](https://prometheus.io) compatible `/metrics` HTTP endpoint.
+The following statistics are collected from your local [Chia](https://chia.net) node using the [RPC](https://github.com/Chia-Network/chia-blockchain/wiki/RPC-Interfaces) and WebSocket APIs. All of these metrics are then exported via a [Prometheus](https://prometheus.io) compatible `/metrics` HTTP endpoint on port `8000`.
 
 ### Supported wallet metrics
 - Total balance (`chia_confirmed_total_mojos`)
@@ -21,6 +20,11 @@ API](https://github.com/Chia-Network/chia-blockchain/wiki/RPC-Interfaces) and ar
 ### Supported harvester metrics
 - Plot count (`chia_plot_count`)
 - Plot size (`chia_plot_size`)
+
+### Supported farmer metrics
+- Attempted challanges (`chia_block_challanges`)
+- Plots passed filter (`chia_plots_passed_filter`)
+- Proofs found (`chia_proofs_found`)
 
 ## Notifications
 `# TODO`
