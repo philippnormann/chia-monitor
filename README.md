@@ -1,10 +1,12 @@
 # chia-monitor
 
-A monitoring tool to help us keep track of important farmer statistics and get notified in case something goes wrong.
+A monitoring tool for collecting metrics from your Chia nodes and getting notifications with regular status reports or when something goes wrong. 
+
+![grafana](.readme/grafana.png)
 
 ## Metrics
 The following statistics are collected from your local [Chia](https://chia.net) node using the [RPC
-API](https://github.com/Chia-Network/chia-blockchain/wiki/RPC-Interfaces) and are exposed via a [Prometheus](https://prometheus.io) compatible `/metrics` HTTP endpoint.
+API](https://github.com/Chia-Network/chia-blockchain/wiki/RPC-Interfaces) and are exported via a [Prometheus](https://prometheus.io) compatible `/metrics` HTTP endpoint.
 
 ### Supported wallet metrics
 - Total balance (`chia_confirmed_total_mojos`)
@@ -20,6 +22,9 @@ API](https://github.com/Chia-Network/chia-blockchain/wiki/RPC-Interfaces) and ar
 - Plot count (`chia_plot_count`)
 - Plot size (`chia_plot_size`)
 
+## Notifications
+`# TODO`
+
 ## Installation
 To run this tool, we need the following things:
 - Python 3.9
@@ -31,13 +36,10 @@ sudo apt install python3 pipenv
 cd chia-monitor
 pipenv install 
 ```
-## Notifications
-`# TODO`
-
 ## Usage
 To use the tool run the module as a service or screen in the background.
 ```bash
-cd nvidia-sniper
+cd chia-monitor
 pipenv run python -m monitor
 ```
 
