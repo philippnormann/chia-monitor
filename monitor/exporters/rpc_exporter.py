@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import logging
 from pathlib import Path
-from typing import Dict
+from typing import Coroutine, Dict, List
 
 from chia.rpc.farmer_rpc_client import FarmerRpcClient
 from chia.rpc.full_node_rpc_client import FullNodeRpcClient
@@ -8,15 +10,15 @@ from chia.rpc.harvester_rpc_client import HarvesterRpcClient
 from chia.rpc.rpc_client import RpcClient
 from chia.rpc.wallet_rpc_client import WalletRpcClient
 from chia.util.ints import uint16
+from monitor.exporters.exporter import Exporter
 from prometheus_client import Gauge
 
 
-class RpcExporter:
+class RpcExporter(Exporter):
     full_node_client: FullNodeRpcClient
     wallet_client: WalletRpcClient
     harvester_client: HarvesterRpcClient
     farmer_client: FarmerRpcClient
-    log: logging.Logger
 
     # Wallet metrics
     total_balance_gauge = Gauge('chia_confirmed_total_mojos',
@@ -40,11 +42,9 @@ class RpcExporter:
                              'Plot count being farmed by harvester')
     plot_size_gauge = Gauge('chia_plot_size',
                             'Size of plots being farmed by harvester')
-    # Farmer metrics
 
     @staticmethod
-    async def create(root_path: Path,
-                     net_config: Dict) -> None:
+    async def create(root_path: Path, net_config: Dict) -> RpcExporter:
         self = RpcExporter()
         self.log = logging.getLogger(__name__)
 
@@ -69,13 +69,13 @@ class RpcExporter:
         return self
 
     @property
-    def coros(self):
+    def coros(self) -> List[Coroutine]:
         return [
             self.update_wallet_metrics, self.update_node_metrics,
-            self.update_harvester_stats
+            self.update_harvester_metrics
         ]
 
-    async def update_wallet_metrics(self) -> Dict:
+    async def update_wallet_metrics(self) -> None:
         wallets = await self.wallet_client.get_wallets()
         balances = []
 
@@ -87,7 +87,7 @@ class RpcExporter:
         self.total_balance_gauge.set(total)
         self.log.info(f"💰 Total Balance:      {total/1e12:.5f} XCH")
 
-    async def update_node_metrics(self) -> Dict:
+    async def update_node_metrics(self) -> None:
         state = await self.full_node_client.get_blockchain_state()
         peers = await self.full_node_client.get_connections()
 
@@ -112,7 +112,7 @@ class RpcExporter:
         self.connections_gauge.set(peer_count)
         self.log.info(f"📶 Peer Count:         {peer_count}")
 
-    async def update_harvester_stats(self) -> Dict:
+    async def update_harvester_metrics(self) -> None:
         plots = await self.harvester_client.get_plots()
         plots = plots["plots"]
 
