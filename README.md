@@ -1,8 +1,10 @@
 # chia-monitor
 
-A monitoring tool for collecting metrics from your Chia nodes and getting notifications with regular status reports or when something goes wrong. 
+A monitoring tool to collect all important metrics from your Chia farming node and notify you with regular status updates or in case something goes wrong.
 
 ![grafana](.readme/grafana.png)
+
+This [Grafana](https://grafana.com/) dashboard displays all collected metrics and can be imported from [grafana.com](https://grafana.com/grafana/dashboards/14544) using the ID `14544`.
 
 ## Metrics
 The following statistics are collected from your local [Chia](https://chia.net) node using the [RPC](https://github.com/Chia-Network/chia-blockchain/wiki/RPC-Interfaces) and WebSocket APIs. All of these metrics are then exported via a [Prometheus](https://prometheus.io) compatible `/metrics` HTTP endpoint on port `8000`.
@@ -48,7 +50,7 @@ pipenv run python -m monitor
 ```
 
 ### Basic Prometheus Configuration
-Add a block to the scrape_configs of your prometheus.yml config file:
+Add a block to the `scrape_configs` of your `prometheus.yml` config file:
 ```yaml
 scrape_configs:
   - job_name: chia_monitor
