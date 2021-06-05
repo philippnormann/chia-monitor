@@ -33,7 +33,7 @@ The following statistics are collected from your local [Chia](https://chia.net) 
 
 ## Installation
 To run this tool, we need the following things:
-- Python 3.9
+- Python 3
 - Pipenv
 
 ### Linux (Ubuntu)
@@ -58,3 +58,6 @@ scrape_configs:
     - targets: ['<<CHIA-MONITOR-HOSTNAME>>:8000']
 ```
 and adjust the host name accordingly.
+
+## Architecture
+![architecture](.readme/architecture.svg)
