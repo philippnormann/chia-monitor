@@ -52,7 +52,7 @@ class ChiaExporter:
 
     def update_harvester_metrics(self, event: HarvesterPlotsEvent) -> None:
         self.log.info("-" * 64)
-        self.plot_count_gauge.set(event.plot_size)
+        self.plot_count_gauge.set(event.plot_count)
         self.log.info(f"🌾 Plot Count:          {event.plot_count}")
         self.plot_size_gauge.set(event.plot_size)
         self.log.info(f"🧺 Plot Size:           {event.plot_size/(1024 ** 4):.3f} TiB")
