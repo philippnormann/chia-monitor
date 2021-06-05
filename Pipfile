@@ -10,9 +10,10 @@ aiohttp = "*"
 
 [dev-packages]
 pytest = "*"
+yapf = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3"
 
 [packages.chia-blockchain]
 git = "git://github.com/Chia-Network/chia-blockchain.git"
