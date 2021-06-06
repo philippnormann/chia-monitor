@@ -16,8 +16,7 @@ class Collector:
                      event_queue: Queue[ChiaEvent]) -> Collector:
         raise NotImplementedError
 
-    @property
-    def task(self) -> Coroutine:
+    async def task(self) -> None:
         raise NotImplementedError
 
     async def close(self) -> None:
