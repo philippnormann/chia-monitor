@@ -61,7 +61,7 @@ class RpcCollector(Collector):
                                                         confirmed=str(sum(confirmed_balances)))
         await self.event_queue.put(event)
 
-    async def update_harvester_metrics(self) -> None:
+    async def get_harvester_plots(self) -> None:
         try:
             plots = await self.harvester_client.get_plots()
         except:
@@ -94,18 +94,18 @@ class RpcCollector(Collector):
                                                       wallet_count=len(wallet_connections))
         await self.event_queue.put(event)
 
-    async def task(self):
+    async def task(self) -> None:
         while True:
-            await asyncio.gather(self.get_wallet_balance(), self.update_harvester_metrics(),
+            await asyncio.gather(self.get_wallet_balance(), self.get_harvester_plots(),
                                  self.get_blockchain_state(), self.get_connections())
             await asyncio.sleep(10)
 
     @staticmethod
-    async def close_rpc_client(rpc_client: RpcClient):
+    async def close_rpc_client(rpc_client: RpcClient) -> None:
         rpc_client.close()
         await rpc_client.await_closed()
 
-    async def close(self):
+    async def close(self) -> None:
         await RpcCollector.close_rpc_client(self.full_node_client)
         await RpcCollector.close_rpc_client(self.wallet_client)
         await RpcCollector.close_rpc_client(self.harvester_client)

@@ -58,7 +58,7 @@ class WsCollector(Collector):
             await self.close()
             raise ConnectionError("Failed to subscribe to daemon WebSocket")
 
-    async def send_farming_info(self, farming_info: Dict) -> None:
+    async def process_farming_info(self, farming_info: Dict) -> None:
         event = await FarmingInfoEvent.objects.create(ts=datetime.now(),
                                                       challenge_hash=farming_info["challenge_hash"],
                                                       signage_point=farming_info["signage_point"],
@@ -66,7 +66,7 @@ class WsCollector(Collector):
                                                       proofs=farming_info["proofs"])
         await self.event_queue.put(event)
 
-    async def send_signage_point(self, signage_point: Dict) -> None:
+    async def process_signage_point(self, signage_point: Dict) -> None:
         event = await SignagePointEvent.objects.create(
             ts=datetime.now(),
             challenge_hash=signage_point["challenge_hash"],
@@ -79,10 +79,10 @@ class WsCollector(Collector):
             msg = await self.ws.receive_json()
             cmd = msg["command"]
             if cmd == "new_farming_info":
-                await self.send_farming_info(msg["data"]["farming_info"])
+                await self.process_farming_info(msg["data"]["farming_info"])
             elif cmd == "new_signage_point":
-                await self.send_signage_point(msg["data"]["signage_point"])
+                await self.process_signage_point(msg["data"]["signage_point"])
 
-    async def close(self):
+    async def close(self) -> None:
         await self.ws.close()
         await self.session.close()
