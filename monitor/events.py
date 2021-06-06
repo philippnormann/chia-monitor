@@ -1,63 +1,50 @@
-import orm
+from sqlalchemy import Boolean, Column, DateTime, Integer, String
 
-from monitor.db import database, metadata
-
-
-class ChiaEvent(orm.Model):
-    __tablename__ = "chia_events"
-    __database__ = database
-    __metadata__ = metadata
-    ts: float = orm.DateTime(primary_key=True)
+from monitor.db import ChiaEvent
 
 
 class HarvesterPlotsEvent(ChiaEvent):
     __tablename__ = "harvester_events"
-    __database__ = database
-    __metadata__ = metadata
-    plot_count = orm.Integer()
-    plot_size = orm.Integer()
+    ts: float = Column(DateTime, primary_key=True)
+    plot_count = Column(Integer)
+    plot_size = Column(Integer)
 
 
 class ConnectionsEvent(ChiaEvent):
     __tablename__ = "connection_events"
-    __database__ = database
-    __metadata__ = metadata
-    full_node_count = orm.Integer()
-    farmer_count = orm.Integer()
-    wallet_count = orm.Integer()
+    ts: float = Column(DateTime, primary_key=True)
+    full_node_count = Column(Integer)
+    farmer_count = Column(Integer)
+    wallet_count = Column(Integer)
 
 
 class BlockchainStateEvent(ChiaEvent):
     __tablename__ = "blockchain_state_events"
-    __database__ = database
-    __metadata__ = metadata
-    space = orm.String(max_length=32)
-    diffculty = orm.Integer()
-    peak_height = orm.String(max_length=32)
-    synced = orm.Boolean()
+    ts: float = Column(DateTime, primary_key=True)
+    space = Column(String(32))
+    diffculty = Column(Integer)
+    peak_height = Column(String(32))
+    synced = Column(Boolean())
 
 
 class WalletBalanceEvent(ChiaEvent):
     __tablename__ = "wallet_balance_events"
-    __database__ = database
-    __metadata__ = metadata
-    confirmed = orm.String(max_length=32)
+    ts: float = Column(DateTime, primary_key=True)
+    confirmed = Column(String(32))
 
 
 class SignagePointEvent(ChiaEvent):
     __tablename__ = "signage_point_events"
-    __database__ = database
-    __metadata__ = metadata
-    challenge_hash = orm.String(max_length=66, index=True)
-    signage_point = orm.String(max_length=66, index=True)
-    signage_point_index = orm.Integer()
+    ts: float = Column(DateTime, primary_key=True)
+    challenge_hash = Column(String(66), index=True)
+    signage_point = Column(String(66), index=True)
+    signage_point_index = Column(Integer)
 
 
 class FarmingInfoEvent(ChiaEvent):
     __tablename__ = "farming_info_events"
-    __database__ = database
-    __metadata__ = metadata
-    challenge_hash = orm.String(max_length=66, index=True)
-    signage_point = orm.String(max_length=66, index=True)
-    passed_filter = orm.Integer()
-    proofs = orm.Integer()
+    ts: float = Column(DateTime, primary_key=True)
+    challenge_hash = Column(String(66), index=True)
+    signage_point = Column(String(66), index=True)
+    passed_filter = Column(Integer)
+    proofs = Column(Integer)

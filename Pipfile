@@ -7,7 +7,8 @@ name = "pypi"
 prometheus-client = "*"
 colorlog = "*"
 aiohttp = "*"
-orm = "*"
+aiosqlite = "*"
+SQLAlchemy = "*"
 
 [dev-packages]
 pytest = "*"

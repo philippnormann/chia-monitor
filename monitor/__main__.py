@@ -1,8 +1,9 @@
 import asyncio
-from asyncio import events
 import logging
 from asyncio.exceptions import CancelledError
 from asyncio.queues import Queue
+
+from sqlalchemy.ext.asyncio.session import AsyncSession
 
 import colorlog
 from chia.util.config import load_config
@@ -10,7 +11,7 @@ from chia.util.default_root import DEFAULT_ROOT_PATH
 
 from monitor.collectors.rpc_collector import RpcCollector
 from monitor.collectors.ws_collector import WsCollector
-from monitor.db import create_all_tables
+from monitor.db import ChiaEvent, init_models, async_session
 from monitor.exporter import ChiaExporter
 
 config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
@@ -30,11 +31,18 @@ def initilize_logging():
     logger.setLevel(logging.INFO)
 
 
-async def main():
+async def persist_event(db_session: AsyncSession, event: ChiaEvent):
+    async with db_session.begin():
+        db_session.add(event)
+        await db_session.commit()
+
+async def main(exporter: ChiaExporter) -> None:
     rpc_collector = None
     ws_collector = None
     event_queue = Queue()
-    prometheus_exporter = ChiaExporter()
+    
+    db_session = async_session()
+    await init_models()
 
     try:
         rpc_collector = await RpcCollector.create(DEFAULT_ROOT_PATH, config, event_queue)
@@ -52,7 +60,9 @@ async def main():
         while True:
             try:
                 event = await event_queue.get()
-                prometheus_exporter.process_event(event)
+                exporter.process_event(event)
+                await persist_event(db_session, event)
+
             except CancelledError:
                 break
 
@@ -63,10 +73,11 @@ async def main():
         await ws_collector.close()
 
 
+
 if __name__ == "__main__":
     initilize_logging()
-    create_all_tables()
+    exporter = ChiaExporter()
     try:
-        asyncio.run(main())
+        asyncio.run(main(exporter))
     except KeyboardInterrupt:
         logging.info("👋 Bye!")

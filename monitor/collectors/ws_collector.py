@@ -59,20 +59,19 @@ class WsCollector(Collector):
             raise ConnectionError("Failed to subscribe to daemon WebSocket")
 
     async def process_farming_info(self, farming_info: Dict) -> None:
-        event = await FarmingInfoEvent.objects.create(ts=datetime.now(),
-                                                      challenge_hash=farming_info["challenge_hash"],
-                                                      signage_point=farming_info["signage_point"],
-                                                      passed_filter=farming_info["passed_filter"],
-                                                      proofs=farming_info["proofs"])
-        await self.event_queue.put(event)
+        event = FarmingInfoEvent(ts=datetime.now(),
+                                 challenge_hash=farming_info["challenge_hash"],
+                                 signage_point=farming_info["signage_point"],
+                                 passed_filter=farming_info["passed_filter"],
+                                 proofs=farming_info["proofs"])
+        await self.publish_event(event)
 
     async def process_signage_point(self, signage_point: Dict) -> None:
-        event = await SignagePointEvent.objects.create(
-            ts=datetime.now(),
-            challenge_hash=signage_point["challenge_hash"],
-            signage_point_index=signage_point["signage_point_index"],
-            signage_point=signage_point["challenge_chain_sp"])
-        await self.event_queue.put(event)
+        event = SignagePointEvent(ts=datetime.now(),
+                                  challenge_hash=signage_point["challenge_hash"],
+                                  signage_point_index=signage_point["signage_point_index"],
+                                  signage_point=signage_point["challenge_chain_sp"])
+        await self.publish_event(event)
 
     async def task(self) -> None:
         while True:
