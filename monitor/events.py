@@ -1,49 +1,63 @@
-import time
-from dataclasses import dataclass
+import orm
+
+from monitor.db import database, metadata
 
 
-@dataclass
-class ChiaEvent:
-    ts: float = time.time()
+class ChiaEvent(orm.Model):
+    __tablename__ = "chia_events"
+    __database__ = database
+    __metadata__ = metadata
+    ts: float = orm.DateTime(primary_key=True)
 
 
-@dataclass
 class HarvesterPlotsEvent(ChiaEvent):
-    plot_count: int = 0
-    plot_size: int = 0
+    __tablename__ = "harvester_events"
+    __database__ = database
+    __metadata__ = metadata
+    plot_count = orm.Integer()
+    plot_size = orm.Integer()
 
 
-@dataclass
 class ConnectionsEvent(ChiaEvent):
-    full_node_count: int = 0
-    farmer_count: int = 0
-    wallet_count: int = 0
+    __tablename__ = "connection_events"
+    __database__ = database
+    __metadata__ = metadata
+    full_node_count = orm.Integer()
+    farmer_count = orm.Integer()
+    wallet_count = orm.Integer()
 
 
-@dataclass
 class BlockchainStateEvent(ChiaEvent):
-    space: int = 0
-    diffculty: int = 0
-    peak_height: int = 0
-    synced: bool = False
+    __tablename__ = "blockchain_state_events"
+    __database__ = database
+    __metadata__ = metadata
+    space = orm.String(max_length=32)
+    diffculty = orm.Integer()
+    peak_height = orm.String(max_length=32)
+    synced = orm.Boolean()
 
 
-@dataclass
 class WalletBalanceEvent(ChiaEvent):
-    confirmed: int = 0
+    __tablename__ = "wallet_balance_events"
+    __database__ = database
+    __metadata__ = metadata
+    confirmed = orm.String(max_length=32)
 
 
-@dataclass
 class SignagePointEvent(ChiaEvent):
-    challenge_hash: str = None
-    challenge_chain_sp: str = None
-    reward_chain_sp: str = None
-    signage_point_index: int = 0
+    __tablename__ = "signage_point_events"
+    __database__ = database
+    __metadata__ = metadata
+    challenge_hash = orm.String(max_length=66)
+    signage_point = orm.String(max_length=66)
+    signage_point_index = orm.Integer()
 
 
-@dataclass
 class FarmingInfoEvent(ChiaEvent):
-    challenge_hash: str = None
-    signage_point: str = None
-    passed_filter: str = None
-    proofs: int = 0
+    __tablename__ = "farming_info_events"
+    __database__ = database
+    __metadata__ = metadata
+    challenge_hash = orm.String(max_length=66)
+    signage_point = orm.String(max_length=66)
+    passed_filter = orm.Integer()
+    proofs = orm.Integer()

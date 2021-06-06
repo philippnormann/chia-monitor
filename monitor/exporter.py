@@ -2,15 +2,13 @@ import logging
 
 from prometheus_client import Counter, Gauge, start_http_server
 
-from monitor.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent,
-                            FarmingInfoEvent, HarvesterPlotsEvent, SignagePointEvent,
-                            WalletBalanceEvent)
+from monitor.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent, FarmingInfoEvent,
+                            HarvesterPlotsEvent, SignagePointEvent, WalletBalanceEvent)
 
 
 class ChiaExporter:
     # Wallet metrics
-    total_balance_gauge = Gauge('chia_confirmed_total_mojos',
-                                'Sum of confirmed wallet balances')
+    total_balance_gauge = Gauge('chia_confirmed_total_mojos', 'Sum of confirmed wallet balances')
 
     # Full node metrics
     network_space_gauge = Gauge('chia_network_space', 'Approximation of current netspace')
@@ -26,8 +24,7 @@ class ChiaExporter:
 
     # Farmer metrics
     signage_point_counter = Counter('chia_signage_points', 'Received signage points')
-    signage_point_index_gauge = Gauge('chia_signage_point_index',
-                                      'Received signage point index')
+    signage_point_index_gauge = Gauge('chia_signage_point_index', 'Received signage point index')
     challenges_counter = Counter('chia_block_challanges', 'Attempted block challanges')
     passed_filter_counter = Counter('chia_plots_passed_filter', 'Plots passed filter')
     proofs_found_counter = Counter('chia_proofs_found', 'Proofs found')
@@ -74,19 +71,19 @@ class ChiaExporter:
 
     def update_blockchain_state_metrics(self, event: BlockchainStateEvent) -> None:
         self.log.info("-" * 64)
-        self.network_space_gauge.set(event.space)
-        self.log.info(f"💾 Current Netspace:    {event.space/(1024 ** 5):.3f} PiB")
+        self.network_space_gauge.set(int(event.space))
+        self.log.info(f"💾 Current Netspace:    {int(event.space)/(1024 ** 5):.3f} PiB")
         self.diffculty_gauge.set(event.diffculty)
         self.log.info(f"📈 Farming Difficulty:  {event.diffculty}")
-        self.height_gauge.set(event.peak_height)
+        self.height_gauge.set(int(event.peak_height))
         self.log.info(f"🏔️  Peak Height:         {event.peak_height}")
         self.sync_gauge.set(event.synced)
         self.log.info(f"🔄 Synced:              {event.synced}")
 
     def update_wallet_balance_metrics(self, event: WalletBalanceEvent) -> None:
         self.log.info("-" * 64)
-        self.total_balance_gauge.set(event.confirmed)
-        self.log.info(f"💰 Total Balance:       {event.confirmed/1e12:.5f} XCH")
+        self.total_balance_gauge.set(int(event.confirmed))
+        self.log.info(f"💰 Total Balance:       {int(event.confirmed)/1e12:.5f} XCH")
 
     def update_signage_point_metrics(self, event: SignagePointEvent) -> None:
         self.log.info("-" * 64)
@@ -94,4 +91,4 @@ class ChiaExporter:
         self.signage_point_index_gauge.set(event.signage_point_index)
         self.log.info(f"🔏 Signage Point Index: {event.signage_point_index}")
         self.log.info(f"🎰 Challange Hash:      {event.challenge_hash}")
-        self.log.info(f"⌛ Signage Point:       {event.challenge_chain_sp}")
+        self.log.info(f"⌛ Signage Point:       {event.signage_point}")

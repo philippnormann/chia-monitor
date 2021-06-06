@@ -1,8 +1,8 @@
 import asyncio
+from asyncio import events
+import logging
 from asyncio.exceptions import CancelledError
 from asyncio.queues import Queue
-import logging
-from monitor.exporter import ChiaExporter
 
 import colorlog
 from chia.util.config import load_config
@@ -10,6 +10,8 @@ from chia.util.default_root import DEFAULT_ROOT_PATH
 
 from monitor.collectors.rpc_collector import RpcCollector
 from monitor.collectors.ws_collector import WsCollector
+from monitor.db import create_all_tables
+from monitor.exporter import ChiaExporter
 
 config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
 
@@ -63,6 +65,7 @@ async def main():
 
 if __name__ == "__main__":
     initilize_logging()
+    create_all_tables()
     try:
         asyncio.run(main())
     except KeyboardInterrupt:

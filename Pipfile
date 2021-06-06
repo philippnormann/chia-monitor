@@ -7,6 +7,7 @@ name = "pypi"
 prometheus-client = "*"
 colorlog = "*"
 aiohttp = "*"
+orm = "*"
 
 [dev-packages]
 pytest = "*"
