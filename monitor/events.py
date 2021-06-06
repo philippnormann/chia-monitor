@@ -48,8 +48,8 @@ class SignagePointEvent(ChiaEvent):
     __tablename__ = "signage_point_events"
     __database__ = database
     __metadata__ = metadata
-    challenge_hash = orm.String(max_length=66)
-    signage_point = orm.String(max_length=66)
+    challenge_hash = orm.String(max_length=66, index=True)
+    signage_point = orm.String(max_length=66, index=True)
     signage_point_index = orm.Integer()
 
 
@@ -57,7 +57,7 @@ class FarmingInfoEvent(ChiaEvent):
     __tablename__ = "farming_info_events"
     __database__ = database
     __metadata__ = metadata
-    challenge_hash = orm.String(max_length=66)
-    signage_point = orm.String(max_length=66)
+    challenge_hash = orm.String(max_length=66, index=True)
+    signage_point = orm.String(max_length=66, index=True)
     passed_filter = orm.Integer()
     proofs = orm.Integer()
