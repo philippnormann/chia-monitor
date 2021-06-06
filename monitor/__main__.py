@@ -2,19 +2,19 @@ import asyncio
 import logging
 from asyncio.exceptions import CancelledError
 from asyncio.queues import Queue
-
-from sqlalchemy.ext.asyncio.session import AsyncSession
-
+import json
 import colorlog
 from chia.util.config import load_config
 from chia.util.default_root import DEFAULT_ROOT_PATH
+from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from monitor.collectors.rpc_collector import RpcCollector
 from monitor.collectors.ws_collector import WsCollector
-from monitor.db import ChiaEvent, init_models, async_session
+from monitor.db import ChiaEvent, async_session, init_models
 from monitor.exporter import ChiaExporter
+from monitor.notifier import Notifier
 
-config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
+chia_config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
 
 
 def initilize_logging():
@@ -36,20 +36,20 @@ async def persist_event(db_session: AsyncSession, event: ChiaEvent):
         db_session.add(event)
         await db_session.commit()
 
-async def main(exporter: ChiaExporter) -> None:
+async def main(exporter: ChiaExporter, notifier: Notifier) -> None:
     rpc_collector = None
     ws_collector = None
     event_queue = Queue()
     
-    db_session = async_session()
+    db_session: AsyncSession = async_session()
     await init_models()
 
     try:
-        rpc_collector = await RpcCollector.create(DEFAULT_ROOT_PATH, config, event_queue)
+        rpc_collector = await RpcCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue)
     except:
         logging.error("Failed to create RPC collector")
     try:
-        ws_collector = await WsCollector.create(DEFAULT_ROOT_PATH, config, event_queue)
+        ws_collector = await WsCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue)
     except:
         logging.error("Failed to create WebSocket collector")
 
@@ -67,6 +67,8 @@ async def main(exporter: ChiaExporter) -> None:
                 break
 
     logging.info("🛑 Shutting down!")
+    await db_session.close()
+    await notifier.close()
     if rpc_collector:
         await rpc_collector.close()
     if ws_collector:
@@ -76,8 +78,17 @@ async def main(exporter: ChiaExporter) -> None:
 
 if __name__ == "__main__":
     initilize_logging()
+    
+    with open("config.json") as f:
+        config = json.load(f)
+     
+    status_url = config["notifications"]["status_service_url"]
+    alert_url = config["notifications"]["alert_service_url"]
+
+    notifier = Notifier(status_url, alert_url)
     exporter = ChiaExporter()
+
     try:
-        asyncio.run(main(exporter))
+        asyncio.run(main(exporter, notifier))
     except KeyboardInterrupt:
         logging.info("👋 Bye!")

@@ -1,0 +1,6 @@
+{
+    "notifications": {
+        "status_service_url": "discord://webhook_id/webhook_token",
+        "alert_service_url": "discord://webhook_id/webhook_token"
+    }
+}

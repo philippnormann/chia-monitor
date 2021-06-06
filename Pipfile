@@ -9,6 +9,7 @@ colorlog = "*"
 aiohttp = "*"
 aiosqlite = "*"
 SQLAlchemy = "*"
+apprise = "*"
 
 [dev-packages]
 pytest = "*"
