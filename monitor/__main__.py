@@ -1,8 +1,9 @@
 import asyncio
+import json
 import logging
 from asyncio.exceptions import CancelledError
 from asyncio.queues import Queue
-import json
+
 import colorlog
 from chia.util.config import load_config
 from chia.util.default_root import DEFAULT_ROOT_PATH
@@ -31,17 +32,17 @@ def initilize_logging():
     logger.setLevel(logging.INFO)
 
 
-async def persist_event(db_session: AsyncSession, event: ChiaEvent):
-    async with db_session.begin():
+async def persist_event(event: ChiaEvent):
+    async with async_session.begin() as db_session:
         db_session.add(event)
         await db_session.commit()
+
 
 async def main(exporter: ChiaExporter, notifier: Notifier) -> None:
     rpc_collector = None
     ws_collector = None
     event_queue = Queue()
-    
-    db_session: AsyncSession = async_session()
+
     await init_models()
 
     try:
@@ -57,31 +58,29 @@ async def main(exporter: ChiaExporter, notifier: Notifier) -> None:
         logging.info("🚀 Starting monitoring loop!")
         asyncio.create_task(rpc_collector.task())
         asyncio.create_task(ws_collector.task())
+        asyncio.create_task(notifier.task())
         while True:
             try:
                 event = await event_queue.get()
                 exporter.process_event(event)
-                await persist_event(db_session, event)
+                await persist_event(event)
 
             except CancelledError:
                 break
 
     logging.info("🛑 Shutting down!")
-    await db_session.close()
-    await notifier.close()
     if rpc_collector:
         await rpc_collector.close()
     if ws_collector:
         await ws_collector.close()
 
 
-
 if __name__ == "__main__":
     initilize_logging()
-    
+
     with open("config.json") as f:
         config = json.load(f)
-     
+
     status_url = config["notifications"]["status_service_url"]
     alert_url = config["notifications"]["alert_service_url"]
 

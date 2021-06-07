@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Dict
 
 from monitor.events import ChiaEvent
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class Collector:
