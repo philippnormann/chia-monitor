@@ -27,7 +27,7 @@ class ChiaExporter:
     # Farmer metrics
     signage_point_counter = Counter('chia_signage_points', 'Received signage points')
     signage_point_index_gauge = Gauge('chia_signage_point_index', 'Received signage point index')
-    challenges_counter = Counter('chia_block_challanges', 'Attempted block challanges')
+    challenges_counter = Counter('chia_block_challenges', 'Attempted block challenges')
     passed_filter_counter = Counter('chia_plots_passed_filter', 'Plots passed filter')
     proofs_found_counter = Counter('chia_proofs_found', 'Proofs found')
 

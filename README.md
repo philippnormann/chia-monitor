@@ -24,7 +24,7 @@ The following statistics are collected from your local [Chia](https://chia.net) 
 - Plot size (`chia_plot_size`)
 
 ### Supported farmer metrics
-- Attempted challanges (`chia_block_challanges`)
+- Attempted challenges (`chia_block_challenges`)
 - Plots passed filter (`chia_plots_passed_filter`)
 - Proofs found (`chia_proofs_found`)
 
