@@ -29,7 +29,38 @@ The following statistics are collected from your local [Chia](https://chia.net) 
 - Proofs found (`chia_proofs_found`)
 
 ## Notifications
-`# TODO`
+To use notifications, please configure a `status_service_url` and `alert_service_url` for your desired notification service in the `config.json`. 
+
+You can use most popular notifications services by creating a service specific webhook URL, following the instructions from [this](https://github.com/caronc/apprise/wiki) wiki.
+
+Following notifications are currently sent to the `status_service_url`:
+### Farm summary (once every hour)
+```
+** 👨‍🌾 Farm Status 👩‍🌾 **
+🌾 Plot Count: 64
+💰 Total Balance: 43.00003 XCH
+💾 Current Netspace: 0.056 PiB
+🏔️ Peak Height: 166193
+📶 Peer Count: 8
+🔄 Synced: True
+✅ Proofs found: 0
+```
+Following notifications are currently sent to the `alert_service_url`:
+### Sync lost alert
+```
+** 🚨 Farmer Lost Sync! 🚨 **
+It seems like your farmer lost it's connection to the Chia Network
+```
+### Sync recovery alert
+```
+** ✅ Farmer Successfully Synced! ✅ **
+Your farmer is successfully synced to the Chia Network
+```
+### Proof found alert
+```
+** 🤑 Proof found! 🤑 **
+Your farm found a new proof
+```
 
 ## Installation
 To run this tool, we need the following things:
