@@ -1,13 +1,11 @@
 import asyncio
 import json
 import logging
-from asyncio.exceptions import CancelledError
 from asyncio.queues import Queue
 
 import colorlog
 from chia.util.config import load_config
 from chia.util.default_root import DEFAULT_ROOT_PATH
-from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from monitor.collectors.rpc_collector import RpcCollector
 from monitor.collectors.ws_collector import WsCollector
@@ -38,12 +36,10 @@ async def persist_event(event: ChiaEvent):
         await db_session.commit()
 
 
-async def main(exporter: ChiaExporter, notifier: Notifier) -> None:
+async def aggregator(exporter: ChiaExporter, notifier: Notifier) -> None:
     rpc_collector = None
     ws_collector = None
     event_queue = Queue()
-
-    await init_models()
 
     try:
         rpc_collector = await RpcCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue)
@@ -65,7 +61,7 @@ async def main(exporter: ChiaExporter, notifier: Notifier) -> None:
                 exporter.process_event(event)
                 await persist_event(event)
 
-            except CancelledError:
+            except asyncio.CancelledError:
                 break
 
     logging.info("🛑 Shutting down!")
@@ -77,6 +73,7 @@ async def main(exporter: ChiaExporter, notifier: Notifier) -> None:
 
 if __name__ == "__main__":
     initilize_logging()
+    asyncio.run(init_models())
 
     with open("config.json") as f:
         config = json.load(f)
@@ -88,6 +85,6 @@ if __name__ == "__main__":
     exporter = ChiaExporter()
 
     try:
-        asyncio.run(main(exporter, notifier))
+        asyncio.run(aggregator(exporter, notifier))
     except KeyboardInterrupt:
         logging.info("👋 Bye!")
