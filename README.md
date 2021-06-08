@@ -49,12 +49,12 @@ Following notifications are currently sent to the `alert_service_url`:
 ### Sync lost alert
 ```
 ** 🚨 Farmer Lost Sync! 🚨 **
-It seems like your farmer lost it's connection to the Chia Network
+It seems like your farmer lost its connection to the Chia Network
 ```
 ### Sync recovery alert
 ```
-** ✅ Farmer Successfully Synced! ✅ **
-Your farmer is successfully synced to the Chia Network
+** ✅ Farmer Synced! ✅ **
+Your farmer is successfully synced to the Chia Network again
 ```
 ### Proof found alert
 ```
