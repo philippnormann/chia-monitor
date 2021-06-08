@@ -46,6 +46,13 @@ Following notifications are currently sent to the `status_service_url`:
 ✅ Proofs found: 0
 ```
 Following notifications are currently sent to the `alert_service_url`:
+
+### Proof found alert
+```
+** 🤑 Proof found! 🤑 **
+Your farm found a new proof
+```
+---
 ### Sync lost alert
 ```
 ** 🚨 Farmer Lost Sync! 🚨 **
@@ -56,10 +63,17 @@ It seems like your farmer lost its connection to the Chia Network
 ** ✅ Farmer Synced! ✅ **
 Your farmer is successfully synced to the Chia Network again
 ```
-### Proof found alert
+---
+### Plots lost alert
 ```
-** 🤑 Proof found! 🤑 **
-Your farm found a new proof
+** 🚨 Farmer Lost Plots! 🚨 **
+It seems like your farmer lost some plots
+Expected: 130, Found: 124
+```
+### Plots recovery alert
+```
+** ✅ Farmer Plots recoverd! ✅ **
+Your farmer's plot count has recovered to its previous value
 ```
 
 ## Installation

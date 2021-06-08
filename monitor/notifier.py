@@ -1,8 +1,11 @@
 import asyncio
 import logging
-from typing import Coroutine, List
+
 from apprise import Apprise, AppriseAsset
-from monitor.notifications import FoundProofNotification, LostSyncNotification, SummaryNotification
+
+from monitor.notifications import (FoundProofNotification,
+                                   LostPlotsNotification, LostSyncNotification,
+                                   SummaryNotification)
 
 
 class Notifier:
@@ -12,6 +15,7 @@ class Notifier:
     notifications = [
         FoundProofNotification(alert_apobj),
         LostSyncNotification(alert_apobj),
+        LostPlotsNotification(alert_apobj),
         SummaryNotification(status_apobj)
     ]
 
