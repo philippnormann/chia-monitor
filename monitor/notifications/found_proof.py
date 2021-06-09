@@ -16,7 +16,8 @@ class FoundProofNotification(Notification):
         if proofs_found is not None and self.last_proofs_found is not None and proofs_found > self.last_proofs_found:
             self.last_proofs_found = proofs_found
             return True
-        else:
+        else:            
+            self.last_proofs_found = proofs_found
             return False
 
     async def trigger(self) -> None:
