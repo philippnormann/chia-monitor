@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from monitor.db import async_session
 from monitor.events import (BlockchainStateEvent, ConnectionsEvent, FarmingInfoEvent,
-                            HarvesterPlotsEvent, WalletBalanceEvent)
+                            HarvesterPlotsEvent, SignagePointEvent, WalletBalanceEvent)
 from monitor.format import *
 from monitor.notifications.notification import Notification
 from sqlalchemy import select
@@ -41,8 +41,29 @@ class SummaryNotification(Notification):
             result = await db_session.execute(select(func.sum(FarmingInfoEvent.proofs)))
             proofs_found: int = result.scalars().first()
 
-        if all(v is not None
-               for v in [last_plots, last_balance, last_state, last_connections, proofs_found]):
+            result = await db_session.execute(
+                select(func.avg(FarmingInfoEvent.passed_filter)).where(
+                    FarmingInfoEvent.ts >= datetime.now() - self.summary_interval))
+            avg_passed_filters: float = result.scalars().first()
+
+            result = await db_session.execute(select(func.min(FarmingInfoEvent.ts)))
+            farming_start: datetime = result.scalars().first()
+
+            avg_challenges_per_min = None
+            if farming_start is not None:
+                farming_since: timedelta = datetime.now() - farming_start
+                interval_secs = min(farming_since.seconds, self.summary_interval.seconds)
+                if interval_secs > 0:
+                    result = await db_session.execute(
+                        select(func.count(SignagePointEvent.ts)).where(
+                            SignagePointEvent.ts >= datetime.now() - self.summary_interval))
+                    num_signage_points = result.scalars().first()
+                    avg_challenges_per_min: float = num_signage_points / (interval_secs / 60)
+
+        if all(v is not None for v in [
+                last_plots, last_balance, last_state, last_connections, proofs_found, avg_passed_filters,
+                avg_challenges_per_min
+        ]):
             summary = "\n".join([
                 format_plot_count(last_plots.plot_count),
                 format_balance(int(last_balance.confirmed)),
@@ -51,6 +72,8 @@ class SummaryNotification(Notification):
                 format_full_node_count(last_connections.full_node_count),
                 format_synced(last_state.synced),
                 format_proofs(proofs_found),
+                format_avg_passed_filter(avg_passed_filters),
+                format_challenges_per_min(avg_challenges_per_min)
             ])
             sent = self.apobj.notify(title='** 👨‍🌾 Farm Status 👩‍🌾 **', body=summary)
             if sent:

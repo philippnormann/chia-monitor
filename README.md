@@ -37,13 +37,15 @@ Following notifications are currently sent to the `status_service_url`:
 ### Farm summary (once every hour)
 ```
 ** 👨‍🌾 Farm Status 👩‍🌾 **
-🌾 Plot Count: 64
-💰 Total Balance: 43.00003 XCH
-💾 Current Netspace: 0.056 PiB
-🏔️ Peak Height: 166193
-📶 Peer Count: 8
+🌾 Plot Count: 2144
+💰 Total Balance: 4.00001 XCH
+💾 Current Netspace: 20547.769 PiB
+🏔️ Peak Height: 408181
+📶 Peer Count: 10
 🔄 Synced: True
-✅ Proofs found: 0
+✅ Proofs found: 2
+🔎 Average Filter Passes: 4.31
+🎰 Challenges Per Minute: 6.53
 ```
 Following notifications are currently sent to the `alert_service_url`:
 

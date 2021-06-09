@@ -35,6 +35,10 @@ def format_challenge_hash(challenge_hash: str) -> str:
     return f"🎰 Challenge Hash: {challenge_hash}"
 
 
+def format_challenges_per_min(challenges_per_min: float) -> str:
+    return f"🎰 Challenges Per Minute: {challenges_per_min:.2f}"
+
+
 def format_signage_point(signage_point: str) -> str:
     return f"⌛ Signage Point: {signage_point}"
 
@@ -45,6 +49,10 @@ def format_signage_point_index(signage_point_index: int) -> str:
 
 def format_passed_filter(passed_filter: int) -> str:
     return f"🔎 Passed Filter: {passed_filter}"
+
+
+def format_avg_passed_filter(avg_passed_filter: float) -> str:
+    return f"🔎 Average Filter Passes: {avg_passed_filter:.2f}"
 
 
 def format_proofs(proofs: int) -> str:
