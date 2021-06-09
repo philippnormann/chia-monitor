@@ -78,7 +78,7 @@ Expected: 130, Found: 124
 Your farmer's plot count has recovered to its previous value
 ```
 
-## Installation
+## Prerequisites
 To run this tool, we need the following things:
 - Python 3
 - Pipenv
@@ -86,16 +86,37 @@ To run this tool, we need the following things:
 ### Linux (Ubuntu)
 ```bash
 sudo apt install python3 pipenv
+```
+## Installation
+1. Clone the repository
+```bash
+git clone git@github.com:philippnormann/chia-monitor.git
 cd chia-monitor
+```
+2. Install the required dependecies
+```bash
 pipenv install 
 ```
+3. Copy the example config file
+```bash
+cp config-example.json config.json
+```
+4. Open up `config.json` and configure it to your preferences.
+
+## Updating
+To update the tool, pull the latest release from git and install the dependecies again
+```bash
+cd chia-monitor
+git pull
+pipenv install
+```
 ## Usage
-To use the tool run the module as a service or screen in the background.
+To use the tool, run the `monitor` module using `pipenv` from the `chia-monitor` directory
 ```bash
 cd chia-monitor
 pipenv run python -m monitor
 ```
-
+_Note: To run the tool in the background, you can run it as a [service](https://wiki.archlinux.org/title/systemd#Writing_unit_files) or in a detached [screen](https://wiki.archlinux.org/title/GNU_Screen)._
 ### Basic Prometheus Configuration
 Add a block to the `scrape_configs` of your `prometheus.yml` config file:
 ```yaml
