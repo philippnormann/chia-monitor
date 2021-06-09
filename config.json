@@ -1,6 +1,7 @@
 {
     "notifications": {
-        "status_service_url": "discord://webhook_id/webhook_token",
-        "alert_service_url": "discord://webhook_id/webhook_token"
+        "status_interval_minutes": 60, 
+        "status_service_url": "tgram://{bot_token}/{chat_id}/",
+        "alert_service_url": "tgram://{bot_token}/{chat_id}/"
     }
 }

@@ -7,12 +7,19 @@ from monitor.format import *
 from monitor.notifications.notification import Notification
 from sqlalchemy import select
 from sqlalchemy.sql import func
+from apprise import Apprise
 
 
 class SummaryNotification(Notification):
-    summary_interval = timedelta(hours=1)
-    startup_delay = timedelta(seconds=30)
-    last_summary_ts: datetime = datetime.now() - summary_interval + startup_delay
+    summary_interval: timedelta
+    startup_delay: timedelta
+    last_summary_ts: datetime
+
+    def __init__(self, apobj: Apprise, summary_interval_minutes: int) -> None:
+        super().__init__(apobj)
+        self.startup_delay = timedelta(seconds=30)
+        self.summary_interval = timedelta(minutes=summary_interval_minutes)
+        self.last_summary_ts: datetime = datetime.now() - self.summary_interval + self.startup_delay
 
     async def condition(self) -> bool:
         if datetime.now() - self.last_summary_ts > self.summary_interval:

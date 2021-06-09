@@ -18,7 +18,7 @@ class Notification:
         raise NotImplementedError
 
     async def recover(self) -> bool:
-        pass
+        return True
 
     async def run(self) -> None:
         if await self.condition():

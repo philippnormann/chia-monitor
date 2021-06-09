@@ -3,8 +3,7 @@ import logging
 
 from apprise import Apprise, AppriseAsset
 
-from monitor.notifications import (FoundProofNotification,
-                                   LostPlotsNotification, LostSyncNotification,
+from monitor.notifications import (FoundProofNotification, LostPlotsNotification, LostSyncNotification,
                                    SummaryNotification)
 
 
@@ -12,17 +11,17 @@ class Notifier:
     asset = AppriseAsset(async_mode=False)
     status_apobj = Apprise(asset=asset)
     alert_apobj = Apprise(asset=asset)
-    notifications = [
-        FoundProofNotification(alert_apobj),
-        LostSyncNotification(alert_apobj),
-        LostPlotsNotification(alert_apobj),
-        SummaryNotification(status_apobj)
-    ]
 
-    def __init__(self, status_url: str, alert_url: str) -> None:
+    def __init__(self, status_url: str, alert_url: str, status_interval_minutes: int) -> None:
         self.log = logging.getLogger(__name__)
         self.status_apobj.add(status_url)
         self.alert_apobj.add(alert_url)
+        self.notifications = [
+            FoundProofNotification(self.alert_apobj),
+            LostSyncNotification(self.alert_apobj),
+            LostPlotsNotification(self.alert_apobj),
+            SummaryNotification(self.status_apobj, status_interval_minutes)
+        ]
 
     async def task(self) -> None:
         while True:
