@@ -14,11 +14,10 @@ class LostSyncNotification(Notification):
         return sync_status is not None and not sync_status
 
     async def trigger(self) -> None:
-        self.apobj.notify(title='** 🚨 Farmer Lost Sync! 🚨 **',
-                                body="It seems like your farmer lost its connection to the Chia Network")
-        self.last_sync_status = False
+        return self.apobj.notify(
+            title='** 🚨 Farmer Lost Sync! 🚨 **',
+            body="It seems like your farmer lost its connection to the Chia Network")
 
     async def recover(self) -> None:
-        self.apobj.notify(title='** ✅ Farmer Synced! ✅ **',
-                                body="Your farmer is successfully synced to the Chia Network again")
-        self.last_sync_status = True
+        return self.apobj.notify(title='** ✅ Farmer Synced! ✅ **',
+                                 body="Your farmer is successfully synced to the Chia Network again")

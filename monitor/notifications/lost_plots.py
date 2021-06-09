@@ -21,12 +21,10 @@ class LostPlotsNotification(Notification):
             return False
 
     async def trigger(self) -> None:
-        self.apobj.notify(title='** 🚨 Farmer Lost Plots! 🚨 **',
-                          body="It seems like your farmer lost some plots\n" +
-                          f"Expected: {self.highest_plot_count}, Found: {self.last_plot_count}\n")
-        self.last_sync_status = False
+        return self.apobj.notify(title='** 🚨 Farmer Lost Plots! 🚨 **',
+                                 body="It seems like your farmer lost some plots\n" +
+                                 f"Expected: {self.highest_plot_count}, Found: {self.last_plot_count}\n")
 
     async def recover(self) -> None:
-        self.apobj.notify(title='** ✅ Farmer Plots recoverd! ✅ **',
-                          body="Your farmer's plot count has recovered to its previous value")
-        self.last_sync_status = True
+        return self.apobj.notify(title='** ✅ Farmer Plots recoverd! ✅ **',
+                                 body="Your farmer's plot count has recovered to its previous value")

@@ -11,11 +11,11 @@ from sqlalchemy.sql import func
 
 class SummaryNotification(Notification):
     summary_interval = timedelta(hours=1)
-    last_summary_ts: datetime = datetime.now() - summary_interval
+    startup_delay = timedelta(seconds=30)
+    last_summary_ts: datetime = datetime.now() - summary_interval + startup_delay
 
     async def condition(self) -> bool:
         if datetime.now() - self.last_summary_ts > self.summary_interval:
-            self.last_summary_ts = datetime.now()
             return True
         else:
             return False
@@ -52,5 +52,9 @@ class SummaryNotification(Notification):
                 format_synced(last_state.synced),
                 format_proofs(proofs_found),
             ])
-            self.apobj.notify(title='** 👨‍🌾 Farm Status 👩‍🌾 **', body=summary)
-            self.last_summary_ts = datetime.now()
+            sent = self.apobj.notify(title='** 👨‍🌾 Farm Status 👩‍🌾 **', body=summary)
+            if sent:
+                self.last_summary_ts = datetime.now()
+                return True
+
+        return False

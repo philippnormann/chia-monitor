@@ -1,5 +1,7 @@
 import logging
+
 from apprise import Apprise
+
 
 class Notification:
     apobj: Apprise
@@ -11,19 +13,20 @@ class Notification:
 
     async def condition(self) -> bool:
         raise NotImplementedError
-    
-    async def trigger(self) -> None:
+
+    async def trigger(self) -> bool:
         raise NotImplementedError
-    
-    async def recover(self) -> None:
+
+    async def recover(self) -> bool:
         pass
-        
+
     async def run(self) -> None:
         if await self.condition():
             if not self.firing:
-                await self.trigger()
-                self.firing = True
+                sent = await self.trigger()
+                if sent:
+                    self.firing = True
         elif self.firing:
-            await self.recover()
-            self.firing = False
-        
+            sent = await self.recover()
+            if sent:
+                self.firing = False
