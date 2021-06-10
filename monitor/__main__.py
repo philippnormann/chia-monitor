@@ -44,11 +44,12 @@ async def aggregator(exporter: ChiaExporter, notifier: Notifier) -> None:
     try:
         rpc_collector = await RpcCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue)
     except:
-        logging.error("Failed to create RPC collector")
+        logging.warning("Failed to create RPC collector. Continuing without it.")
+
     try:
         ws_collector = await WsCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue)
     except:
-        logging.error("Failed to create WebSocket collector")
+        logging.warning("Failed to create WebSocket collector. Continuing without it.")
 
     if rpc_collector and ws_collector:
         logging.info("🚀 Starting monitoring loop!")
@@ -63,6 +64,8 @@ async def aggregator(exporter: ChiaExporter, notifier: Notifier) -> None:
 
             except asyncio.CancelledError:
                 break
+    else:
+        logging.error("Failed to create any collector.")
 
     logging.info("🛑 Shutting down!")
     if rpc_collector:

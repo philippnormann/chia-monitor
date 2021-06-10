@@ -5,7 +5,7 @@ import logging
 from asyncio import Queue
 from datetime import datetime
 from pathlib import Path
-from typing import Dict
+from typing import Callable, Dict, List
 
 from chia.rpc.farmer_rpc_client import FarmerRpcClient
 from chia.rpc.full_node_rpc_client import FullNodeRpcClient
@@ -15,8 +15,8 @@ from chia.rpc.wallet_rpc_client import WalletRpcClient
 from chia.server.outbound_message import NodeType
 from chia.util.ints import uint16
 from monitor.collectors.collector import Collector
-from monitor.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent,
-                            HarvesterPlotsEvent, WalletBalanceEvent)
+from monitor.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent, HarvesterPlotsEvent,
+                            WalletBalanceEvent)
 
 
 class RpcCollector(Collector):
@@ -24,28 +24,51 @@ class RpcCollector(Collector):
     wallet_client: WalletRpcClient
     harvester_client: HarvesterRpcClient
     farmer_client: FarmerRpcClient
+    hostname: str
+    tasks: List[Callable]
 
     @staticmethod
     async def create(root_path: Path, net_config: Dict, event_queue: Queue[ChiaEvent]) -> RpcCollector:
         self = RpcCollector()
         self.log = logging.getLogger(__name__)
         self.event_queue = event_queue
+        self.hostname = net_config["self_hostname"]
+        self.tasks = []
 
-        self_hostname = net_config["self_hostname"]
-        full_node_rpc_port = net_config["full_node"]["rpc_port"]
-        wallet_rpc_port = net_config["wallet"]["rpc_port"]
-        harvester_rpc_port = net_config["harvester"]["rpc_port"]
-        farmer_rpc_port = net_config["farmer"]["rpc_port"]
+        try:
+            full_node_rpc_port = net_config["full_node"]["rpc_port"]
+            self.full_node_client = await FullNodeRpcClient.create(self.hostname,
+                                                                   uint16(full_node_rpc_port), root_path,
+                                                                   net_config)
+            await self.full_node_client.get_connections()
+            self.tasks.append(self.get_blockchain_state)
+            self.tasks.append(self.get_connections)
+        except Exception as e:
+            self.log.warning("Failed to connect to full node RPC endpoint. Continuing without it.")
 
-        self.full_node_client = await FullNodeRpcClient.create(self_hostname, uint16(full_node_rpc_port),
-                                                               root_path, net_config)
-        self.wallet_client = await WalletRpcClient.create(self_hostname, uint16(wallet_rpc_port),
-                                                          root_path, net_config)
-        self.harvester_client = await HarvesterRpcClient.create(self_hostname,
-                                                                uint16(harvester_rpc_port), root_path,
-                                                                net_config)
-        self.farmer_client = await FarmerRpcClient.create(self_hostname, uint16(farmer_rpc_port),
-                                                          root_path, net_config)
+        try:
+            wallet_rpc_port = net_config["wallet"]["rpc_port"]
+            self.wallet_client = await WalletRpcClient.create(self.hostname, uint16(wallet_rpc_port),
+                                                              root_path, net_config)
+            await self.wallet_client.get_connections()
+            self.tasks.append(self.get_wallet_balance)
+        except Exception as e:
+            self.log.warning("Failed to connect to wallet RPC endpoint. Continuing without it.")
+
+        try:
+            harvester_rpc_port = net_config["harvester"]["rpc_port"]
+            self.harvester_client = await HarvesterRpcClient.create(self.hostname,
+                                                                    uint16(harvester_rpc_port),
+                                                                    root_path, net_config)
+            await self.harvester_client.get_connections()
+            self.tasks.append(self.get_harvester_plots)
+        except Exception as e:
+            self.log.warning("Failed to connect to harvester RPC endpoint. Continuing without it.")
+
+        if len(self.tasks) < 1:
+            raise ConnectionError(
+                "Failed to connect to any RPC endpoints, Check if your Chia services are running")
+
         return self
 
     async def get_wallet_balance(self) -> None:
@@ -95,8 +118,7 @@ class RpcCollector(Collector):
 
     async def task(self) -> None:
         while True:
-            await asyncio.gather(self.get_wallet_balance(), self.get_harvester_plots(),
-                                 self.get_blockchain_state(), self.get_connections())
+            await asyncio.gather(*[task() for task in self.tasks])
             await asyncio.sleep(10)
 
     @staticmethod
@@ -108,4 +130,3 @@ class RpcCollector(Collector):
         await RpcCollector.close_rpc_client(self.full_node_client)
         await RpcCollector.close_rpc_client(self.wallet_client)
         await RpcCollector.close_rpc_client(self.harvester_client)
-        await RpcCollector.close_rpc_client(self.farmer_client)
