@@ -9,7 +9,7 @@ from chia.util.default_root import DEFAULT_ROOT_PATH
 
 from monitor.collectors.rpc_collector import RpcCollector
 from monitor.collectors.ws_collector import WsCollector
-from monitor.db import ChiaEvent, async_session, init_models
+from monitor.db import ChiaEvent, async_session
 from monitor.exporter import ChiaExporter
 from monitor.notifier import Notifier
 
@@ -76,7 +76,6 @@ async def aggregator(exporter: ChiaExporter, notifier: Notifier) -> None:
 
 if __name__ == "__main__":
     initilize_logging()
-    asyncio.run(init_models())
 
     with open("config.json") as f:
         config = json.load(f)

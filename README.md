@@ -6,28 +6,6 @@ A monitoring tool to collect all important metrics from your Chia farming node a
 
 This [Grafana](https://grafana.com/) dashboard displays all collected metrics and can be imported from [grafana.com](https://grafana.com/grafana/dashboards/14544) using the ID `14544`.
 
-## Metrics
-The following statistics are collected from your local [Chia](https://chia.net) node using the [RPC](https://github.com/Chia-Network/chia-blockchain/wiki/RPC-Interfaces) and WebSocket APIs. All of these metrics are then exported via a [Prometheus](https://prometheus.io) compatible `/metrics` HTTP endpoint on port `8000`.
-
-### Supported wallet metrics
-- Total balance (`chia_confirmed_total_mojos`)
-
-### Supported full node metrics
-- Sync status (`chia_sync_status`)
-- Peak height (`chia_peak_height`)
-- Difficulty (`chia_diffculty`)
-- Total netspace (`chia_network_space`)
-- Connection count (`chia_connections_count`)
-
-### Supported harvester metrics
-- Plot count (`chia_plot_count`)
-- Plot size (`chia_plot_size`)
-
-### Supported farmer metrics
-- Attempted challenges (`chia_block_challenges`)
-- Plots passed filter (`chia_plots_passed_filter`)
-- Proofs found (`chia_proofs_found`)
-
 ## Notifications
 To use notifications, please configure a `status_service_url` and `alert_service_url` for your desired notification service in the `config.json`. 
 
@@ -78,6 +56,28 @@ Expected: 130, Found: 124
 Your farmer's plot count has recovered to its previous value
 ```
 
+## Metrics
+The following statistics are collected from your local [Chia](https://chia.net) node using the [RPC](https://github.com/Chia-Network/chia-blockchain/wiki/RPC-Interfaces) and WebSocket APIs. All of these metrics are then exported via a [Prometheus](https://prometheus.io) compatible `/metrics` HTTP endpoint on port `8000`.
+
+### Supported wallet metrics
+- Total balance (`chia_confirmed_total_mojos`)
+
+### Supported full node metrics
+- Sync status (`chia_sync_status`)
+- Peak height (`chia_peak_height`)
+- Difficulty (`chia_diffculty`)
+- Total netspace (`chia_network_space`)
+- Connection count (`chia_connections_count`)
+
+### Supported harvester metrics
+- Plot count (`chia_plot_count`)
+- Plot size (`chia_plot_size`)
+
+### Supported farmer metrics
+- Attempted challenges (`chia_block_challenges`)
+- Plots passed filter (`chia_plots_passed_filter`)
+- Proofs found (`chia_proofs_found`)
+
 ## Prerequisites
 To run this tool, we need the following things:
 - Python 3
@@ -90,25 +90,36 @@ sudo apt install python3 pipenv
 ## Installation
 1. Clone the repository
 ```bash
-git clone git@github.com:philippnormann/chia-monitor.git
+git clone https://github.com/philippnormann/chia-monitor.git
 cd chia-monitor
 ```
 2. Install the required dependecies
 ```bash
 pipenv install 
 ```
-3. Copy the example config file
+3. Initialize the SQLite database
+```bash
+pipenv run alembic upgrade head
+```
+4. Copy the example config file
 ```bash
 cp config-example.json config.json
 ```
-4. Open up `config.json` and configure it to your preferences.
+5. Open up `config.json` and configure it to your preferences.
 
 ## Updating
-To update the tool, pull the latest release from git and install the dependecies again
+1. Pull the latest release from git
 ```bash
 cd chia-monitor
 git pull
+```
+2. Update the required dependecies
+```bash
 pipenv install
+```
+3. Upgrade the SQLite database model
+```bash
+pipenv run alembic upgrade head
 ```
 ## Usage
 To use the tool, run the `monitor` module using `pipenv` from the `chia-monitor` directory

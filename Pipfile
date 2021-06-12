@@ -9,6 +9,7 @@ colorlog = "*"
 aiohttp = "*"
 aiosqlite = "*"
 SQLAlchemy = "*"
+alembic = "*"
 apprise = "*"
 
 [dev-packages]

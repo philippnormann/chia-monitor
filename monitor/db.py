@@ -8,8 +8,3 @@ ChiaEvent = declarative_base()
 
 engine = create_async_engine(DATABASE_URL, echo=False)
 async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-
-
-async def init_models():
-    async with engine.begin() as conn:
-        await conn.run_sync(ChiaEvent.metadata.create_all)
