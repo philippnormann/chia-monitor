@@ -15,8 +15,8 @@ from chia.rpc.wallet_rpc_client import WalletRpcClient
 from chia.server.outbound_message import NodeType
 from chia.util.ints import uint16
 from monitor.collectors.collector import Collector
-from monitor.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent, HarvesterPlotsEvent,
-                            WalletBalanceEvent)
+from monitor.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent,
+                            HarvesterPlotsEvent, WalletBalanceEvent)
 
 
 class RpcCollector(Collector):
@@ -98,10 +98,11 @@ class RpcCollector(Collector):
             state = await self.full_node_client.get_blockchain_state()
         except:
             raise ConnectionError("Failed to get blockchain state via RPC. Is your full node running?")
+        peak_height = state["peak"].height if state["peak"] is not None else 0
         event = BlockchainStateEvent(ts=datetime.now(),
                                      space=str(state["space"]),
                                      diffculty=state["difficulty"],
-                                     peak_height=str(state["peak"].height),
+                                     peak_height=str(peak_height),
                                      synced=state["sync"]["synced"])
         await self.publish_event(event)
 
@@ -118,7 +119,10 @@ class RpcCollector(Collector):
 
     async def task(self) -> None:
         while True:
-            await asyncio.gather(*[task() for task in self.tasks])
+            try:
+                await asyncio.gather(*[task() for task in self.tasks])
+            except Exception as e:
+                self.log.warning(e)
             await asyncio.sleep(10)
 
     @staticmethod
