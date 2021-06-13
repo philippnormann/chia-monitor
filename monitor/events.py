@@ -8,6 +8,7 @@ class HarvesterPlotsEvent(ChiaEvent):
     ts: float = Column(DateTime, primary_key=True)
     plot_count = Column(Integer)
     plot_size = Column(Integer)
+    host = Column(String(255))
 
 
 class ConnectionsEvent(ChiaEvent):
@@ -16,6 +17,7 @@ class ConnectionsEvent(ChiaEvent):
     full_node_count = Column(Integer)
     farmer_count = Column(Integer)
     wallet_count = Column(Integer)
+    harvester_count = Column(Integer)
 
 
 class BlockchainStateEvent(ChiaEvent):

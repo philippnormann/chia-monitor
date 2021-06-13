@@ -2,9 +2,9 @@ import logging
 
 from prometheus_client import Counter, Gauge, start_http_server
 
-from monitor.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent, FarmingInfoEvent,
-                            HarvesterPlotsEvent, SignagePointEvent, WalletBalanceEvent)
-
+from monitor.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent,
+                            FarmingInfoEvent, HarvesterPlotsEvent,
+                            SignagePointEvent, WalletBalanceEvent)
 from monitor.format import *
 
 
@@ -21,8 +21,8 @@ class ChiaExporter:
                               'Count of peers that the node is currently connected to')
 
     # Harvester metrics
-    plot_count_gauge = Gauge('chia_plot_count', 'Plot count being farmed by harvester')
-    plot_size_gauge = Gauge('chia_plot_size', 'Size of plots being farmed by harvester')
+    plot_count_gauge = Gauge('chia_plot_count', 'Plot count being farmed by harvester', ["host"])
+    plot_size_gauge = Gauge('chia_plot_size', 'Size of plots being farmed by harvester', ["host"])
 
     # Farmer metrics
     signage_point_counter = Counter('chia_signage_points', 'Received signage points')
@@ -51,10 +51,11 @@ class ChiaExporter:
 
     def update_harvester_metrics(self, event: HarvesterPlotsEvent) -> None:
         self.log.info("-" * 64)
-        self.plot_count_gauge.set(event.plot_count)
+        self.plot_count_gauge.labels(event.host).set(event.plot_count)
         self.log.info(format_plot_count(event.plot_count))
-        self.plot_size_gauge.set(event.plot_size)
+        self.plot_size_gauge.labels(event.host).set(event.plot_size)
         self.log.info(format_plot_size(event.plot_size))
+        self.log.info(format_hostname(event.host, fix_indent=True))
 
     def update_farmer_metrics(self, event: FarmingInfoEvent):
         self.log.info("-" * 64)
@@ -71,6 +72,8 @@ class ChiaExporter:
         self.log.info("-" * 64)
         self.connections_gauge.set(event.full_node_count)
         self.log.info(format_full_node_count(event.full_node_count))
+        self.log.info(format_full_node_count(event.farmer_count, "Farmer"))
+        self.log.info(format_full_node_count(event.harvester_count, "Harvester"))
 
     def update_blockchain_state_metrics(self, event: BlockchainStateEvent) -> None:
         self.log.info("-" * 64)

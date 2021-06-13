@@ -1,15 +1,13 @@
 # chia-monitor
 
-A monitoring tool to collect all important metrics from your Chia farming node and notify you with regular status updates or in case something goes wrong.
+A monitoring tool to collect all important metrics from your Chia farming node and all connected harvesters. It can send you push notifications with regular status updates and will alert you in case something goes wrong or a proof is found. All gathered metrics are exported to a [Prometheus](https://prometheus.io) compatible `/metrics` endpoint and a [Grafana](https://grafana.com/) dashboard is also provided:
 
 ![grafana](.readme/grafana.png)
 
 This [Grafana](https://grafana.com/) dashboard displays all collected metrics and can be imported from [grafana.com](https://grafana.com/grafana/dashboards/14544) using the ID `14544`.
 
 ## Notifications
-To use notifications, please configure a `status_service_url` and `alert_service_url` for your desired notification service in the `config.json`. 
-
-You can use most popular notifications services by creating a service specific webhook URL, following the instructions from [this](https://github.com/caronc/apprise/wiki) wiki.
+To use notifications, please configure a `status_service_url` and `alert_service_url` for your desired notification service in the `config.json`. You can use most popular notifications services by creating a service specific webhook URL, following the instructions from [this](https://github.com/caronc/apprise/wiki) wiki.
 
 Following notifications are currently sent to the `status_service_url`:
 ### Farm summary (once every hour)
@@ -57,7 +55,7 @@ Your farmer's plot count has recovered to its previous value
 ```
 
 ## Metrics
-The following statistics are collected from your local [Chia](https://chia.net) node using the [RPC](https://github.com/Chia-Network/chia-blockchain/wiki/RPC-Interfaces) and WebSocket APIs. All of these metrics are then exported via a [Prometheus](https://prometheus.io) compatible `/metrics` HTTP endpoint on port `8000`.
+The following statistics are collected from your local [Chia](https://chia.net) node using the [RPC](https://github.com/Chia-Network/chia-blockchain/wiki/RPC-Interfaces) and WebSocket APIs and are then exported via a [Prometheus](https://prometheus.io) compatible `/metrics` HTTP endpoint on port `8000`.
 
 ### Supported wallet metrics
 - Total balance (`chia_confirmed_total_mojos`)
@@ -128,6 +126,14 @@ cd chia-monitor
 pipenv run python -m monitor
 ```
 _Note: To run the tool in the background, you can run it as a [service](https://wiki.archlinux.org/title/systemd#Writing_unit_files) or in a detached [screen](https://wiki.archlinux.org/title/GNU_Screen)._
+
+### Remote Harvester Support
+Multiple remote harvesters can be easily monitored using this tool.
+In order for this to work, you need to make sure the RPC endpoint of your harvester can be reached from the machine on which the farmer and chia-monitor are running on.
+Unless you have a firewall setup on your harvester, all you need to do to achieve this, is to change the `self_hostname` in your `~/.chia/mainnet/config/config.yaml` from `localhost` to `0.0.0.0`:
+```yaml
+self_hostname: 0.0.0.0
+```
 ### Basic Prometheus Configuration
 Add a block to the `scrape_configs` of your `prometheus.yml` config file:
 ```yaml

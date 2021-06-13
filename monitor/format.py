@@ -27,8 +27,13 @@ def format_synced(synced: int) -> str:
     return f"🔄 Synced: {synced}"
 
 
-def format_full_node_count(full_node_count: int) -> str:
-    return f"📶 Peer Count: {full_node_count}"
+def format_full_node_count(full_node_count: int, node_type="Full Node") -> str:
+    return f"📶 {node_type} Peer Count: {full_node_count}"
+
+
+def format_hostname(hostname: str, fix_indent=False) -> str:
+    indent = " " * (1 if fix_indent else 0)
+    return f"🖥️ {indent}Host: {hostname}"
 
 
 def format_challenge_hash(challenge_hash: str) -> str:
@@ -51,8 +56,8 @@ def format_passed_filter(passed_filter: int) -> str:
     return f"🔎 Passed Filter: {passed_filter}"
 
 
-def format_avg_passed_filter(avg_passed_filter: float) -> str:
-    return f"🔎 Average Filter Passes: {avg_passed_filter:.2f}"
+def format_passed_filter_per_min(passed_filter_per_min: float) -> str:
+    return f"🔎 Passed Filters Per Minute: {passed_filter_per_min:.2f}"
 
 
 def format_proofs(proofs: int) -> str:
