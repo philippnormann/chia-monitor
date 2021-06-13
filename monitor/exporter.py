@@ -61,6 +61,7 @@ class ChiaExporter:
         self.challenges_counter.inc()
         self.log.info(format_challenge_hash(event.challenge_hash))
         self.log.info(format_signage_point(event.signage_point))
+        self.log.info(format_plot_count(event.total_plots))
         self.passed_filter_counter.inc(event.passed_filter)
         self.log.info(format_passed_filter(event.passed_filter))
         self.proofs_found_counter.inc(event.proofs)

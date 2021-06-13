@@ -63,7 +63,8 @@ class WsCollector(Collector):
                                  challenge_hash=farming_info["challenge_hash"],
                                  signage_point=farming_info["signage_point"],
                                  passed_filter=farming_info["passed_filter"],
-                                 proofs=farming_info["proofs"])
+                                 proofs=farming_info["proofs"],
+                                 total_plots=farming_info["total_plots"])
         await self.publish_event(event)
 
     async def process_signage_point(self, signage_point: Dict) -> None:

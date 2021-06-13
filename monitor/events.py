@@ -48,3 +48,4 @@ class FarmingInfoEvent(ChiaEvent):
     signage_point = Column(String(66), index=True)
     passed_filter = Column(Integer)
     proofs = Column(Integer)
+    total_plots = Column(Integer)
