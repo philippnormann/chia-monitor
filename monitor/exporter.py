@@ -18,7 +18,7 @@ class ChiaExporter:
     height_gauge = Gauge('chia_peak_height', 'Block height of the current peak')
     sync_gauge = Gauge('chia_sync_status', 'Sync status of the connected full node')
     connections_gauge = Gauge('chia_connections_count',
-                              'Count of peers that the node is currently connected to')
+                              'Count of peers that the node is currently connected to', ["type"])
 
     # Harvester metrics
     plot_count_gauge = Gauge('chia_plot_count', 'Plot count being farmed by harvester', ["host"])
@@ -70,9 +70,11 @@ class ChiaExporter:
 
     def update_connection_metrics(self, event: ConnectionsEvent) -> None:
         self.log.info("-" * 64)
-        self.connections_gauge.set(event.full_node_count)
+        self.connections_gauge.labels("Full Node").set(event.full_node_count)
         self.log.info(format_full_node_count(event.full_node_count))
+        self.connections_gauge.labels("Farmer").set(event.farmer_count)
         self.log.info(format_full_node_count(event.farmer_count, "Farmer"))
+        self.connections_gauge.labels("Harvester").set(event.harvester_count)
         self.log.info(format_full_node_count(event.harvester_count, "Harvester"))
 
     def update_blockchain_state_metrics(self, event: BlockchainStateEvent) -> None:
