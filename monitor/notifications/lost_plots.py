@@ -1,5 +1,5 @@
 from monitor.db import async_session
-from monitor.events import FarmingInfoEvent
+from monitor.events import ConnectionsEvent, FarmingInfoEvent
 from monitor.format import *
 from monitor.notifications.notification import Notification
 from sqlalchemy import select
@@ -14,17 +14,19 @@ class LostPlotsNotification(Notification):
 
         async with async_session() as db_session:
             result = await db_session.execute(
-                select(FarmingInfoEvent.signage_point).order_by(FarmingInfoEvent.ts.desc()).distinct(
-                    FarmingInfoEvent.signage_point).limit(2))
-            previous_sp: str = result.all()[-1][0]
+                select(ConnectionsEvent.harvester_count).order_by(ConnectionsEvent.ts.desc()))
+            harvester_count: str = result.scalars().first()
 
-            if previous_sp is not None:
+            if harvester_count is not None:
+                sub_query = select([
+                    func.sum(FarmingInfoEvent.total_plots).label("plot_count"),
+                    func.count(FarmingInfoEvent.ts).label("harvester_count")
+                ]).group_by(FarmingInfoEvent.signage_point).order_by(FarmingInfoEvent.ts.desc())
                 result = await db_session.execute(
-                    select(func.sum(FarmingInfoEvent.total_plots)).where(
-                        FarmingInfoEvent.signage_point == previous_sp))
+                    select(sub_query.c.plot_count).where(sub_query.c.harvester_count == harvester_count))
                 self.last_plot_count: int = result.scalars().first()
-
-        if previous_sp is not None and self.last_plot_count is not None and self.highest_plot_count is not None and self.last_plot_count < self.highest_plot_count:
+        
+        if harvester_count is not None and self.last_plot_count is not None and self.highest_plot_count is not None and self.last_plot_count < self.highest_plot_count:
             return True
         else:
             self.highest_plot_count = self.last_plot_count
