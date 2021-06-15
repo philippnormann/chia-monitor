@@ -1,5 +1,6 @@
-from monitor.db import async_session
-from monitor.events import FarmingInfoEvent
+from monitor.database.queries import get_proofs_found
+from monitor.database import async_session
+from monitor.database.events import FarmingInfoEvent
 from monitor.format import *
 from monitor.notifications.notification import Notification
 from sqlalchemy import select
@@ -11,8 +12,7 @@ class FoundProofNotification(Notification):
 
     async def condition(self) -> bool:
         async with async_session() as db_session:
-            result = await db_session.execute(select(func.sum(FarmingInfoEvent.proofs)))
-            proofs_found: int = result.scalars().first()
+            proofs_found = await get_proofs_found(db_session)
         if proofs_found is not None and self.last_proofs_found is not None and proofs_found > self.last_proofs_found:
             self.last_proofs_found = proofs_found
             return True

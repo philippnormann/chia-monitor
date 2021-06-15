@@ -8,7 +8,7 @@ from chia.util.config import load_config
 from chia.util.default_root import DEFAULT_ROOT_PATH
 
 from monitor.collectors import RpcCollector, WsCollector
-from monitor.db import ChiaEvent, async_session
+from monitor.database import ChiaEvent, async_session
 from monitor.exporter import ChiaExporter
 from monitor.notifier import Notifier
 

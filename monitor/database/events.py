@@ -1,6 +1,6 @@
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
 
-from monitor.db import ChiaEvent
+from monitor.database import ChiaEvent
 
 
 class HarvesterPlotsEvent(ChiaEvent):

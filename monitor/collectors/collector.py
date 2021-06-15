@@ -5,7 +5,7 @@ from asyncio import Queue
 from pathlib import Path
 from typing import Dict
 
-from monitor.events import ChiaEvent
+from monitor.database.events import ChiaEvent
 
 
 class Collector:

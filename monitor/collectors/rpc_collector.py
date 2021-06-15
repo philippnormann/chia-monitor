@@ -16,7 +16,7 @@ from chia.rpc.wallet_rpc_client import WalletRpcClient
 from chia.server.outbound_message import NodeType
 from chia.util.ints import uint16
 from monitor.collectors.collector import Collector
-from monitor.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent,
+from monitor.database.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent,
                             HarvesterPlotsEvent, WalletBalanceEvent)
 
 

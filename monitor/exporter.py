@@ -2,9 +2,8 @@ import logging
 
 from prometheus_client import Counter, Gauge, start_http_server
 
-from monitor.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent,
-                            FarmingInfoEvent, HarvesterPlotsEvent,
-                            SignagePointEvent, WalletBalanceEvent)
+from monitor.database.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent, FarmingInfoEvent,
+                                     HarvesterPlotsEvent, SignagePointEvent, WalletBalanceEvent)
 from monitor.format import *
 
 

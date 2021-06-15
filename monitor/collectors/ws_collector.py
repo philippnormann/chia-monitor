@@ -11,7 +11,7 @@ import aiohttp
 from chia.server.server import ssl_context_for_client
 from chia.util.ws_message import WsRpcMessage
 from monitor.collectors.collector import Collector
-from monitor.events import ChiaEvent, FarmingInfoEvent, SignagePointEvent
+from monitor.database.events import ChiaEvent, FarmingInfoEvent, SignagePointEvent
 
 
 class WsCollector(Collector):

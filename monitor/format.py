@@ -48,6 +48,10 @@ def format_signage_point(signage_point: str) -> str:
     return f"⌛ Signage Point: {signage_point}"
 
 
+def format_signage_points_per_min(signage_points_per_min: float) -> str:
+    return f"⌛ Signage Points Per Minute: {signage_points_per_min:.2f}"
+
+
 def format_signage_point_index(signage_point_index: int) -> str:
     return f"🔏 Signage Point Index: {signage_point_index}"
 
