@@ -7,8 +7,7 @@ import colorlog
 from chia.util.config import load_config
 from chia.util.default_root import DEFAULT_ROOT_PATH
 
-from monitor.collectors.rpc_collector import RpcCollector
-from monitor.collectors.ws_collector import WsCollector
+from monitor.collectors import RpcCollector, WsCollector
 from monitor.db import ChiaEvent, async_session
 from monitor.exporter import ChiaExporter
 from monitor.notifier import Notifier
