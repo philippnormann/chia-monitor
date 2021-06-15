@@ -1,10 +1,10 @@
 # chia-monitor
 
-A monitoring tool to collect all important metrics from your Chia farming node and all connected harvesters. It can send you push notifications with regular status updates and will alert you in case something goes wrong or a proof is found. All metrics are exported to a [Prometheus](https://prometheus.io) compatible `/metrics` endpoint and a [Grafana](https://grafana.com/) dashboard is also provided:
+A monitoring tool to collect all important metrics from your Chia farming node and connected harvesters. It can send you push notifications with regular status updates and will alert you in case something goes wrong or a proof is found. All metrics are exported to a [Prometheus](https://prometheus.io) compatible `/metrics` endpoint and a [Grafana](https://grafana.com/) dashboard is also provided:
 
 ![grafana](.readme/grafana.png)
 
-This [Grafana](https://grafana.com/) dashboard displays all collected metrics and can be imported from [grafana.com](https://grafana.com/grafana/dashboards/14544) using the ID `14544` or using the the `grafana/dashboard.json` from this repository.
+This [Grafana](https://grafana.com/) dashboard displays almost all collected metrics and can be imported from [grafana.com](https://grafana.com/grafana/dashboards/14544) using the ID `14544` or using the `grafana/dashboard.json` from this repository.
 
 ## Notifications
 To use notifications, please configure a `status_service_url` and `alert_service_url` for your desired notification service in the `config.json`. You can use most popular notifications services by creating a service specific webhook URL, following the instructions from [this](https://github.com/caronc/apprise/wiki) wiki.
@@ -13,15 +13,16 @@ Following notifications are currently sent to the `status_service_url`:
 ### Farm summary (once every hour)
 ```
 ** 👨‍🌾 Farm Status 👩‍🌾 **
-🌾 Plot Count: 2144
-💰 Total Balance: 4.00001 XCH
-💾 Current Netspace: 20547.769 PiB
-🏔️ Peak Height: 408181
-📶 Peer Count: 10
+🌾 Plot Count: 2217
+🧺 Plot Size: 219.451 TiB
 🔄 Synced: True
-✅ Proofs found: 2
-🔎 Average Filter Passes: 4.31
-🎰 Challenges Per Minute: 6.53
+📶 Full Node Peer Count: 9
+⌛️ Signage Points Per Minute: 6.53
+🔎 Passed Filters Per Minute: 27.20
+✅ Proofs found: 1
+💰 Total Balance: 2.00001 XCH
+💾 Current Netspace: 24414.438 PiB
+🏔️ Peak Height: 436703
 ```
 Following notifications are currently sent to the `alert_service_url`:
 

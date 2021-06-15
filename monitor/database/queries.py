@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
-from monitor.database.events import BlockchainStateEvent, ConnectionsEvent, FarmingInfoEvent, SignagePointEvent, WalletBalanceEvent
+from monitor.database.events import BlockchainStateEvent, ConnectionsEvent, FarmingInfoEvent, HarvesterPlotsEvent, SignagePointEvent, WalletBalanceEvent
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.expression import select
 from sqlalchemy.sql.functions import func
@@ -58,6 +58,15 @@ async def get_last_plot_count(session: AsyncSession, harvester_count: int) -> Op
     ]).group_by(FarmingInfoEvent.signage_point).order_by(FarmingInfoEvent.ts.desc())
     result = await session.execute(
         select(sub_query.c.plot_count).where(sub_query.c.harvester_count == harvester_count))
+    return result.scalars().first()
+
+
+async def get_plot_size(session: AsyncSession) -> Optional[int]:
+    sub_query = select([
+        func.max(HarvesterPlotsEvent.plot_size).label("plot_size")
+    ]).where(HarvesterPlotsEvent.ts > datetime.now() - timedelta(seconds=60)).group_by(
+        HarvesterPlotsEvent.host)
+    result = await session.execute(select(func.sum(sub_query.c.plot_size)))
     return result.scalars().first()
 
 
