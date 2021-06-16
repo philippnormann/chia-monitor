@@ -4,25 +4,26 @@ A monitoring tool to collect all important metrics from your Chia farming node a
 
 ![grafana](.readme/grafana.png)
 
-This [Grafana](https://grafana.com/) dashboard displays almost all collected metrics and can be imported from [grafana.com](https://grafana.com/grafana/dashboards/14544) using the ID `14544` or using the `grafana/dashboard.json` from this repository.
+This example dashboard displays almost all collected metrics and can be imported from [grafana.com](https://grafana.com/grafana/dashboards/14544) using the ID `14544` or using the `grafana/dashboard.json` from this repository.
 
 ## Notifications
 To use notifications, please configure a `status_service_url` and `alert_service_url` for your desired notification service in the `config.json`. You can use most popular notifications services by creating a service specific webhook URL, following the instructions from [this](https://github.com/caronc/apprise/wiki) wiki.
 
 Following notifications are currently sent to the `status_service_url`:
-### Farm summary (once every hour)
+### Farm summary (configurable interval in `config.json`)
 ```
 ** 👨‍🌾 Farm Status 👩‍🌾 **
 🌾 Plot Count: 2217
 🧺 Plot Size: 219.451 TiB
-🔄 Synced: True
-📶 Full Node Peer Count: 9
-⌛️ Signage Points Per Minute: 6.53
-🔎 Passed Filters Per Minute: 27.20
+⌛️ Signage Points Per Minute: 6.42
+🔎 Passed Filters Per Minute: 29.90
 ✅ Proofs found: 1
 💰 Total Balance: 2.00001 XCH
-💾 Current Netspace: 24414.438 PiB
-🏔️ Peak Height: 436703
+🕰️ Expected Time To Win: 3 weeks and 3 days
+💾 Current Netspace: 23.938 EiB
+🏔️ Peak Height: 440778
+📶 Full Node Peer Count: 8
+🔄 Synced: True
 ```
 Following notifications are currently sent to the `alert_service_url`:
 
@@ -73,6 +74,8 @@ The following statistics are collected from your local [Chia](https://chia.net) 
 - Plot size (`chia_plot_size`)
 
 ### Supported farmer metrics
+- Received signage points (`chia_signage_points`)
+- Received signage point index (`chia_signage_point_index`)
 - Attempted challenges (`chia_block_challenges`)
 - Plots passed filter (`chia_plots_passed_filter`)
 - Proofs found (`chia_proofs_found`)
@@ -129,7 +132,7 @@ pipenv run python -m monitor
 _Note: To run the tool in the background, you can run it as a [service](https://wiki.archlinux.org/title/systemd#Writing_unit_files) or in a detached [screen](https://wiki.archlinux.org/title/GNU_Screen)._
 
 ### Remote Harvester Support
-Multiple remote harvesters can be easily monitored using this tool.
+Multiple remote harvesters can be monitored using this tool.
 In order for this to work, you need to make sure the RPC endpoint of your harvester can be reached from the machine on which the farmer and chia-monitor are running on.
 Unless you have a firewall setup on your harvester, all you need to do to achieve this, is to change the `self_hostname` in your `~/.chia/mainnet/config/config.yaml` from `localhost` to `0.0.0.0`:
 ```yaml

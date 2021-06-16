@@ -1,9 +1,13 @@
+from datetime import timedelta
+from chia.util.misc import format_bytes, format_minutes
+
+
 def format_plot_count(plot_count: int) -> str:
     return f"🌾 Plot Count: {plot_count}"
 
 
 def format_plot_size(plot_size: int) -> str:
-    return f"🧺 Plot Size: {plot_size/(1024 ** 4):.3f} TiB"
+    return f"🧺 Plot Size: {format_bytes(plot_size)}"
 
 
 def format_balance(balance: int) -> str:
@@ -11,7 +15,7 @@ def format_balance(balance: int) -> str:
 
 
 def format_space(space: int) -> str:
-    return f"💾 Current Netspace: {space/(1024 ** 5):.3f} PiB"
+    return f"💾 Current Netspace: {format_bytes(space)}"
 
 
 def format_diffculty(diffculty: int) -> str:
@@ -66,3 +70,7 @@ def format_passed_filter_per_min(passed_filter_per_min: float) -> str:
 
 def format_proofs(proofs: int) -> str:
     return f"✅ Proofs found: {proofs}"
+
+
+def format_expected_time_to_win(minutes: int) -> str:
+    return f"🕰️ Expected Time To Win: {format_minutes(minutes)}"
