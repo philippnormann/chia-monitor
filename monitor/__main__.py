@@ -82,8 +82,9 @@ if __name__ == "__main__":
     status_url = config["notifications"]["status_service_url"]
     alert_url = config["notifications"]["alert_service_url"]
     status_interval_minutes = config["notifications"]["status_interval_minutes"]
+    lost_plots_alert_threshold = config["notifications"]["lost_plots_alert_threshold"]
 
-    notifier = Notifier(status_url, alert_url, status_interval_minutes)
+    notifier = Notifier(status_url, alert_url, status_interval_minutes, lost_plots_alert_threshold)
     exporter = ChiaExporter()
 
     try:

@@ -45,6 +45,9 @@ Your farmer is successfully synced to the Chia Network again
 ```
 ---
 ### Plots lost alert
+Triggers when the total plot count of your farm drops below a configurable threshold (default: 1).
+
+The corresponding `lost_plots_alert_threshold` parameter can be adjusted in the `config.json`.
 ```
 ** 🚨 Farmer Lost Plots! 🚨 **
 It seems like your farmer lost some plots
@@ -113,6 +116,7 @@ cp config-example.json config.json
 1. Pull the latest release from git
 ```bash
 cd chia-monitor
+git reset origin/main --hard
 git pull
 ```
 2. Update the required dependecies

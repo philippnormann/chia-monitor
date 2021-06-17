@@ -1,22 +1,27 @@
+from apprise.Apprise import Apprise
 from monitor.database import async_session
-from monitor.database.queries import get_harvester_count, get_last_plot_count
+from monitor.database.queries import get_plot_count
 from monitor.format import *
 from monitor.notifications.notification import Notification
 
 
 class LostPlotsNotification(Notification):
-    last_plot_count: int = None
-    highest_plot_count: int = None
+    last_plot_count: int
+    highest_plot_count: int
+    alert_threshold: int
+
+    def __init__(self, apobj: Apprise, alert_threshold: int) -> None:
+        super().__init__(apobj)
+        self.last_plot_count = None
+        self.highest_plot_count = None
+        self.alert_threshold = alert_threshold
 
     async def condition(self) -> bool:
 
         async with async_session() as db_session:
-            harvester_count = await get_harvester_count(db_session)
+            self.last_plot_count = await get_plot_count(db_session)
 
-            if harvester_count is not None:
-                self.last_plot_count = await get_last_plot_count(db_session, harvester_count)
-
-        if harvester_count is not None and self.last_plot_count is not None and self.highest_plot_count is not None and self.last_plot_count < self.highest_plot_count:
+        if self.last_plot_count is not None and self.highest_plot_count is not None and self.last_plot_count < self.highest_plot_count - self.alert_threshold:
             return True
         else:
             self.highest_plot_count = self.last_plot_count

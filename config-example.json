@@ -1,6 +1,7 @@
 {
     "notifications": {
-        "status_interval_minutes": 60, 
+        "status_interval_minutes": 60,
+        "lost_plots_alert_threshold": 1,
         "status_service_url": "tgram://{bot_token}/{chat_id}/",
         "alert_service_url": "tgram://{bot_token}/{chat_id}/"
     }
