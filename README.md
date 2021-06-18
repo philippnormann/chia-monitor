@@ -138,7 +138,7 @@ _Note: To run the tool in the background, you can run it as a [service](https://
 ### Remote Harvester Support
 Multiple remote harvesters can be monitored using this tool.
 In order for this to work, you need to make sure the RPC endpoint of your harvester can be reached from the machine on which the farmer and chia-monitor are running on.
-Unless you have a firewall setup on your harvester, all you need to do to achieve this, is to change the `self_hostname` in your `~/.chia/mainnet/config/config.yaml` from `localhost` to `0.0.0.0`:
+Unless you have a firewall setup on your harvester, all you need to do to achieve this, is to change the `self_hostname` in your `~/.chia/mainnet/config/config.yaml` on all of your harvesters from `localhost` to `0.0.0.0`:
 ```yaml
 self_hostname: 0.0.0.0
 ```
