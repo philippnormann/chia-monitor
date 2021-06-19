@@ -2,9 +2,12 @@ from datetime import datetime, timedelta
 
 from apprise import Apprise
 from monitor.database import async_session
-from monitor.database.queries import (get_blockchain_state, get_connections, get_farming_start,
-                                      get_passed_filters_per_minute, get_plot_count, get_plot_size,
-                                      get_proofs_found, get_signage_points_per_minute,
+from monitor.database.queries import (get_blockchain_state, get_connections,
+                                      get_farming_start,
+                                      get_passed_filters_per_minute,
+                                      get_plot_count, get_plot_delta,
+                                      get_plot_size, get_proofs_found,
+                                      get_signage_points_per_minute,
                                       get_wallet_balance)
 from monitor.format import *
 from monitor.notifications.notification import Notification
@@ -38,6 +41,7 @@ class SummaryNotification(Notification):
             farming_start = await get_farming_start(db_session)
             last_plot_count = await get_plot_count(db_session)
             last_plot_size = await get_plot_size(db_session)
+            plot_count_delta, plot_size_delta = await get_plot_delta(db_session)
 
             signage_points_per_min = None
             passed_filters_per_min = None
@@ -57,6 +61,7 @@ class SummaryNotification(Notification):
             summary = "\n".join([
                 format_plot_count(last_plot_count),
                 format_plot_size(last_plot_size),
+                format_plot_delta_24h(plot_count_delta, plot_size_delta),
                 format_signage_points_per_min(signage_points_per_min),
                 format_passed_filter_per_min(passed_filters_per_min),
                 format_proofs(proofs_found),

@@ -1,4 +1,3 @@
-from datetime import timedelta
 from chia.util.misc import format_bytes, format_minutes
 
 
@@ -8,6 +7,11 @@ def format_plot_count(plot_count: int) -> str:
 
 def format_plot_size(plot_size: int) -> str:
     return f"🧺 Plot Size: {format_bytes(plot_size)}"
+
+
+def format_plot_delta_24h(count_delta: int, size_delta: int) -> str:
+    size_prefix = "+" if size_delta > 0 else "-"
+    return f"🚜 Plot Change 24h: {count_delta:+} ({size_prefix}{format_bytes(abs(size_delta))})"
 
 
 def format_balance(balance: int) -> str:
@@ -73,4 +77,4 @@ def format_proofs(proofs: int) -> str:
 
 
 def format_expected_time_to_win(minutes: int) -> str:
-    return f"🕰️ Expected Time To Win: {format_minutes(minutes)}"
+    return f"🕰️ Time To Win: {format_minutes(minutes)}"

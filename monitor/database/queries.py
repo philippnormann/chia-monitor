@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, Tuple
 
 from monitor.database.events import (BlockchainStateEvent, ConnectionsEvent, FarmingInfoEvent,
                                      HarvesterPlotsEvent, SignagePointEvent, WalletBalanceEvent)
@@ -52,14 +52,29 @@ async def get_previous_signage_point(session: AsyncSession) -> Optional[str]:
     return result.all()[-1][0]
 
 
-async def get_last_plot_count(session: AsyncSession, harvester_count: int) -> Optional[int]:
-    sub_query = select([
-        func.sum(FarmingInfoEvent.total_plots).label("plot_count"),
-        func.count(FarmingInfoEvent.ts).label("harvester_count")
-    ]).group_by(FarmingInfoEvent.signage_point).order_by(FarmingInfoEvent.ts.desc())
+async def get_plot_delta(session: AsyncSession, period=timedelta(hours=24)) -> Tuple[int, int]:
+    result = await session.execute(select(func.min(HarvesterPlotsEvent.ts)))
+    first_ts = result.scalars().first()
+    if first_ts is None:
+        return 0, 0
+    initial_ts = max(first_ts, datetime.now() - period)
+    sub_query = select([HarvesterPlotsEvent.plot_count, HarvesterPlotsEvent.plot_size
+                        ]).where(HarvesterPlotsEvent.ts > initial_ts).order_by(
+                            HarvesterPlotsEvent.ts).group_by(HarvesterPlotsEvent.host)
     result = await session.execute(
-        select(sub_query.c.plot_count).where(sub_query.c.harvester_count == harvester_count))
-    return result.scalars().first()
+        select([func.sum(sub_query.c.plot_count),
+                func.sum(sub_query.c.plot_size)]))
+    initial_plots = result.one()
+    if initial_plots is None:
+        return 0, 0
+    initial_plot_count, initial_plot_size = initial_plots
+    current_plot_count = await get_plot_count(session)
+    if current_plot_count is None:
+        return 0, 0
+    current_plot_size = await get_plot_size(session)
+    if current_plot_size is None:
+        return 0, 0
+    return current_plot_count - initial_plot_count, current_plot_size - initial_plot_size
 
 
 async def get_plot_size(session: AsyncSession) -> Optional[int]:
@@ -85,6 +100,8 @@ async def get_signage_points_per_minute(session: AsyncSession, interval: timedel
         select(func.count(SignagePointEvent.ts)).where(SignagePointEvent.ts >= datetime.now() - interval)
     )
     num_signage_points = result.scalars().first()
+    if num_signage_points is None:
+        return None
     return num_signage_points / (interval.seconds / 60)
 
 
@@ -93,4 +110,6 @@ async def get_passed_filters_per_minute(session: AsyncSession, interval: timedel
         select(func.sum(
             FarmingInfoEvent.passed_filter)).where(FarmingInfoEvent.ts >= datetime.now() - interval))
     passed_filters = result.scalars().first()
+    if passed_filters is None:
+        return None
     return passed_filters / (interval.seconds / 60)

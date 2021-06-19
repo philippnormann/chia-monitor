@@ -15,11 +15,12 @@ Following notifications are currently sent to the `status_service_url`:
 ** 👨‍🌾 Farm Status 👩‍🌾 **
 🌾 Plot Count: 2217
 🧺 Plot Size: 219.451 TiB
+🚜 Plot Change 24h: +65 (+6.433 TiB)
 ⌛️ Signage Points Per Minute: 6.42
 🔎 Passed Filters Per Minute: 29.90
 ✅ Proofs found: 1
 💰 Total Balance: 2.00001 XCH
-🕰️ Expected Time To Win: 3 weeks and 3 days
+🕰️ Time To Win: 3 weeks and 3 days
 💾 Current Netspace: 23.938 EiB
 🏔️ Peak Height: 440778
 📶 Full Node Peer Count: 8
