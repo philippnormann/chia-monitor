@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 from asyncio import Queue
 from datetime import datetime
 from pathlib import Path
-from typing import Callable, Dict, List, Tuple
-from urllib.parse import urlparse
+from typing import Callable, Dict, List
 
 from chia.rpc.farmer_rpc_client import FarmerRpcClient
 from chia.rpc.full_node_rpc_client import FullNodeRpcClient
@@ -17,7 +17,7 @@ from chia.server.outbound_message import NodeType
 from chia.util.ints import uint16
 from monitor.collectors.collector import Collector
 from monitor.database.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent,
-                            HarvesterPlotsEvent, WalletBalanceEvent)
+                                     HarvesterPlotsEvent, WalletBalanceEvent)
 
 
 class RpcCollector(Collector):
@@ -72,50 +72,19 @@ class RpcCollector(Collector):
             farming_rpc_port = net_config["farmer"]["rpc_port"]
             self.farmer_client = await FarmerRpcClient.create(self.hostname, uint16(farming_rpc_port),
                                                               self.root_path, self.net_config)
-            farmer_peers = await self.farmer_client.get_connections()
+            await self.farmer_client.get_connections()
+            self.tasks.append(self.get_harvester_plots)
         except Exception as e:
             if self.farmer_client is not None:
                 await RpcCollector.close_rpc_client(self.farmer_client)
                 self.farmer_client = None
             self.log.warning(f"Failed to connect to farmer RPC endpoint. Continuing without it. {e}")
-            farmer_peers = [{"peer_host": self.hostname, "type": NodeType.HARVESTER}]
-
-        if farmer_peers is not None:
-            connected_harvester = [
-                peer["peer_host"] for peer in farmer_peers
-                if NodeType(peer["type"]) == NodeType.HARVESTER
-            ]
-            if len(connected_harvester) > 0:
-                self.harvester_clients = await self.create_harvester_clients(connected_harvester)
-                if len(self.harvester_clients) > 0:
-                    self.tasks.append(self.get_harvester_plots)
-            else:
-                self.log.warning(f"No harvester is connected to your farmer. Continuing without it.")
 
         if len(self.tasks) < 1:
             raise ConnectionError(
                 "Failed to connect to any RPC endpoints, Check if your Chia services are running")
 
         return self
-
-    async def create_harvester_clients(
-            self, harvester_peers: List[Tuple[str, uint16]]) -> List[HarvesterRpcClient]:
-        harvester_clients = []
-        harvester_rpc_port = self.net_config["harvester"]["rpc_port"]
-        for harvester_host in harvester_peers:
-            try:
-                harvester_client = await HarvesterRpcClient.create(harvester_host,
-                                                                   uint16(harvester_rpc_port),
-                                                                   self.root_path, self.net_config)
-                await harvester_client.get_connections()
-                harvester_clients.append(harvester_client)
-            except Exception as e:
-                if harvester_client is not None:
-                    await RpcCollector.close_rpc_client(harvester_client)
-                self.log.warning(
-                    f"Failed to connect to harvester RPC endpoint on {harvester_host}:{harvester_rpc_port}. Continuing without it. {e}"
-                )
-        return harvester_clients
 
     async def get_wallet_balance(self) -> None:
         try:
@@ -130,19 +99,25 @@ class RpcCollector(Collector):
         await self.publish_event(event)
 
     async def get_harvester_plots(self) -> None:
-        for harvester_client in self.harvester_clients:
-            harvester_host = urlparse(harvester_client.url).netloc
-            try:
-                plots = await harvester_client.get_plots()
-            except:
-                raise ConnectionError(
-                    f"Failed to get harvester plots via RPC from {harvester_host}. Is your harvester running?"
-                )
-            event = HarvesterPlotsEvent(ts=datetime.now(),
-                                        plot_count=len(plots["plots"]),
-                                        plot_size=sum(plot["file_size"] for plot in plots["plots"]),
-                                        host=harvester_host)
-            await self.publish_event(event)
+        try:
+            harvesters = await self.farmer_client.get_harvesters()
+            for harvester in harvesters["harvesters"]:
+                host = harvester["connection"]["host"]
+                plots = harvester["plots"]
+                og_plots = [plot for plot in plots if plot["pool_contract_puzzle_hash"] is None]
+                portable_plots = [
+                    plot for plot in plots if plot["pool_contract_puzzle_hash"] is not None
+                ]
+                event = HarvesterPlotsEvent(ts=datetime.now(),
+                                            plot_count=len(og_plots),
+                                            plot_size=sum(og_plot["file_size"] for og_plot in og_plots),
+                                            portable_plot_count=len(portable_plots),
+                                            portable_plot_size=sum(portable_plot["file_size"]
+                                                                   for portable_plot in portable_plots),
+                                            host=host)
+                await self.publish_event(event)
+        except:
+            raise ConnectionError("Failed to get harvesters via RPC. Is your farmer running?")
 
     async def get_blockchain_state(self) -> None:
         try:

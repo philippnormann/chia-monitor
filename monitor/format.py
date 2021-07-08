@@ -1,6 +1,22 @@
 from chia.util.misc import format_bytes, format_minutes
 
 
+def format_og_plot_count(plot_count: int) -> str:
+    return f"🌾 OG Plot Count: {plot_count}"
+
+
+def format_og_plot_size(plot_size: int) -> str:
+    return f"🧺 OG Plot Size: {format_bytes(plot_size)}"
+
+
+def format_portable_plot_count(plot_count: int) -> str:
+    return f"🌾 Portable Plot Count: {plot_count}"
+
+
+def format_portable_plot_size(plot_size: int) -> str:
+    return f"🧺 Portable Plot Size: {format_bytes(plot_size)}"
+
+
 def format_plot_count(plot_count: int) -> str:
     return f"🌾 Plot Count: {plot_count}"
 
@@ -73,7 +89,7 @@ def format_passed_filter_per_min(passed_filter_per_min: float) -> str:
 
 
 def format_proofs(proofs: int) -> str:
-    return f"✅ Proofs found: {proofs}"
+    return f"✅ Total Proofs found: {proofs}"
 
 
 def format_expected_time_to_win(minutes: int) -> str:

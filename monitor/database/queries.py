@@ -58,16 +58,24 @@ async def get_plot_delta(session: AsyncSession, period=timedelta(hours=24)) -> T
     if first_ts is None:
         return 0, 0
     initial_ts = max(first_ts, datetime.now() - period)
-    sub_query = select([HarvesterPlotsEvent.plot_count, HarvesterPlotsEvent.plot_size
-                        ]).where(HarvesterPlotsEvent.ts > initial_ts).order_by(
-                            HarvesterPlotsEvent.ts).group_by(HarvesterPlotsEvent.host)
+    sub_query = select([
+        HarvesterPlotsEvent.plot_count, HarvesterPlotsEvent.portable_plot_count,
+        HarvesterPlotsEvent.plot_size, HarvesterPlotsEvent.portable_plot_size
+    ]).where(HarvesterPlotsEvent.ts > initial_ts).order_by(HarvesterPlotsEvent.ts).group_by(
+        HarvesterPlotsEvent.host)
     result = await session.execute(
-        select([func.sum(sub_query.c.plot_count),
-                func.sum(sub_query.c.plot_size)]))
+        select([
+            func.sum(sub_query.c.plot_count),
+            func.sum(sub_query.c.portable_plot_count),
+            func.sum(sub_query.c.plot_size),
+            func.sum(sub_query.c.portable_plot_size)
+        ]))
     initial_plots = result.one()
     if initial_plots is None:
         return 0, 0
-    initial_plot_count, initial_plot_size = initial_plots
+    initial_og_plot_count, initial_portable_plot_count, initial_og_plot_size, initial_portable_plot_size = initial_plots
+    initial_plot_count = initial_og_plot_count + initial_portable_plot_count
+    initial_plot_size = initial_og_plot_size + initial_portable_plot_size
     current_plot_count = await get_plot_count(session)
     if current_plot_count is None:
         return 0, 0
@@ -77,7 +85,33 @@ async def get_plot_delta(session: AsyncSession, period=timedelta(hours=24)) -> T
     return current_plot_count - initial_plot_count, current_plot_size - initial_plot_size
 
 
+async def get_plot_count(session: AsyncSession) -> Optional[int]:
+    og_plot_count = await get_og_plot_count(session)
+    portable_plot_count = await get_portable_plot_count(session)
+    if og_plot_count is not None and portable_plot_count is not None:
+        return og_plot_count + portable_plot_count
+    elif og_plot_count is not None and portable_plot_count is None:
+        return og_plot_count
+    elif og_plot_count is None and portable_plot_count is not None:
+        return portable_plot_count
+    else:
+        return None
+
+
 async def get_plot_size(session: AsyncSession) -> Optional[int]:
+    og_plot_size = await get_og_plot_size(session)
+    portable_plot_size = await get_portable_plot_size(session)
+    if og_plot_size is not None and portable_plot_size is not None:
+        return og_plot_size + portable_plot_size
+    elif og_plot_size is not None and portable_plot_size is None:
+        return og_plot_size
+    elif og_plot_size is None and portable_plot_size is not None:
+        return portable_plot_size
+    else:
+        return None
+
+
+async def get_og_plot_size(session: AsyncSession) -> Optional[int]:
     sub_query = select([
         func.max(HarvesterPlotsEvent.plot_size).label("plot_size")
     ]).where(HarvesterPlotsEvent.ts > datetime.now() - timedelta(seconds=30)).group_by(
@@ -86,12 +120,30 @@ async def get_plot_size(session: AsyncSession) -> Optional[int]:
     return result.scalars().first()
 
 
-async def get_plot_count(session: AsyncSession) -> Optional[int]:
+async def get_og_plot_count(session: AsyncSession) -> Optional[int]:
     sub_query = select([
         func.max(HarvesterPlotsEvent.plot_count).label("plot_count")
     ]).where(HarvesterPlotsEvent.ts > datetime.now() - timedelta(seconds=30)).group_by(
         HarvesterPlotsEvent.host)
     result = await session.execute(select(func.sum(sub_query.c.plot_count)))
+    return result.scalars().first()
+
+
+async def get_portable_plot_size(session: AsyncSession) -> Optional[int]:
+    sub_query = select([
+        func.max(HarvesterPlotsEvent.portable_plot_size).label("portable_plot_size")
+    ]).where(HarvesterPlotsEvent.ts > datetime.now() - timedelta(seconds=30)).group_by(
+        HarvesterPlotsEvent.host)
+    result = await session.execute(select(func.sum(sub_query.c.portable_plot_size)))
+    return result.scalars().first()
+
+
+async def get_portable_plot_count(session: AsyncSession) -> Optional[int]:
+    sub_query = select([
+        func.max(HarvesterPlotsEvent.portable_plot_count).label("portable_plot_count")
+    ]).where(HarvesterPlotsEvent.ts > datetime.now() - timedelta(seconds=30)).group_by(
+        HarvesterPlotsEvent.host)
+    result = await session.execute(select(func.sum(sub_query.c.portable_plot_count)))
     return result.scalars().first()
 
 

@@ -13,16 +13,18 @@ Following notifications are currently sent to the `status_service_url`:
 ### Farm summary (configurable interval in `config.json`)
 ```
 ** 👨‍🌾 Farm Status 👩‍🌾 **
-🌾 Plot Count: 2217
-🧺 Plot Size: 219.451 TiB
-🚜 Plot Change 24h: +65 (+6.433 TiB)
-⌛️ Signage Points Per Minute: 6.42
-🔎 Passed Filters Per Minute: 29.90
-✅ Proofs found: 1
+🌾 OG Plot Count: 3797
+🌾 Portable Plot Count: 50
+🧺 OG Plot Size: 375.828 TiB
+🧺 Portable Plot Size: 4.948 TiB
+🚜 Plot Change 24h: +86 (+8.511 TiB)
+⌛️ Signage Points Per Minute: 6.30
+🔎 Passed Filters Per Minute: 49.30
+✅ Total Proofs found: 73
 💰 Total Balance: 2.00001 XCH
-🕰️ Time To Win: 3 weeks and 3 days
-💾 Current Netspace: 23.938 EiB
-🏔️ Peak Height: 440778
+🕰️ Time To Win: 2 weeks and 4 days
+💾 Current Netspace: 30.706 EiB
+🏔️ Peak Height: 544594
 📶 Full Node Peer Count: 8
 🔄 Synced: True
 ```
@@ -74,8 +76,10 @@ The following statistics are collected from your local [Chia](https://chia.net) 
 - Connection count (`chia_connections_count`)
 
 ### Supported harvester metrics
-- Plot count (`chia_plot_count`)
-- Plot size (`chia_plot_size`)
+- OG Plot count (`chia_plot_count`)
+- OG Plot size (`chia_plot_size`)
+- Portable Plot count (`chia_portable_plot_count`)
+- Portable Plot size (`chia_portable_plot_size`)
 
 ### Supported farmer metrics
 - Received signage points (`chia_signage_points`)
@@ -136,13 +140,6 @@ pipenv run python -m monitor
 ```
 _Note: To run the tool in the background, you can run it as a [service](https://wiki.archlinux.org/title/systemd#Writing_unit_files) or in a detached [screen](https://wiki.archlinux.org/title/GNU_Screen)._
 
-### Remote Harvester Support
-Multiple remote harvesters can be monitored using this tool.
-In order for this to work, you need to make sure the RPC endpoint of your harvester can be reached from the machine on which the farmer and chia-monitor are running on.
-Unless you have a firewall setup on your harvester, all you need to do to achieve this, is to change the `self_hostname` in your `~/.chia/mainnet/config/config.yaml` on all of your harvesters from `localhost` to `0.0.0.0`:
-```yaml
-self_hostname: 0.0.0.0
-```
 ### Basic Prometheus Configuration
 Add a block to the `scrape_configs` of your `prometheus.yml` config file:
 ```yaml

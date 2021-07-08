@@ -3,10 +3,11 @@ from datetime import datetime, timedelta
 from apprise import Apprise
 from monitor.database import async_session
 from monitor.database.queries import (get_blockchain_state, get_connections,
-                                      get_farming_start,
+                                      get_farming_start, get_og_plot_count,
+                                      get_og_plot_size,
                                       get_passed_filters_per_minute,
-                                      get_plot_count, get_plot_delta,
-                                      get_plot_size, get_proofs_found,
+                                      get_plot_delta, get_portable_plot_count,
+                                      get_portable_plot_size, get_proofs_found,
                                       get_signage_points_per_minute,
                                       get_wallet_balance)
 from monitor.format import *
@@ -39,8 +40,10 @@ class SummaryNotification(Notification):
             last_connections = await get_connections(db_session)
             proofs_found = await get_proofs_found(db_session)
             farming_start = await get_farming_start(db_session)
-            last_plot_count = await get_plot_count(db_session)
-            last_plot_size = await get_plot_size(db_session)
+            last_og_plot_count = await get_og_plot_count(db_session)
+            last_portable_plot_count = await get_portable_plot_count(db_session)
+            last_og_plot_size = await get_og_plot_size(db_session)
+            last_portable_plot_size = await get_portable_plot_size(db_session)
             plot_count_delta, plot_size_delta = await get_plot_delta(db_session)
 
             signage_points_per_min = None
@@ -53,14 +56,17 @@ class SummaryNotification(Notification):
                     passed_filters_per_min = await get_passed_filters_per_minute(db_session, interval)
 
         if all(v is not None for v in [
-                last_plot_count, last_plot_size, last_balance, last_state, last_connections,
-                proofs_found, signage_points_per_min, passed_filters_per_min
+                last_og_plot_count, last_portable_plot_count, last_og_plot_size, last_portable_plot_size,
+                last_balance, last_state, last_connections, proofs_found, signage_points_per_min,
+                passed_filters_per_min
         ]):
-            proportion = last_plot_size / int(last_state.space)
+            proportion = (last_og_plot_size + last_portable_plot_size) / int(last_state.space)
             expected_minutes_to_win = int((SECONDS_PER_BLOCK / 60) / proportion)
             summary = "\n".join([
-                format_plot_count(last_plot_count),
-                format_plot_size(last_plot_size),
+                format_og_plot_count(last_og_plot_count),
+                format_portable_plot_count(last_portable_plot_count),
+                format_og_plot_size(last_og_plot_size),
+                format_portable_plot_size(last_portable_plot_size),
                 format_plot_delta_24h(plot_count_delta, plot_size_delta),
                 format_signage_points_per_min(signage_points_per_min),
                 format_passed_filter_per_min(passed_filters_per_min),
