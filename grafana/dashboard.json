@@ -1,11 +1,26 @@
 {
-  "__inputs": [],
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
   "__requires": [
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
       "version": "7.5.3"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
     },
     {
       "type": "panel",
@@ -27,6 +42,7 @@
       }
     ]
   },
+  "description": "Displays all important metrics from your Chia farming node and all connected harvesters, collected by chia-monitor.",
   "editable": true,
   "gnetId": 14544,
   "graphTooltip": 1,
@@ -76,7 +92,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 6,
         "x": 0,
         "y": 0
@@ -111,18 +127,22 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 3,
           "mappings": [],
+          "max": 99.8,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
+                "color": "orange",
                 "value": null
               }
             ]
@@ -132,20 +152,21 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
+        "h": 3,
         "w": 4,
         "x": 6,
         "y": 0
       },
-      "id": 83,
+      "id": 105,
+      "links": [],
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
-        "orientation": "auto",
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "diff"
           ],
           "fields": "",
           "values": false
@@ -154,56 +175,64 @@
         "textMode": "auto"
       },
       "pluginVersion": "7.5.3",
+      "repeatDirection": "h",
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(chia_plot_size)",
+          "expr": "sum(chia_plot_size) + sum(chia_portable_plot_size)",
+          "format": "time_series",
           "interval": "",
-          "legendFormat": "Plot Size",
-          "refId": "A"
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 240
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Total Plot Size",
+      "title": "Plot Size Delta",
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 0,
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
+                "color": "orange",
                 "value": null
               }
             ]
           },
-          "unit": "bytes"
+          "unit": "plots"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
+        "h": 3,
         "w": 3,
         "x": 10,
         "y": 0
       },
-      "id": 101,
+      "id": 106,
+      "links": [],
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
-        "orientation": "auto",
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "diff"
           ],
           "fields": "",
           "values": false
@@ -212,18 +241,22 @@
         "textMode": "auto"
       },
       "pluginVersion": "7.5.3",
+      "repeatDirection": "h",
       "targets": [
         {
           "exemplar": true,
-          "expr": "chia_plot_size",
+          "expr": "sum(chia_plot_count) + sum(chia_portable_plot_count)",
+          "format": "time_series",
           "interval": "",
-          "legendFormat": "{{ host }}",
-          "refId": "A"
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 240
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Plot Size Per Harvester",
+      "title": "Plot Size Delta",
       "type": "stat"
     },
     {
@@ -258,7 +291,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 11,
         "w": 5,
         "x": 13,
         "y": 0
@@ -316,7 +349,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 12,
+        "h": 16,
         "w": 6,
         "x": 18,
         "y": 0
@@ -360,6 +393,122 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "light-blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 6,
+        "y": 3
+      },
+      "id": 83,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum(chia_plot_size)",
+          "interval": "",
+          "legendFormat": "Plot Size",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "OG Plot Size",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 10,
+        "y": 3
+      },
+      "id": 101,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "chia_plot_size",
+          "interval": "",
+          "legendFormat": "{{ host }}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "OG Plot Size Per Harvester",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
           "min": 0,
           "thresholds": {
             "mode": "absolute",
@@ -381,7 +530,7 @@
         "h": 5,
         "w": 2,
         "x": 0,
-        "y": 5
+        "y": 6
       },
       "id": 85,
       "options": {
@@ -443,7 +592,7 @@
         "h": 5,
         "w": 2,
         "x": 2,
-        "y": 5
+        "y": 6
       },
       "id": 99,
       "options": {
@@ -505,7 +654,7 @@
         "h": 5,
         "w": 2,
         "x": 4,
-        "y": 5
+        "y": 6
       },
       "id": 100,
       "options": {
@@ -546,35 +695,26 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
+                "color": "light-blue",
                 "value": null
-              },
-              {
-                "color": "orange",
-                "value": 5
-              },
-              {
-                "color": "green",
-                "value": 6
               }
             ]
           },
-          "unit": "cpm"
+          "unit": "plots"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 5,
-        "x": 13,
-        "y": 8
+        "h": 6,
+        "w": 4,
+        "x": 6,
+        "y": 9
       },
-      "id": 103,
+      "id": 61,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -594,15 +734,73 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "rate(chia_block_challenges_total[5m]) * 60",
+          "expr": "sum(chia_plot_count)",
           "interval": "",
-          "legendFormat": "Challanges",
+          "legendFormat": "Plot Count",
           "refId": "A"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Challenges Per Minute",
+      "title": "OG Total Plot Count",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "plots"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 10,
+        "y": 9
+      },
+      "id": 109,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "chia_plot_count",
+          "interval": "",
+          "legendFormat": "{{ host }}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "OG Plot Count Per Harvester",
       "type": "stat"
     },
     {
@@ -629,7 +827,7 @@
         "h": 5,
         "w": 3,
         "x": 0,
-        "y": 10
+        "y": 11
       },
       "id": 70,
       "options": {
@@ -687,7 +885,7 @@
         "h": 5,
         "w": 3,
         "x": 3,
-        "y": 10
+        "y": 11
       },
       "id": 76,
       "options": {
@@ -728,26 +926,35 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
+                "color": "red",
                 "value": null
+              },
+              {
+                "color": "orange",
+                "value": 5
+              },
+              {
+                "color": "green",
+                "value": 6
               }
             ]
           },
-          "unit": "plots"
+          "unit": "cpm"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
-        "w": 4,
-        "x": 6,
-        "y": 10
+        "h": 8,
+        "w": 5,
+        "x": 13,
+        "y": 11
       },
-      "id": 61,
+      "id": 103,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -767,15 +974,15 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(chia_plot_count)",
+          "expr": "rate(chia_block_challenges_total[5m]) * 60",
           "interval": "",
-          "legendFormat": "Plot Count",
+          "legendFormat": "Challanges",
           "refId": "A"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Total Plot Count",
+      "title": "Challenges Per Minute",
       "type": "stat"
     },
     {
@@ -795,17 +1002,17 @@
               }
             ]
           },
-          "unit": "plots"
+          "unit": "bytes"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
-        "w": 3,
-        "x": 10,
-        "y": 10
+        "h": 6,
+        "w": 4,
+        "x": 6,
+        "y": 15
       },
-      "id": 102,
+      "id": 107,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -825,7 +1032,65 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "chia_plot_count",
+          "expr": "sum(chia_portable_plot_size)",
+          "interval": "",
+          "legendFormat": "Plot Size",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Portable Total Plot Size",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 10,
+        "y": 15
+      },
+      "id": 110,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "chia_portable_plot_size",
           "interval": "",
           "legendFormat": "{{ host }}",
           "refId": "A"
@@ -833,7 +1098,65 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Plot Count Per Harvester",
+      "title": "Portable Plot Size Per Harvester",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "purple",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 6,
+        "x": 0,
+        "y": 16
+      },
+      "id": 75,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "chia_network_space",
+          "interval": "",
+          "legendFormat": "Netspace",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Chia Network Space",
       "type": "stat"
     },
     {
@@ -863,10 +1186,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 11,
         "w": 3,
         "x": 18,
-        "y": 12
+        "y": 16
       },
       "id": 77,
       "options": {
@@ -926,10 +1249,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 11,
         "w": 3,
         "x": 21,
-        "y": 12
+        "y": 16
       },
       "id": 98,
       "options": {
@@ -985,10 +1308,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 8,
         "w": 5,
         "x": 13,
-        "y": 13
+        "y": 19
       },
       "id": 92,
       "options": {
@@ -1033,22 +1356,22 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "purple",
+                "color": "blue",
                 "value": null
               }
             ]
           },
-          "unit": "bytes"
+          "unit": "plots"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 0,
-        "y": 15
+        "h": 6,
+        "w": 4,
+        "x": 6,
+        "y": 21
       },
-      "id": 75,
+      "id": 108,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -1068,15 +1391,73 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "chia_network_space",
+          "expr": "sum(chia_portable_plot_count)",
           "interval": "",
-          "legendFormat": "Netspace",
+          "legendFormat": "Plot Count",
           "refId": "A"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Chia Network Space",
+      "title": "Portable Plot Count",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "plots"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 10,
+        "y": 21
+      },
+      "id": 102,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "chia_portable_plot_count",
+          "interval": "",
+          "legendFormat": "{{ host }}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Portable Plot Count Per Harvester",
       "type": "stat"
     }
   ],
@@ -1094,6 +1475,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "Chia Monitor",
-  "uid": "URpClhZgz",
-  "version": 12
+  "uid": "URpClhZga",
+  "version": 9
 }
