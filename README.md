@@ -33,7 +33,7 @@ Following notifications are currently sent to the `alert_service_url`:
 ### Proof found alert
 ```
 ** 🤑 Proof found! 🤑 **
-Your farm found a new proof
+Your farm found a new partial or full proof
 ```
 ---
 ### Sync lost alert
