@@ -18,7 +18,7 @@ class Notifier:
         self.status_apobj.add(status_url)
         self.alert_apobj.add(alert_url)
         self.notifications = [
-            FoundProofNotification(self.alert_apobj),
+            FoundProofNotification(self.status_apobj),
             LostSyncNotification(self.alert_apobj),
             LostPlotsNotification(self.alert_apobj, lost_plots_alert_threshold),
             SummaryNotification(self.status_apobj, status_interval_minutes)

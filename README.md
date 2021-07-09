@@ -9,7 +9,9 @@ This example dashboard displays almost all collected metrics and can be imported
 ## Notifications
 To use notifications, please configure a `status_service_url` and `alert_service_url` for your desired notification service in the `config.json`. You can use most popular notifications services by creating a service specific webhook URL, following the instructions from [this](https://github.com/caronc/apprise/wiki) wiki.
 
+---
 Following notifications are currently sent to the `status_service_url`:
+
 ### Farm summary (configurable interval in `config.json`)
 ```
 ** 👨‍🌾 Farm Status 👩‍🌾 **
@@ -28,14 +30,14 @@ Following notifications are currently sent to the `status_service_url`:
 📶 Full Node Peer Count: 8
 🔄 Synced: True
 ```
-Following notifications are currently sent to the `alert_service_url`:
-
 ### Proof found alert
 ```
 ** 🤑 Proof found! 🤑 **
 Your farm found a new partial or full proof
 ```
 ---
+Following notifications are currently sent to the `alert_service_url`:
+
 ### Sync lost alert
 ```
 ** 🚨 Farmer Lost Sync! 🚨 **
@@ -46,7 +48,6 @@ It seems like your farmer lost its connection to the Chia Network
 ** ✅ Farmer Synced! ✅ **
 Your farmer is successfully synced to the Chia Network again
 ```
----
 ### Plots lost alert
 Triggers when the total plot count of your farm drops below a configurable threshold (default: 1).
 
@@ -61,7 +62,7 @@ Expected: 130, Found: 124
 ** ✅ Farmer Plots recoverd! ✅ **
 Your farmer's plot count has recovered to its previous value
 ```
-
+---
 ## Metrics
 The following statistics are collected from your local [Chia](https://chia.net) node using the [RPC](https://github.com/Chia-Network/chia-blockchain/wiki/RPC-Interfaces) and WebSocket APIs and are then exported via a [Prometheus](https://prometheus.io) compatible `/metrics` HTTP endpoint on port `8000`.
 
