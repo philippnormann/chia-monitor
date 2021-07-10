@@ -112,7 +112,8 @@ pipenv install
 **Windows Only**
 ```powershell  
 pipenv shell
-pip install -r requirements.xt  
+pip install -r requirements.xt
+exit
 ```
 3. Initialize the SQLite database
 ```bash
