@@ -109,7 +109,7 @@ cd chia-monitor
 ```bash
 pipenv install 
 ```
-Windows
+**Windows Only**
 ```powershell  
 pipenv shell
 pip install -r requirements.xt  
