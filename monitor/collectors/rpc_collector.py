@@ -124,8 +124,8 @@ class RpcCollector(Collector):
     async def get_pool_state(self) -> None:
         try:
             pool_state = await self.farmer_client.get_pool_state()
-            pool_state = pool_state["pool_state"][0]
-            if pool_state["current_difficulty"] is not None:
+            if len(pool_state["pool_state"]) > 0 and pool_state["pool_state"][0]["current_difficulty"] is not None:
+                pool_state = pool_state["pool_state"][0]
                 event = PoolStateEvent(
                     ts=datetime.now(),
                     current_points=pool_state["current_points"],
