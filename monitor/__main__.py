@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import sys
 from asyncio.queues import Queue
 
 import colorlog
@@ -75,18 +76,36 @@ async def aggregator(exporter: ChiaExporter, notifier: Notifier) -> None:
         await ws_collector.close()
 
 
-if __name__ == "__main__":
-    initilize_logging()
-
+def read_config():
     with open("config.json") as f:
         config = json.load(f)
+    return config
 
-    status_url = config["notifications"]["status_service_url"]
-    alert_url = config["notifications"]["alert_service_url"]
-    status_interval_minutes = config["notifications"]["status_interval_minutes"]
-    lost_plots_alert_threshold = config["notifications"]["lost_plots_alert_threshold"]
 
-    notifier = Notifier(status_url, alert_url, status_interval_minutes, lost_plots_alert_threshold)
+if __name__ == "__main__":
+    initilize_logging()
+    try:
+        config = read_config()
+    except:
+        logging.error(
+            "Failed to read config.json. Please copy the config-example.json to config.json and configure it to your preferences."
+        )
+        sys.exit(1)
+
+    try:
+        status_url = config["notifications"]["status_service_url"]
+        alert_url = config["notifications"]["alert_service_url"]
+        status_interval_minutes = config["notifications"]["status_interval_minutes"]
+        lost_plots_alert_threshold = config["notifications"]["lost_plots_alert_threshold"]
+        disable_proof_found_alert = config["notifications"]["disable_proof_found_alert"]
+    except KeyError:
+        logging.error(
+            "Failed to validate config. Please compare the fields of your config.json with the config-example.json and fix all inconsistencies."
+        )
+        sys.exit(1)
+
+    notifier = Notifier(status_url, alert_url, status_interval_minutes, lost_plots_alert_threshold,
+                        disable_proof_found_alert)
     exporter = ChiaExporter()
 
     try:

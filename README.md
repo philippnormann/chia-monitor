@@ -31,6 +31,8 @@ Following notifications are currently sent to the `status_service_url`:
 🔄 Synced: True
 ```
 ### Proof found alert
+Triggers when a new partial or full proof is found. To limit the amount of notifications when pooling, this can be disabled in the config using the `disable_proof_found_alert` setting.
+
 ```
 ** 🤑 Proof found! 🤑 **
 Your farm found a new partial or full proof

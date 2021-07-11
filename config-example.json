@@ -2,6 +2,7 @@
     "notifications": {
         "status_interval_minutes": 60,
         "lost_plots_alert_threshold": 1,
+        "disable_proof_found_alert": false,
         "status_service_url": "tgram://{bot_token}/{chat_id}/",
         "alert_service_url": "tgram://{bot_token}/{chat_id}/"
     }

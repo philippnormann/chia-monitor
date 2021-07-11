@@ -13,16 +13,17 @@ class Notifier:
     alert_apobj = Apprise(asset=asset)
 
     def __init__(self, status_url: str, alert_url: str, status_interval_minutes: int,
-                 lost_plots_alert_threshold: int) -> None:
+                 lost_plots_alert_threshold: int, disable_proof_found_alert: bool) -> None:
         self.log = logging.getLogger(__name__)
         self.status_apobj.add(status_url)
         self.alert_apobj.add(alert_url)
         self.notifications = [
-            FoundProofNotification(self.status_apobj),
             LostSyncNotification(self.alert_apobj),
             LostPlotsNotification(self.alert_apobj, lost_plots_alert_threshold),
             SummaryNotification(self.status_apobj, status_interval_minutes)
         ]
+        if not disable_proof_found_alert:
+            self.notifications.append(FoundProofNotification(self.status_apobj))
 
     async def task(self) -> None:
         while True:
