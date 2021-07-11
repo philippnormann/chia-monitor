@@ -38,8 +38,8 @@ def format_space(space: int) -> str:
     return f"💾 Current Netspace: {format_bytes(space)}"
 
 
-def format_diffculty(diffculty: int) -> str:
-    return f"📈 Farming Difficulty: {diffculty}"
+def format_diffculty(difficulty: int) -> str:
+    return f"📈 Farming Difficulty: {difficulty}"
 
 
 def format_peak_height(peak_height: int, fix_indent=False) -> str:
@@ -94,3 +94,23 @@ def format_proofs(proofs: int) -> str:
 
 def format_expected_time_to_win(minutes: int) -> str:
     return f"🕰️ Time To Win: {format_minutes(minutes)}"
+
+
+def format_current_points(points: int) -> str:
+    return f"🟣 Current Points: {points}"
+
+
+def format_pool_difficulty(difficulty: int) -> str:
+    return f"📈 Pool Difficulty: {difficulty}"
+
+
+def format_points_found(points: int) -> str:
+    return f"🟡 Pool Found: {points}"
+
+
+def format_points_acknowledged(points: int) -> str:
+    return f"🟢 Pool Acknowledged: {points}"
+
+
+def format_pool_errors_24h(errors: int) -> str:
+    return f"❌ Pool Errors 24h: {errors}"

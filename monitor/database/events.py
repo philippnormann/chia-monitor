@@ -53,3 +53,13 @@ class FarmingInfoEvent(ChiaEvent):
     passed_filter = Column(Integer)
     proofs = Column(Integer)
     total_plots = Column(Integer)
+
+
+class PoolStateEvent(ChiaEvent):
+    __tablename__ = "pool_state_events"
+    ts: float = Column(DateTime, primary_key=True)
+    current_points = Column(Integer)
+    current_difficulty = Column(Integer)
+    points_found_since_start = Column(Integer)
+    points_acknowledged_since_start = Column(Integer)
+    num_pool_errors_24h = Column(Integer)

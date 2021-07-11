@@ -77,10 +77,10 @@ The following statistics are collected from your local [Chia](https://chia.net) 
 - Connection count (`chia_connections_count`)
 
 ### Supported harvester metrics
-- OG Plot count (`chia_plot_count`)
-- OG Plot size (`chia_plot_size`)
-- Portable Plot count (`chia_portable_plot_count`)
-- Portable Plot size (`chia_portable_plot_size`)
+- OG plot count (`chia_plot_count`)
+- OG plot size (`chia_plot_size`)
+- Portable plot count (`chia_portable_plot_count`)
+- Portable plot size (`chia_portable_plot_size`)
 
 ### Supported farmer metrics
 - Received signage points (`chia_signage_points`)
@@ -88,6 +88,13 @@ The following statistics are collected from your local [Chia](https://chia.net) 
 - Attempted challenges (`chia_block_challenges`)
 - Plots passed filter (`chia_plots_passed_filter`)
 - Proofs found (`chia_proofs_found`)
+
+### Supported pooling metrics
+- Current Points (`chia_current_pool_points`)
+- Current difficulty (`chia_current_pool_difficulty`)
+- Points found (`chia_pool_points_found_since_start`)
+- Points acknowledged (`chia_pool_points_acknowledged_since_start`)
+- Pool errors 24h (`chia_num_pool_errors_24h`)
 
 ## Prerequisites
 To run this tool, we need the following things:

@@ -3,7 +3,8 @@ import logging
 from prometheus_client import Counter, Gauge, start_http_server
 
 from monitor.database.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent, FarmingInfoEvent,
-                                     HarvesterPlotsEvent, SignagePointEvent, WalletBalanceEvent)
+                                     HarvesterPlotsEvent, PoolStateEvent, SignagePointEvent,
+                                     WalletBalanceEvent)
 from monitor.format import *
 
 
@@ -22,10 +23,10 @@ class ChiaExporter:
     # Harvester metrics
     plot_count_gauge = Gauge('chia_plot_count', 'OG plot count being farmed by harvester', ["host"])
     plot_size_gauge = Gauge('chia_plot_size', 'Size of OG plots being farmed by harvester', ["host"])
-    portable_plot_count_gauge = Gauge('chia_portable_plot_count', 'Portable plot count being farmed by harvester',
-                             ["host"])
+    portable_plot_count_gauge = Gauge('chia_portable_plot_count',
+                                      'Portable plot count being farmed by harvester', ["host"])
     portable_plot_size_gauge = Gauge('chia_portable_plot_size',
-                            'Size of portable plots being farmed by harvester', ["host"])
+                                     'Size of portable plots being farmed by harvester', ["host"])
 
     # Farmer metrics
     signage_point_counter = Counter('chia_signage_points', 'Received signage points')
@@ -33,6 +34,18 @@ class ChiaExporter:
     challenges_counter = Counter('chia_block_challenges', 'Attempted block challenges')
     passed_filter_counter = Counter('chia_plots_passed_filter', 'Plots passed filter')
     proofs_found_counter = Counter('chia_proofs_found', 'Proofs found')
+
+    # Pool metrics
+    current_pool_points_gauge = Gauge('chia_current_pool_points',
+                                      'Number of pooling points you have collected during this round')
+    current_pool_difficulty_gauge = Gauge('chia_current_pool_difficulty',
+                                          'Difficulty of partials you are submitting')
+    pool_points_found_since_start_gauge = Gauge('chia_pool_points_found_since_start',
+                                                'Total number of pooling points found')
+    pool_points_acknowledged_since_start_gauge = Gauge('chia_pool_points_acknowledged_since_start',
+                                                       'Total number of pooling points acknowledged')
+    num_pool_errors_24h_gauge = Gauge('chia_num_pool_errors_24h',
+                                      'Number of pool errors during the last 24 hours')
 
     def __init__(self) -> None:
         self.log = logging.getLogger(__name__)
@@ -51,6 +64,8 @@ class ChiaExporter:
             self.update_wallet_balance_metrics(event)
         elif isinstance(event, SignagePointEvent):
             self.update_signage_point_metrics(event)
+        elif isinstance(event, PoolStateEvent):
+            self.update_pool_state_metrics(event)
 
     def update_harvester_metrics(self, event: HarvesterPlotsEvent) -> None:
         self.log.info("-" * 64)
@@ -107,3 +122,16 @@ class ChiaExporter:
         self.log.info(format_signage_point_index(event.signage_point_index))
         self.log.info(format_challenge_hash(event.challenge_hash))
         self.log.info(format_signage_point(event.signage_point))
+
+    def update_pool_state_metrics(self, event: PoolStateEvent) -> None:
+        self.log.info("-" * 64)
+        self.log.info(format_current_points(event.current_points))
+        self.current_pool_points_gauge.set(event.current_points)
+        self.log.info(format_pool_difficulty(event.current_difficulty))
+        self.current_pool_difficulty_gauge.set(event.current_difficulty)
+        self.log.info(format_points_found(event.points_found_since_start))
+        self.pool_points_found_since_start_gauge.set(event.points_found_since_start)
+        self.log.info(format_points_acknowledged(event.points_acknowledged_since_start))
+        self.pool_points_acknowledged_since_start_gauge.set(event.points_acknowledged_since_start)
+        self.log.info(format_pool_errors_24h(event.num_pool_errors_24h))
+        self.num_pool_errors_24h_gauge.set(event.num_pool_errors_24h)

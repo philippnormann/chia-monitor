@@ -17,7 +17,7 @@ from chia.server.outbound_message import NodeType
 from chia.util.ints import uint16
 from monitor.collectors.collector import Collector
 from monitor.database.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent,
-                                     HarvesterPlotsEvent, WalletBalanceEvent)
+                                     HarvesterPlotsEvent, PoolStateEvent, WalletBalanceEvent)
 
 
 class RpcCollector(Collector):
@@ -74,6 +74,7 @@ class RpcCollector(Collector):
                                                               self.root_path, self.net_config)
             await self.farmer_client.get_connections()
             self.tasks.append(self.get_harvester_plots)
+            self.tasks.append(self.get_pool_state)
         except Exception as e:
             if self.farmer_client is not None:
                 await RpcCollector.close_rpc_client(self.farmer_client)
@@ -118,6 +119,22 @@ class RpcCollector(Collector):
                 await self.publish_event(event)
         except:
             raise ConnectionError("Failed to get harvesters via RPC. Is your farmer running?")
+
+    async def get_pool_state(self) -> None:
+        try:
+            pool_state = await self.farmer_client.get_pool_state()
+            pool_state = pool_state["pool_state"][0]
+            event = PoolStateEvent(
+                ts=datetime.now(),
+                current_points=pool_state["current_points"],
+                current_difficulty=pool_state["current_difficulty"],
+                points_found_since_start=pool_state["points_found_since_start"],
+                points_acknowledged_since_start=pool_state["points_acknowledged_since_start"],
+                num_pool_errors_24h=len(pool_state["pool_errors_24h"]))
+            await self.publish_event(event)
+        except Exception as e:
+            self.log.error(e)
+            raise ConnectionError("Failed to get pool state via RPC. Is your farmer running?")
 
     async def get_blockchain_state(self) -> None:
         try:
