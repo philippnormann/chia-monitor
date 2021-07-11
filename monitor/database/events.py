@@ -6,11 +6,11 @@ from monitor.database import ChiaEvent
 class HarvesterPlotsEvent(ChiaEvent):
     __tablename__ = "harvester_events"
     ts: float = Column(DateTime, primary_key=True)
+    host = Column(String(255), primary_key=True)
     plot_count = Column(Integer)
     portable_plot_count = Column(Integer)
     plot_size = Column(Integer)
     portable_plot_size = Column(Integer)
-    host = Column(String(255))
 
 
 class ConnectionsEvent(ChiaEvent):

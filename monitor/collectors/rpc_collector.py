@@ -102,6 +102,7 @@ class RpcCollector(Collector):
     async def get_harvester_plots(self) -> None:
         try:
             harvesters = await self.farmer_client.get_harvesters()
+            ts = datetime.now()
             for harvester in harvesters["harvesters"]:
                 host = harvester["connection"]["host"]
                 plots = harvester["plots"]
@@ -109,7 +110,7 @@ class RpcCollector(Collector):
                 portable_plots = [
                     plot for plot in plots if plot["pool_contract_puzzle_hash"] is not None
                 ]
-                event = HarvesterPlotsEvent(ts=datetime.now(),
+                event = HarvesterPlotsEvent(ts=ts,
                                             plot_count=len(og_plots),
                                             plot_size=sum(og_plot["file_size"] for og_plot in og_plots),
                                             portable_plot_count=len(portable_plots),
@@ -124,14 +125,15 @@ class RpcCollector(Collector):
         try:
             pool_state = await self.farmer_client.get_pool_state()
             pool_state = pool_state["pool_state"][0]
-            event = PoolStateEvent(
-                ts=datetime.now(),
-                current_points=pool_state["current_points"],
-                current_difficulty=pool_state["current_difficulty"],
-                points_found_since_start=pool_state["points_found_since_start"],
-                points_acknowledged_since_start=pool_state["points_acknowledged_since_start"],
-                num_pool_errors_24h=len(pool_state["pool_errors_24h"]))
-            await self.publish_event(event)
+            if pool_state["current_difficulty"] is not None:
+                event = PoolStateEvent(
+                    ts=datetime.now(),
+                    current_points=pool_state["current_points"],
+                    current_difficulty=pool_state["current_difficulty"],
+                    points_found_since_start=pool_state["points_found_since_start"],
+                    points_acknowledged_since_start=pool_state["points_acknowledged_since_start"],
+                    num_pool_errors_24h=len(pool_state["pool_errors_24h"]))
+                await self.publish_event(event)
         except Exception as e:
             self.log.error(e)
             raise ConnectionError("Failed to get pool state via RPC. Is your farmer running?")
