@@ -7,7 +7,7 @@ A monitoring tool to collect all important metrics from your Chia farming node a
 This example dashboard displays almost all collected metrics and can be imported from [grafana.com](https://grafana.com/grafana/dashboards/14544) using the ID `14544` or using the `grafana/dashboard.json` from this repository.
 
 ## Notifications
-To use notifications, please configure a `status_service_url` and `alert_service_url` for your desired notification service in the `config.json`. You can use most popular notifications services by creating a service specific webhook URL, following the instructions from [this](https://github.com/caronc/apprise/wiki) wiki.
+To use notifications, please configure a `status_service_url` and `alert_service_url` for your desired notification service in the `config.json`. You can use most popular notifications services by creating a service specific webhook URL, following the instructions from [this](https://github.com/caronc/apprise/wiki) wiki. If you wish to disable notifications entirely, you can set the `enable` field in the `notifications` section of the `config.json` to `false`. 
 
 ---
 Following notifications are currently sent to the `status_service_url`:
