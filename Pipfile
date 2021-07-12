@@ -11,7 +11,7 @@ aiosqlite = "*"
 SQLAlchemy = "*"
 alembic = "*"
 apprise = "*"
-chia-blockchain = { git = "https://github.com/Chia-Network/chia-blockchain.git", ref = "1.2.0" }
+chia-blockchain = "*"
 
 [dev-packages]
 pytest = "*"
