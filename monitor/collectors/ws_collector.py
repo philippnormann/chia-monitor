@@ -17,6 +17,7 @@ from monitor.database.events import ChiaEvent, FarmingInfoEvent, SignagePointEve
 class WsCollector(Collector):
     session: aiohttp.ClientSession
     ws: aiohttp.ClientWebSocketResponse
+    closed = False
 
     @staticmethod
     async def create(root_path: Path, net_config: Dict, event_queue: Queue[ChiaEvent]) -> WsCollector:
@@ -75,14 +76,21 @@ class WsCollector(Collector):
         await self.publish_event(event)
 
     async def task(self) -> None:
-        while True:
-            msg = await self.ws.receive_json()
-            cmd = msg["command"]
-            if cmd == "new_farming_info":
-                await self.process_farming_info(msg["data"]["farming_info"])
-            elif cmd == "new_signage_point":
-                await self.process_signage_point(msg["data"]["signage_point"])
+        while not self.closed:
+            try:
+                msg = await self.ws.receive_json()
+                cmd = msg["command"]
+                if cmd == "new_farming_info":
+                    await self.process_farming_info(msg["data"]["farming_info"])
+                elif cmd == "new_signage_point":
+                    await self.process_signage_point(msg["data"]["signage_point"])
+            except Exception as e:
+                if self.closed:
+                    break
+                else:
+                    self.log.warning(f"Error while collecting events. Trying again... {e}")
 
     async def close(self) -> None:
+        self.closed = True
         await self.ws.close()
         await self.session.close()

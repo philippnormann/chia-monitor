@@ -8,6 +8,7 @@ from typing import Optional
 import colorlog
 from chia.util.config import load_config
 from chia.util.default_root import DEFAULT_ROOT_PATH
+from sqlalchemy.exc import OperationalError
 
 from monitor.collectors import RpcCollector, WsCollector
 from monitor.database import ChiaEvent, async_session
@@ -66,8 +67,15 @@ async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier]) -> No
                 exporter.process_event(event)
                 await persist_event(event)
 
+            except OperationalError:
+                logging.error(
+                    f"Failed to persist event to DB. Please initialize DB using: 'pipenv run alembic upgrade head'"
+                )
+                break
+
             except asyncio.CancelledError:
                 break
+
     else:
         logging.error("Failed to create any collector.")
 

@@ -2,6 +2,7 @@ import asyncio
 import logging
 
 from apprise import Apprise, AppriseAsset
+from sqlalchemy.exc import OperationalError
 
 from monitor.notifications import (FoundProofNotification, LostPlotsNotification, LostSyncNotification,
                                    SummaryNotification)
@@ -31,5 +32,10 @@ class Notifier:
                 tasks = [n.run() for n in self.notifications]
                 await asyncio.gather(*tasks)
                 await asyncio.sleep(1)
+            except OperationalError:
+                logging.error(
+                    f"Failed to retrieve event from DB. Please initialize DB using: 'pipenv run alembic upgrade head'"
+                )
+                break
             except asyncio.CancelledError:
                 break
