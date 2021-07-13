@@ -48,9 +48,9 @@ class ChiaExporter:
     num_pool_errors_24h_gauge = Gauge('chia_num_pool_errors_24h',
                                       'Number of pool errors during the last 24 hours')
 
-    def __init__(self) -> None:
+    def __init__(self, port: int) -> None:
         self.log = logging.getLogger(__name__)
-        start_http_server(8000)
+        start_http_server(port)
 
     def process_event(self, event: ChiaEvent) -> None:
         if isinstance(event, HarvesterPlotsEvent):

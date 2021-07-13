@@ -66,7 +66,7 @@ Your farmer's plot count has recovered to its previous value
 ```
 ---
 ## Metrics
-The following statistics are collected from your local [Chia](https://chia.net) node using the [RPC](https://github.com/Chia-Network/chia-blockchain/wiki/RPC-Interfaces) and WebSocket APIs and are then exported via a [Prometheus](https://prometheus.io) compatible `/metrics` HTTP endpoint on port `8000`.
+The following statistics are collected from your local [Chia](https://chia.net) node using the [RPC](https://github.com/Chia-Network/chia-blockchain/wiki/RPC-Interfaces) and WebSocket APIs and are then exported via a [Prometheus](https://prometheus.io) compatible `/metrics` HTTP endpoint on the `exporter_port` from your `config.json`.
 
 ### Supported wallet metrics
 - Total balance (`chia_confirmed_total_mojos`)
