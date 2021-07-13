@@ -11,6 +11,7 @@ from monitor.format import *
 class ChiaExporter:
     # Wallet metrics
     total_balance_gauge = Gauge('chia_confirmed_total_mojos', 'Sum of confirmed wallet balances')
+    total_farmed_gauge = Gauge('chia_farmed_total_mojos', 'Total chia farmed')
 
     # Full node metrics
     network_space_gauge = Gauge('chia_network_space', 'Approximation of current netspace')
@@ -114,6 +115,8 @@ class ChiaExporter:
         self.log.info("-" * 64)
         self.total_balance_gauge.set(int(event.confirmed))
         self.log.info(format_balance(int(event.confirmed)))
+        self.total_farmed_gauge.set(int(event.farmed))
+        self.log.info(format_farmed(int(event.farmed)))
 
     def update_signage_point_metrics(self, event: SignagePointEvent) -> None:
         self.log.info("-" * 64)

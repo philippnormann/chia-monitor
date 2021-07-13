@@ -35,6 +35,7 @@ class WalletBalanceEvent(ChiaEvent):
     __tablename__ = "wallet_balance_events"
     ts: float = Column(DateTime, primary_key=True)
     confirmed = Column(String(32))
+    farmed = Column(String(32))
 
 
 class SignagePointEvent(ChiaEvent):

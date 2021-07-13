@@ -90,13 +90,16 @@ class RpcCollector(Collector):
     async def get_wallet_balance(self) -> None:
         try:
             wallets = await self.wallet_client.get_wallets()
+            farmed_amount = await self.wallet_client.get_farmed_amount()
             confirmed_balances = []
             for wallet in wallets:
                 balance = await self.wallet_client.get_wallet_balance(wallet["id"])
                 confirmed_balances.append(balance["confirmed_wallet_balance"])
         except Exception as e:
             raise ConnectionError(f"Failed to get wallet balance via RPC. Is your wallet running? {e}")
-        event = WalletBalanceEvent(ts=datetime.now(), confirmed=str(sum(confirmed_balances)))
+        event = WalletBalanceEvent(ts=datetime.now(),
+                                   confirmed=str(sum(confirmed_balances)),
+                                   farmed=str(farmed_amount['farmed_amount']))
         await self.publish_event(event)
 
     async def get_harvester_plots(self) -> None:
@@ -124,7 +127,8 @@ class RpcCollector(Collector):
     async def get_pool_state(self) -> None:
         try:
             pool_state = await self.farmer_client.get_pool_state()
-            if len(pool_state["pool_state"]) > 0 and pool_state["pool_state"][0]["current_difficulty"] is not None:
+            if len(pool_state["pool_state"]
+                   ) > 0 and pool_state["pool_state"][0]["current_difficulty"] is not None:
                 pool_state = pool_state["pool_state"][0]
                 event = PoolStateEvent(
                     ts=datetime.now(),
