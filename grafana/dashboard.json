@@ -412,7 +412,9 @@
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 2,
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -428,14 +430,75 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
+        "w": 2,
         "x": 18,
+        "y": 0
+      },
+      "id": 118,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "chia_farmed_total_mojos/1e12",
+          "interval": "",
+          "legendFormat": "Difficulty",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Total Farmed",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "orange",
+                "value": null
+              }
+            ]
+          },
+          "unit": "XCH"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 20,
         "y": 0
       },
       "id": 77,
       "options": {
         "colorMode": "background",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
@@ -487,14 +550,14 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
-        "x": 21,
+        "w": 2,
+        "x": 22,
         "y": 0
       },
       "id": 98,
       "options": {
         "colorMode": "background",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
@@ -1248,6 +1311,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1267,7 +1331,7 @@
         "x": 6,
         "y": 10
       },
-      "id": 101,
+      "id": 117,
       "options": {
         "displayMode": "gradient",
         "orientation": "horizontal",
@@ -1354,63 +1418,6 @@
     },
     {
       "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "orange",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 2,
-        "x": 18,
-        "y": 10
-      },
-      "id": 70,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {},
-        "textMode": "auto"
-      },
-      "pluginVersion": "7.5.3",
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "chia_peak_height",
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Peak Block Height",
-      "type": "stat"
-    },
-    {
-      "datasource": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1432,8 +1439,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 2,
-        "x": 20,
+        "w": 3,
+        "x": 18,
         "y": 10
       },
       "id": 76,
@@ -1490,8 +1497,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 2,
-        "x": 22,
+        "w": 3,
+        "x": 21,
         "y": 10
       },
       "id": 113,
@@ -1533,6 +1540,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1673,7 +1681,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "last"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -1724,7 +1732,7 @@
         "x": 20,
         "y": 14
       },
-      "id": 115,
+      "id": 119,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
@@ -1732,7 +1740,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "last"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -1791,7 +1799,7 @@
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "last"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -1815,7 +1823,7 @@
       "type": "stat"
     }
   ],
-  "refresh": "10s",
+  "refresh": "30s",
   "schemaVersion": 27,
   "style": "dark",
   "tags": [],
@@ -1823,12 +1831,12 @@
     "list": []
   },
   "time": {
-    "from": "now-8h",
-    "to": "now-2h"
+    "from": "now-24h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Chia Monitor",
   "uid": "URpClhZga",
-  "version": 35
+  "version": 50
 }
