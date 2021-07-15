@@ -3,7 +3,7 @@ import logging
 from prometheus_client import Counter, Gauge, start_http_server
 
 from monitor.database.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent, FarmingInfoEvent,
-                                     HarvesterPlotsEvent, PoolStateEvent, SignagePointEvent,
+                                     HarvesterPlotsEvent, PoolStateEvent, PriceEvent, SignagePointEvent,
                                      WalletBalanceEvent)
 from monitor.format import *
 
@@ -48,6 +48,12 @@ class ChiaExporter:
     num_pool_errors_24h_gauge = Gauge('chia_num_pool_errors_24h',
                                       'Number of pool errors during the last 24 hours')
 
+    # Price metrics
+    price_usd_cents_gauge = Gauge('chia_price_usd_cents', 'Current Chia price in USD cent')
+    price_eur_cents_gauge = Gauge('chia_price_eur_cents', 'Current Chia price in EUR cent')
+    price_btc_satoshi_gauge = Gauge('chia_price_btc_satoshi', 'Current Chia price in BTC satoshi')
+    price_eth_gwei_gauge = Gauge('chia_price_eth_gwei', 'Current Chia price in ETH gwei')
+
     def __init__(self, port: int) -> None:
         self.log = logging.getLogger(__name__)
         start_http_server(port)
@@ -67,6 +73,8 @@ class ChiaExporter:
             self.update_signage_point_metrics(event)
         elif isinstance(event, PoolStateEvent):
             self.update_pool_state_metrics(event)
+        elif isinstance(event, PriceEvent):
+            self.update_price_metrics(event)
 
     def update_harvester_metrics(self, event: HarvesterPlotsEvent) -> None:
         self.log.info("-" * 64)
@@ -138,3 +146,14 @@ class ChiaExporter:
         self.pool_points_acknowledged_since_start_gauge.set(event.points_acknowledged_since_start)
         self.log.info(format_pool_errors_24h(event.num_pool_errors_24h))
         self.num_pool_errors_24h_gauge.set(event.num_pool_errors_24h)
+
+    def update_price_metrics(self, event: PriceEvent) -> None:
+        self.log.info("-" * 64)
+        self.log.info(format_price(event.usd_cents / 100, "USD", fix_indent=True))
+        self.price_usd_cents_gauge.set(event.usd_cents)
+        self.log.info(format_price(event.eur_cents / 100, "EUR", fix_indent=True))
+        self.price_eur_cents_gauge.set(event.eur_cents)
+        self.log.info(format_price(event.btc_satoshi / 10e7, "BTC", fix_indent=True))
+        self.price_btc_satoshi_gauge.set(event.btc_satoshi)
+        self.log.info(format_price(event.eth_gwei / 10e8, "ETH", fix_indent=True))
+        self.price_eth_gwei_gauge.set(event.eth_gwei)

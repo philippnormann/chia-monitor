@@ -118,3 +118,8 @@ def format_points_acknowledged(points: int) -> str:
 
 def format_pool_errors_24h(errors: int) -> str:
     return f"❌ Pool Errors 24h: {errors}"
+
+
+def format_price(amount: int, currency: str, fix_indent=False) -> str:
+    indent = " " * (1 if fix_indent else 0)
+    return f"🏷️ {indent}Price in {currency}: {amount}"

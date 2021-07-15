@@ -1,6 +1,5 @@
-from sqlalchemy import Boolean, Column, DateTime, Integer, String
-
 from monitor.database import ChiaEvent
+from sqlalchemy import Boolean, Column, DateTime, Integer, String
 
 
 class HarvesterPlotsEvent(ChiaEvent):
@@ -65,3 +64,12 @@ class PoolStateEvent(ChiaEvent):
     points_found_since_start = Column(Integer)
     points_acknowledged_since_start = Column(Integer)
     num_pool_errors_24h = Column(Integer)
+
+
+class PriceEvent(ChiaEvent):
+    __tablename__ = "price_events"
+    ts = Column(DateTime, primary_key=True)
+    usd_cents = Column(Integer)
+    eur_cents = Column(Integer)
+    btc_satoshi = Column(Integer)
+    eth_gwei = Column(Integer)

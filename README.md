@@ -99,6 +99,12 @@ The following statistics are collected from your local [Chia](https://chia.net) 
 - Points acknowledged (`chia_pool_points_acknowledged_since_start`)
 - Pool errors 24h (`chia_num_pool_errors_24h`)
 
+### Supported price metrics
+- USD price (`chia_price_usd_cents`)
+- EUR price (`chia_price_eur_cents`)
+- BTC price (`chia_price_btc_satoshi`)
+- ETH price (`chia_price_eth_gwei`)
+
 ## Prerequisites
 To run this tool, we need the following things:
 - Python 3

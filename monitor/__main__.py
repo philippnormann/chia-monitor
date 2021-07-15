@@ -11,6 +11,7 @@ from chia.util.default_root import DEFAULT_ROOT_PATH
 from sqlalchemy.exc import OperationalError
 
 from monitor.collectors import RpcCollector, WsCollector
+from monitor.collectors.price_collector import PriceCollector
 from monitor.database import ChiaEvent, async_session
 from monitor.exporter import ChiaExporter
 from monitor.notifier import Notifier
@@ -55,12 +56,20 @@ async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier]) -> No
     except Exception as e:
         logging.warning(f"Failed to create WebSocket collector. Continuing without it. {e}")
 
+    try:
+        logging.info("🔌 Creating Price Collector...")
+        price_collector = await PriceCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue)
+    except Exception as e:
+        logging.warning(f"Failed to create Price collector. Continuing without it. {e}")
+
     if rpc_collector and ws_collector:
         logging.info("🚀 Starting monitoring loop!")
         asyncio.create_task(rpc_collector.task())
         asyncio.create_task(ws_collector.task())
         if notifier is not None:
             asyncio.create_task(notifier.task())
+        if price_collector is not None:
+            asyncio.create_task(price_collector.task())
         while True:
             try:
                 event = await event_queue.get()
