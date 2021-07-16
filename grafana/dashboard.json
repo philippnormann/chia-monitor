@@ -59,7 +59,7 @@
   "gnetId": 14544,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1626393413157,
+  "iteration": 1626395311730,
   "links": [],
   "panels": [
     {
@@ -1689,7 +1689,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "chia_price_usd_cents/100",
+          "expr": "chia_price_usd_cent/100",
           "interval": "",
           "legendFormat": "Difficulty",
           "refId": "A"
@@ -1750,7 +1750,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "chia_price_usd_cents/100 * chia_confirmed_total_mojos/1e12",
+          "expr": "chia_price_usd_cent/100 * chia_confirmed_total_mojos/1e12",
           "interval": "",
           "legendFormat": "Difficulty",
           "refId": "A"
@@ -2148,12 +2148,12 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Chia Monitor",
   "uid": "URpClhZga",
-  "version": 69
+  "version": 72
 }
