@@ -59,6 +59,8 @@ class FarmingInfoEvent(ChiaEvent):
 class PoolStateEvent(ChiaEvent):
     __tablename__ = "pool_state_events"
     ts = Column(DateTime, primary_key=True)
+    p2_singleton_puzzle_hash = Column(String(66), primary_key=True,default="")
+    pool_url = Column(String(255))
     current_points = Column(Integer)
     current_difficulty = Column(Integer)
     points_found_since_start = Column(Integer)

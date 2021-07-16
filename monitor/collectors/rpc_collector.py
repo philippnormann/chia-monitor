@@ -127,17 +127,18 @@ class RpcCollector(Collector):
     async def get_pool_state(self) -> None:
         try:
             pool_state = await self.farmer_client.get_pool_state()
-            if len(pool_state["pool_state"]
-                   ) > 0 and pool_state["pool_state"][0]["current_difficulty"] is not None:
-                pool_state = pool_state["pool_state"][0]
-                event = PoolStateEvent(
-                    ts=datetime.now(),
-                    current_points=pool_state["current_points"],
-                    current_difficulty=pool_state["current_difficulty"],
-                    points_found_since_start=pool_state["points_found_since_start"],
-                    points_acknowledged_since_start=pool_state["points_acknowledged_since_start"],
-                    num_pool_errors_24h=len(pool_state["pool_errors_24h"]))
-                await self.publish_event(event)
+            for pool in pool_state["pool_state"]:
+                if pool["current_difficulty"] is not None:
+                    event = PoolStateEvent(
+                        ts=datetime.now(),
+                        p2_singleton_puzzle_hash=pool["p2_singleton_puzzle_hash"],
+                        pool_url=pool["pool_config"]["pool_url"],
+                        current_points=pool["current_points"],
+                        current_difficulty=pool["current_difficulty"],
+                        points_found_since_start=pool["points_found_since_start"],
+                        points_acknowledged_since_start=pool["points_acknowledged_since_start"],
+                        num_pool_errors_24h=len(pool["pool_errors_24h"]))
+                    await self.publish_event(event)
         except Exception as e:
             self.log.error(e)
             raise ConnectionError("Failed to get pool state via RPC. Is your farmer running?")

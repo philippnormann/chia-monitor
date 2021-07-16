@@ -99,9 +99,13 @@ The following statistics are collected from your local [Chia](https://chia.net) 
 - Points acknowledged (`chia_pool_points_acknowledged_since_start`)
 - Pool errors 24h (`chia_num_pool_errors_24h`)
 
+All pooling metrics support the following labels:
+- P2 singleton address (`p2`)
+- Pool URL (`url`)
+
 ### Supported price metrics
-- USD price (`chia_price_usd_cents`)
-- EUR price (`chia_price_eur_cents`)
+- USD price (`chia_price_usd_cent`)
+- EUR price (`chia_price_eur_cent`)
 - BTC price (`chia_price_btc_satoshi`)
 - ETH price (`chia_price_eth_gwei`)
 

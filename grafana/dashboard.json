@@ -59,6 +59,7 @@
   "gnetId": 14544,
   "graphTooltip": 1,
   "id": null,
+  "iteration": 1626393413157,
   "links": [],
   "panels": [
     {
@@ -102,12 +103,6 @@
           }
         },
         "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 0,
-        "y": 0
       },
       "id": 73,
       "options": {
@@ -164,7 +159,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 3,
         "w": 3,
         "x": 6,
         "y": 0
@@ -230,7 +225,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 3,
         "w": 3,
         "x": 9,
         "y": 0
@@ -297,7 +292,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 3,
         "w": 3,
         "x": 12,
         "y": 0
@@ -363,7 +358,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 3,
         "w": 3,
         "x": 15,
         "y": 0
@@ -429,8 +424,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 2,
+        "h": 3,
+        "w": 3,
         "x": 18,
         "y": 0
       },
@@ -490,9 +485,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 2,
-        "x": 20,
+        "h": 3,
+        "w": 3,
+        "x": 21,
         "y": 0
       },
       "id": 77,
@@ -524,65 +519,6 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Total Balance",
-      "type": "stat"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "orange",
-                "value": null
-              }
-            ]
-          },
-          "unit": "proof"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 2,
-        "x": 22,
-        "y": 0
-      },
-      "id": 98,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {},
-        "textMode": "auto"
-      },
-      "pluginVersion": "7.5.3",
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "round(increase(chia_proofs_found_total[10y]))",
-          "interval": "",
-          "legendFormat": "Difficulty",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Proofs Found",
       "type": "stat"
     },
     {
@@ -619,7 +555,7 @@
         "h": 6,
         "w": 2,
         "x": 0,
-        "y": 4
+        "y": 3
       },
       "id": 85,
       "options": {
@@ -680,7 +616,7 @@
         "h": 6,
         "w": 2,
         "x": 2,
-        "y": 4
+        "y": 3
       },
       "id": 99,
       "options": {
@@ -741,7 +677,7 @@
         "h": 6,
         "w": 2,
         "x": 4,
-        "y": 4
+        "y": 3
       },
       "id": 100,
       "options": {
@@ -797,7 +733,7 @@
         "h": 6,
         "w": 3,
         "x": 6,
-        "y": 4
+        "y": 3
       },
       "id": 83,
       "options": {
@@ -855,7 +791,7 @@
         "h": 6,
         "w": 3,
         "x": 9,
-        "y": 4
+        "y": 3
       },
       "id": 61,
       "options": {
@@ -913,7 +849,7 @@
         "h": 6,
         "w": 3,
         "x": 12,
-        "y": 4
+        "y": 3
       },
       "id": 107,
       "options": {
@@ -971,7 +907,7 @@
         "h": 6,
         "w": 3,
         "x": 15,
-        "y": 4
+        "y": 3
       },
       "id": 108,
       "options": {
@@ -1029,7 +965,7 @@
         "h": 3,
         "w": 6,
         "x": 18,
-        "y": 4
+        "y": 3
       },
       "id": 71,
       "options": {
@@ -1087,7 +1023,7 @@
         "h": 3,
         "w": 6,
         "x": 18,
-        "y": 7
+        "y": 6
       },
       "id": 75,
       "options": {
@@ -1139,11 +1075,11 @@
               },
               {
                 "color": "orange",
-                "value": 5
+                "value": 4
               },
               {
                 "color": "green",
-                "value": 6
+                "value": 5.5
               }
             ]
           },
@@ -1152,15 +1088,15 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 2,
+        "h": 2,
+        "w": 6,
         "x": 0,
-        "y": 10
+        "y": 9
       },
       "id": 91,
       "options": {
-        "displayMode": "gradient",
-        "orientation": "vertical",
+        "displayMode": "lcd",
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -1184,123 +1120,6 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Signage Points",
-      "type": "bargauge"
-    },
-    {
-      "cacheTimeout": null,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-RdYlGr"
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "cpm"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 2,
-        "x": 2,
-        "y": 10
-      },
-      "id": 92,
-      "interval": null,
-      "links": [],
-      "options": {
-        "displayMode": "gradient",
-        "orientation": "vertical",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showUnfilled": true,
-        "text": {}
-      },
-      "pluginVersion": "7.5.3",
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "rate(chia_plots_passed_filter_total[5m]) * 60",
-          "interval": "",
-          "legendFormat": "Filters Passed",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Filters Passed",
-      "type": "bargauge"
-    },
-    {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-RdYlGr"
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "cpm"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 2,
-        "x": 4,
-        "y": 10
-      },
-      "id": 103,
-      "options": {
-        "displayMode": "gradient",
-        "orientation": "vertical",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showUnfilled": true,
-        "text": {}
-      },
-      "pluginVersion": "7.5.3",
-      "targets": [
-        {
-          "exemplar": true,
-          "expr": "rate(chia_block_challenges_total[5m]) * 60",
-          "interval": "",
-          "legendFormat": "Challanges",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Challenges",
       "type": "bargauge"
     },
     {
@@ -1329,7 +1148,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 10
+        "y": 9
       },
       "id": 117,
       "options": {
@@ -1385,7 +1204,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 10
+        "y": 9
       },
       "id": 110,
       "options": {
@@ -1439,9 +1258,67 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
+        "w": 2,
         "x": 18,
-        "y": 10
+        "y": 9
+      },
+      "id": 125,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "chia_peak_height",
+          "interval": "",
+          "legendFormat": "Difficulty",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Peak Height",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "orange",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 20,
+        "y": 9
       },
       "id": 76,
       "options": {
@@ -1491,17 +1368,18 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unit": "proof"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
-        "x": 21,
-        "y": 10
+        "w": 2,
+        "x": 22,
+        "y": 9
       },
-      "id": 113,
+      "id": 98,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
@@ -1509,7 +1387,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1521,7 +1399,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "chia_current_pool_difficulty",
+          "expr": "round(increase(chia_proofs_found_total[10y]))",
           "interval": "",
           "legendFormat": "Difficulty",
           "refId": "A"
@@ -1529,8 +1407,125 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Pool Difficulty",
+      "title": "Proofs Found",
       "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-RdYlGr"
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "cpm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 0,
+        "y": 11
+      },
+      "id": 92,
+      "interval": null,
+      "links": [],
+      "options": {
+        "displayMode": "lcd",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "text": {}
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "rate(chia_plots_passed_filter_total[5m]) * 60",
+          "interval": "",
+          "legendFormat": "Filters Passed",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Filters Passed",
+      "type": "bargauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-RdYlGr"
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "cpm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 0,
+        "y": 13
+      },
+      "id": 103,
+      "options": {
+        "displayMode": "lcd",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "text": {}
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "rate(chia_block_challenges_total[5m]) * 60",
+          "interval": "",
+          "legendFormat": "Challanges",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Challenges",
+      "type": "bargauge"
     },
     {
       "datasource": null,
@@ -1558,7 +1553,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 14
+        "y": 13
       },
       "id": 109,
       "options": {
@@ -1614,7 +1609,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 14
+        "y": 13
       },
       "id": 102,
       "options": {
@@ -1653,6 +1648,7 @@
           "color": {
             "mode": "thresholds"
           },
+          "decimals": 2,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -1663,15 +1659,192 @@
               }
             ]
           },
-          "unit": "points"
+          "unit": "currencyUSD"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 4,
-        "w": 2,
+        "w": 3,
         "x": 18,
-        "y": 14
+        "y": 13
+      },
+      "id": 122,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "chia_price_usd_cents/100",
+          "interval": "",
+          "legendFormat": "Difficulty",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "XCH Price",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "orange",
+                "value": null
+              }
+            ]
+          },
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 21,
+        "y": 13
+      },
+      "id": 123,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "chia_price_usd_cents/100 * chia_confirmed_total_mojos/1e12",
+          "interval": "",
+          "legendFormat": "Difficulty",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Total Balance",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-RdYlGr"
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "cpm"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 6,
+        "x": 0,
+        "y": 15
+      },
+      "id": 120,
+      "options": {
+        "displayMode": "lcd",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "text": {}
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "rate(chia_proofs_found_total[5m]) * 60",
+          "interval": "",
+          "legendFormat": "Proofs",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Proofs Found",
+      "type": "bargauge"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#22a6b3",
+                "value": null
+              }
+            ]
+          },
+          "unit": "points"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 0,
+        "y": 17
       },
       "id": 114,
       "options": {
@@ -1693,7 +1866,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "chia_pool_points_found_since_start",
+          "expr": "chia_pool_points_found_since_start{url=\"$Pool\"}",
           "interval": "",
           "legendFormat": "Points",
           "refId": "A"
@@ -1717,7 +1890,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "orange",
+                "color": "#22a6b3",
                 "value": null
               }
             ]
@@ -1727,10 +1900,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 2,
-        "x": 20,
-        "y": 14
+        "h": 3,
+        "w": 6,
+        "x": 6,
+        "y": 17
       },
       "id": 119,
       "options": {
@@ -1752,7 +1925,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "chia_pool_points_acknowledged_since_start",
+          "expr": "chia_pool_points_acknowledged_since_start{url=\"$Pool\"}",
           "interval": "",
           "legendFormat": "Points",
           "refId": "A"
@@ -1776,7 +1949,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "orange",
+                "color": "#22a6b3",
                 "value": null
               }
             ]
@@ -1786,10 +1959,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 2,
-        "x": 22,
-        "y": 14
+        "h": 3,
+        "w": 6,
+        "x": 12,
+        "y": 17
       },
       "id": 116,
       "options": {
@@ -1811,7 +1984,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "chia_pool_points_acknowledged_since_start / chia_pool_points_found_since_start",
+          "expr": "chia_pool_points_acknowledged_since_start{url=\"$Pool\"} / chia_pool_points_found_since_start{url=\"$Pool\"}",
           "interval": "",
           "legendFormat": "Success Rate",
           "refId": "A"
@@ -1821,6 +1994,122 @@
       "timeShift": null,
       "title": "Points Success Rate",
       "type": "stat"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#22a6b3",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 18,
+        "y": 17
+      },
+      "id": 124,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "chia_current_pool_points{url=\"$Pool\"}",
+          "interval": "",
+          "legendFormat": "Difficulty",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Current Points",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#22a6b3",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 21,
+        "y": 17
+      },
+      "id": 113,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.3",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "chia_current_pool_difficulty{url=\"$Pool\"}",
+          "interval": "",
+          "legendFormat": "Difficulty",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Pool Difficulty",
+      "type": "stat"
     }
   ],
   "refresh": "30s",
@@ -1828,15 +2117,43 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_PROMETHEUS}",
+        "definition": "label_values(chia_current_pool_points, url)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "Pool",
+        "options": [],
+        "query": {
+          "query": "label_values(chia_current_pool_points, url)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Chia Monitor",
   "uid": "URpClhZga",
-  "version": 50
+  "version": 69
 }

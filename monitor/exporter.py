@@ -38,19 +38,21 @@ class ChiaExporter:
 
     # Pool metrics
     current_pool_points_gauge = Gauge('chia_current_pool_points',
-                                      'Number of pooling points you have collected during this round')
+                                      'Number of pooling points you have collected during this round',
+                                      ['p2', 'url'])
     current_pool_difficulty_gauge = Gauge('chia_current_pool_difficulty',
-                                          'Difficulty of partials you are submitting')
+                                          'Difficulty of partials you are submitting', ['p2', 'url'])
     pool_points_found_since_start_gauge = Gauge('chia_pool_points_found_since_start',
-                                                'Total number of pooling points found')
+                                                'Total number of pooling points found', ['p2', 'url'])
     pool_points_acknowledged_since_start_gauge = Gauge('chia_pool_points_acknowledged_since_start',
-                                                       'Total number of pooling points acknowledged')
+                                                       'Total number of pooling points acknowledged',
+                                                       ['p2', 'url'])
     num_pool_errors_24h_gauge = Gauge('chia_num_pool_errors_24h',
-                                      'Number of pool errors during the last 24 hours')
+                                      'Number of pool errors during the last 24 hours', ['p2', 'url'])
 
     # Price metrics
-    price_usd_cents_gauge = Gauge('chia_price_usd_cents', 'Current Chia price in USD cent')
-    price_eur_cents_gauge = Gauge('chia_price_eur_cents', 'Current Chia price in EUR cent')
+    price_usd_cents_gauge = Gauge('chia_price_usd_cent', 'Current Chia price in USD cent')
+    price_eur_cents_gauge = Gauge('chia_price_eur_cent', 'Current Chia price in EUR cent')
     price_btc_satoshi_gauge = Gauge('chia_price_btc_satoshi', 'Current Chia price in BTC satoshi')
     price_eth_gwei_gauge = Gauge('chia_price_eth_gwei', 'Current Chia price in ETH gwei')
 
@@ -137,15 +139,20 @@ class ChiaExporter:
     def update_pool_state_metrics(self, event: PoolStateEvent) -> None:
         self.log.info("-" * 64)
         self.log.info(format_current_points(event.current_points))
-        self.current_pool_points_gauge.set(event.current_points)
+        self.current_pool_points_gauge.labels(event.p2_singleton_puzzle_hash,
+                                              event.pool_url).set(event.current_points)
         self.log.info(format_pool_difficulty(event.current_difficulty))
-        self.current_pool_difficulty_gauge.set(event.current_difficulty)
+        self.current_pool_difficulty_gauge.labels(event.p2_singleton_puzzle_hash,
+                                                  event.pool_url).set(event.current_difficulty)
         self.log.info(format_points_found(event.points_found_since_start))
-        self.pool_points_found_since_start_gauge.set(event.points_found_since_start)
+        self.pool_points_found_since_start_gauge.labels(
+            event.p2_singleton_puzzle_hash, event.pool_url).set(event.points_found_since_start)
         self.log.info(format_points_acknowledged(event.points_acknowledged_since_start))
-        self.pool_points_acknowledged_since_start_gauge.set(event.points_acknowledged_since_start)
+        self.pool_points_acknowledged_since_start_gauge.labels(
+            event.p2_singleton_puzzle_hash, event.pool_url).set(event.points_acknowledged_since_start)
         self.log.info(format_pool_errors_24h(event.num_pool_errors_24h))
-        self.num_pool_errors_24h_gauge.set(event.num_pool_errors_24h)
+        self.num_pool_errors_24h_gauge.labels(event.p2_singleton_puzzle_hash,
+                                              event.pool_url).set(event.num_pool_errors_24h)
 
     def update_price_metrics(self, event: PriceEvent) -> None:
         self.log.info("-" * 64)
