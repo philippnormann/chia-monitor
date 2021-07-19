@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import time
 from asyncio import Queue
 from datetime import datetime
 from pathlib import Path
@@ -129,6 +130,14 @@ class RpcCollector(Collector):
             pool_state = await self.farmer_client.get_pool_state()
             for pool in pool_state["pool_state"]:
                 if pool["current_difficulty"] is not None:
+                    points_24h = 0
+                    for t, point in pool["points_found_24h"]:
+                        if (time.time() - float(t)) < 86400:
+                            points_24h += point
+                    points_ack_24h = 0
+                    for t, point in pool["points_acknowledged_24h"]:
+                        if (time.time() - float(t)) < 86400:
+                            points_ack_24h += point
                     event = PoolStateEvent(
                         ts=datetime.now(),
                         p2_singleton_puzzle_hash=pool["p2_singleton_puzzle_hash"],
@@ -137,6 +146,8 @@ class RpcCollector(Collector):
                         current_difficulty=pool["current_difficulty"],
                         points_found_since_start=pool["points_found_since_start"],
                         points_acknowledged_since_start=pool["points_acknowledged_since_start"],
+                        points_found_24h=points_24h,
+                        points_acknowledged_24h=points_ack_24h,
                         num_pool_errors_24h=len(pool["pool_errors_24h"]))
                     await self.publish_event(event)
         except Exception as e:

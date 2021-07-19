@@ -47,6 +47,11 @@ class ChiaExporter:
     pool_points_acknowledged_since_start_gauge = Gauge('chia_pool_points_acknowledged_since_start',
                                                        'Total number of pooling points acknowledged',
                                                        ['p2', 'url'])
+    pool_points_found_24h_gauge = Gauge('chia_pool_points_found_24h',
+                                                'Number of pooling points found the last 24h', ['p2', 'url'])
+    pool_points_acknowledged_24h_gauge = Gauge('chia_pool_points_acknowledged_24h',
+                                                       'Number of pooling points acknowledged the last 24h',
+                                                       ['p2', 'url'])
     num_pool_errors_24h_gauge = Gauge('chia_num_pool_errors_24h',
                                       'Number of pool errors during the last 24 hours', ['p2', 'url'])
 
@@ -150,6 +155,12 @@ class ChiaExporter:
         self.log.info(format_points_acknowledged(event.points_acknowledged_since_start))
         self.pool_points_acknowledged_since_start_gauge.labels(
             event.p2_singleton_puzzle_hash, event.pool_url).set(event.points_acknowledged_since_start)
+        self.log.info(format_points_found_24h(event.points_found_24h))
+        self.pool_points_found_24h_gauge.labels(
+            event.p2_singleton_puzzle_hash, event.pool_url).set(event.points_found_24h)
+        self.log.info(format_points_acknowledged_24h(event.points_acknowledged_24h))
+        self.pool_points_acknowledged_24h_gauge.labels(
+            event.p2_singleton_puzzle_hash, event.pool_url).set(event.points_acknowledged_24h)
         self.log.info(format_pool_errors_24h(event.num_pool_errors_24h))
         self.num_pool_errors_24h_gauge.labels(event.p2_singleton_puzzle_hash,
                                               event.pool_url).set(event.num_pool_errors_24h)
