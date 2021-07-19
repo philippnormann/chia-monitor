@@ -24,8 +24,6 @@ def upgrade():
     sa.Column('current_difficulty', sa.Integer(), nullable=True),
     sa.Column('points_found_since_start', sa.Integer(), nullable=True),
     sa.Column('points_acknowledged_since_start', sa.Integer(), nullable=True),
-    sa.Column('points_found_24h', sa.Integer(), nullable=True),
-    sa.Column('points_acknowledged_24h', sa.Integer(), nullable=True),
     sa.Column('num_pool_errors_24h', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('ts')
     )
