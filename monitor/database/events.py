@@ -65,6 +65,8 @@ class PoolStateEvent(ChiaEvent):
     current_difficulty = Column(Integer)
     points_found_since_start = Column(Integer)
     points_acknowledged_since_start = Column(Integer)
+    points_found_24h = Column(Integer)
+    points_acknowledged_24h = Column(Integer)
     num_pool_errors_24h = Column(Integer)
 
 

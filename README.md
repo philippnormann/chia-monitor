@@ -97,6 +97,8 @@ The following statistics are collected from your local [Chia](https://chia.net) 
 - Current difficulty (`chia_current_pool_difficulty`)
 - Points found (`chia_pool_points_found_since_start`)
 - Points acknowledged (`chia_pool_points_acknowledged_since_start`)
+- Points found 24h (`chia_pool_points_found_24h`)
+- Points acknowledged 24h (`chia_pool_points_acknowledged_24h`)
 - Pool errors 24h (`chia_num_pool_errors_24h`)
 
 All pooling metrics support the following labels:
