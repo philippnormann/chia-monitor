@@ -39,7 +39,8 @@ class WalletBalanceEvent(ChiaEvent):
 
 class SignagePointEvent(ChiaEvent):
     __tablename__ = "signage_point_events"
-    ts = Column(DateTime, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ts = Column(DateTime, index=True, nullable=False)
     challenge_hash = Column(String(66), index=True)
     signage_point = Column(String(66), index=True)
     signage_point_index = Column(Integer)
