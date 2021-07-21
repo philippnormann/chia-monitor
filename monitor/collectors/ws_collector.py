@@ -88,7 +88,7 @@ class WsCollector(Collector):
                 if self.closed:
                     break
                 else:
-                    self.log.warning(f"Error while collecting events. Trying again... {e}")
+                    self.log.warning(f"Error while collecting events. Trying again... {type(e).__name__}: {e}")
 
     async def close(self) -> None:
         self.closed = True

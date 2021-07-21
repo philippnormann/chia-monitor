@@ -44,7 +44,7 @@ class PriceCollector(Collector):
             try:
                 await self.get_current_prices()
             except Exception as e:
-                self.log.warning(f"Error while collecting prices. Trying again... {e}")
+                self.log.warning(f"Error while collecting prices. Trying again... {type(e).__name__}: {e}")
             await asyncio.sleep(10)
 
     async def close(self) -> None:

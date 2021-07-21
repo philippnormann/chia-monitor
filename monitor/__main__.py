@@ -48,19 +48,19 @@ async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier]) -> No
         logging.info("🔌 Creating RPC Collector...")
         rpc_collector = await RpcCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue)
     except Exception as e:
-        logging.warning(f"Failed to create RPC collector. Continuing without it. {e}")
+        logging.warning(f"Failed to create RPC collector. Continuing without it. {type(e).__name__}: {e}")
 
     try:
         logging.info("🔌 Creating WebSocket Collector...")
         ws_collector = await WsCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue)
     except Exception as e:
-        logging.warning(f"Failed to create WebSocket collector. Continuing without it. {e}")
+        logging.warning(f"Failed to create WebSocket collector. Continuing without it. {type(e).__name__}: {e}")
 
     try:
         logging.info("🔌 Creating Price Collector...")
         price_collector = await PriceCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue)
     except Exception as e:
-        logging.warning(f"Failed to create Price collector. Continuing without it. {e}")
+        logging.warning(f"Failed to create Price collector. Continuing without it. {type(e).__name__}: {e}")
 
     if rpc_collector and ws_collector:
         logging.info("🚀 Starting monitoring loop!")

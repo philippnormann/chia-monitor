@@ -55,7 +55,7 @@ class RpcCollector(Collector):
             if self.full_node_client is not None:
                 await RpcCollector.close_rpc_client(self.full_node_client)
                 self.full_node_client = None
-            self.log.warning(f"Failed to connect to full node RPC endpoint. Continuing without it. {e}")
+            self.log.warning(f"Failed to connect to full node RPC endpoint. Continuing without it. {type(e).__name__}: {e}")
 
         try:
             wallet_rpc_port = net_config["wallet"]["rpc_port"]
@@ -67,7 +67,7 @@ class RpcCollector(Collector):
             if self.wallet_client is not None:
                 await RpcCollector.close_rpc_client(self.wallet_client)
                 self.wallet_client = None
-            self.log.warning(f"Failed to connect to wallet RPC endpoint. Continuing without it. {e}")
+            self.log.warning(f"Failed to connect to wallet RPC endpoint. Continuing without it. {type(e).__name__}: {e}")
 
         try:
             farming_rpc_port = net_config["farmer"]["rpc_port"]
@@ -80,7 +80,7 @@ class RpcCollector(Collector):
             if self.farmer_client is not None:
                 await RpcCollector.close_rpc_client(self.farmer_client)
                 self.farmer_client = None
-            self.log.warning(f"Failed to connect to farmer RPC endpoint. Continuing without it. {e}")
+            self.log.warning(f"Failed to connect to farmer RPC endpoint. Continuing without it. {type(e).__name__}: {e}")
 
         if len(self.tasks) < 1:
             raise ConnectionError(
@@ -97,7 +97,7 @@ class RpcCollector(Collector):
                 balance = await self.wallet_client.get_wallet_balance(wallet["id"])
                 confirmed_balances.append(balance["confirmed_wallet_balance"])
         except Exception as e:
-            raise ConnectionError(f"Failed to get wallet balance via RPC. Is your wallet running? {e}")
+            raise ConnectionError(f"Failed to get wallet balance via RPC. Is your wallet running? {type(e).__name__}: {e}")
         event = WalletBalanceEvent(ts=datetime.now(),
                                    confirmed=str(sum(confirmed_balances)),
                                    farmed=str(farmed_amount['farmed_amount']))
@@ -196,7 +196,7 @@ class RpcCollector(Collector):
             try:
                 await asyncio.gather(*[task() for task in self.tasks])
             except Exception as e:
-                self.log.warning(f"Error while collecting events. Trying again... {e}")
+                self.log.warning(f"Error while collecting events. Trying again... {type(e).__name__}: {e}")
             await asyncio.sleep(10)
 
     @staticmethod
