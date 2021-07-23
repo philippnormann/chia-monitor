@@ -59,7 +59,7 @@
   "gnetId": 14544,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1626395311730,
+  "iteration": 1626984060695,
   "links": [],
   "panels": [
     {
@@ -105,6 +105,7 @@
         "overrides": []
       },
       "id": 73,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
@@ -166,6 +167,7 @@
       },
       "id": 105,
       "links": [],
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
@@ -232,6 +234,7 @@
       },
       "id": 112,
       "links": [],
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
@@ -299,6 +302,7 @@
       },
       "id": 111,
       "links": [],
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
@@ -365,6 +369,7 @@
       },
       "id": 106,
       "links": [],
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
@@ -430,6 +435,7 @@
         "y": 0
       },
       "id": 118,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
@@ -491,6 +497,7 @@
         "y": 0
       },
       "id": 77,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
@@ -558,6 +565,7 @@
         "y": 3
       },
       "id": 85,
+      "maxDataPoints": 999999,
       "options": {
         "orientation": "auto",
         "reduceOptions": {
@@ -619,6 +627,7 @@
         "y": 3
       },
       "id": 99,
+      "maxDataPoints": 999999,
       "options": {
         "orientation": "auto",
         "reduceOptions": {
@@ -680,6 +689,7 @@
         "y": 3
       },
       "id": 100,
+      "maxDataPoints": 999999,
       "options": {
         "orientation": "auto",
         "reduceOptions": {
@@ -736,6 +746,7 @@
         "y": 3
       },
       "id": 83,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -794,6 +805,7 @@
         "y": 3
       },
       "id": 61,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -852,6 +864,7 @@
         "y": 3
       },
       "id": 107,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -910,6 +923,7 @@
         "y": 3
       },
       "id": 108,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -968,6 +982,7 @@
         "y": 3
       },
       "id": 71,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
@@ -1026,6 +1041,7 @@
         "y": 6
       },
       "id": 75,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
@@ -1094,6 +1110,7 @@
         "y": 9
       },
       "id": 91,
+      "maxDataPoints": 999999,
       "options": {
         "displayMode": "lcd",
         "orientation": "horizontal",
@@ -1151,6 +1168,7 @@
         "y": 9
       },
       "id": 117,
+      "maxDataPoints": 999999,
       "options": {
         "displayMode": "gradient",
         "orientation": "horizontal",
@@ -1187,6 +1205,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1207,6 +1226,7 @@
         "y": 9
       },
       "id": 110,
+      "maxDataPoints": 999999,
       "options": {
         "displayMode": "gradient",
         "orientation": "horizontal",
@@ -1263,6 +1283,7 @@
         "y": 9
       },
       "id": 125,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
@@ -1321,6 +1342,7 @@
         "y": 9
       },
       "id": 76,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
@@ -1380,6 +1402,7 @@
         "y": 9
       },
       "id": 98,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
@@ -1442,6 +1465,7 @@
       "id": 92,
       "interval": null,
       "links": [],
+      "maxDataPoints": 999999,
       "options": {
         "displayMode": "lcd",
         "orientation": "horizontal",
@@ -1499,6 +1523,7 @@
         "y": 13
       },
       "id": 103,
+      "maxDataPoints": 999999,
       "options": {
         "displayMode": "lcd",
         "orientation": "horizontal",
@@ -1556,6 +1581,7 @@
         "y": 13
       },
       "id": 109,
+      "maxDataPoints": 999999,
       "options": {
         "displayMode": "gradient",
         "orientation": "horizontal",
@@ -1592,6 +1618,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1612,6 +1639,7 @@
         "y": 13
       },
       "id": 102,
+      "maxDataPoints": 999999,
       "options": {
         "displayMode": "gradient",
         "orientation": "horizontal",
@@ -1670,6 +1698,7 @@
         "y": 13
       },
       "id": 122,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
@@ -1731,6 +1760,7 @@
         "y": 13
       },
       "id": 123,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
@@ -1790,6 +1820,7 @@
         "y": 15
       },
       "id": 120,
+      "maxDataPoints": 999999,
       "options": {
         "displayMode": "lcd",
         "orientation": "horizontal",
@@ -1847,6 +1878,7 @@
         "y": 17
       },
       "id": 114,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
@@ -1866,7 +1898,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "chia_pool_points_found_since_start{url=\"$Pool\"}",
+          "expr": "chia_pool_points_found_24h{url=\"$Pool\"}",
           "interval": "",
           "legendFormat": "Points",
           "refId": "A"
@@ -1874,7 +1906,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Points Found",
+      "title": "Points Found 24h",
       "type": "stat"
     },
     {
@@ -1906,6 +1938,7 @@
         "y": 17
       },
       "id": 119,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
@@ -1925,7 +1958,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "chia_pool_points_acknowledged_since_start{url=\"$Pool\"}",
+          "expr": "chia_pool_points_acknowledged_24h{url=\"$Pool\"}",
           "interval": "",
           "legendFormat": "Points",
           "refId": "A"
@@ -1933,7 +1966,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Points Acknowledged",
+      "title": "Points Acknowledged 24h",
       "type": "stat"
     },
     {
@@ -1965,6 +1998,7 @@
         "y": 17
       },
       "id": 116,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
@@ -1984,7 +2018,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "chia_pool_points_acknowledged_since_start{url=\"$Pool\"} / chia_pool_points_found_since_start{url=\"$Pool\"}",
+          "expr": "chia_pool_points_acknowledged_24h{url=\"$Pool\"} / chia_pool_points_found_24h{url=\"$Pool\"}",
           "interval": "",
           "legendFormat": "Success Rate",
           "refId": "A"
@@ -1992,7 +2026,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Points Success Rate",
+      "title": "Points Success Rate 24h",
       "type": "stat"
     },
     {
@@ -2023,6 +2057,7 @@
         "y": 17
       },
       "id": 124,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
@@ -2081,6 +2116,7 @@
         "y": 17
       },
       "id": 113,
+      "maxDataPoints": 999999,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
@@ -2112,7 +2148,7 @@
       "type": "stat"
     }
   ],
-  "refresh": "30s",
+  "refresh": "15s",
   "schemaVersion": 27,
   "style": "dark",
   "tags": [],
@@ -2151,9 +2187,18 @@
     "from": "now-24h",
     "to": "now"
   },
-  "timepicker": {},
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "15s",
+      "30s",
+      "1m",
+      "5m"
+    ]
+  },
   "timezone": "",
   "title": "Chia Monitor",
   "uid": "URpClhZga",
-  "version": 72
+  "version": 85
 }
