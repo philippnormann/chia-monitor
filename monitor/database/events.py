@@ -27,7 +27,8 @@ class BlockchainStateEvent(ChiaEvent):
     space = Column(String(32))
     diffculty = Column(Integer)
     peak_height = Column(String(32))
-    synced = Column(Boolean())
+    synced = Column(String(32))
+    max_height = Column(String(32))
 
 
 class WalletBalanceEvent(ChiaEvent):

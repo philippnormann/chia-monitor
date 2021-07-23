@@ -160,11 +160,18 @@ class RpcCollector(Collector):
         except:
             raise ConnectionError("Failed to get blockchain state via RPC. Is your full node running?")
         peak_height = state["peak"].height if state["peak"] is not None else 0
+        if state["sync"]["synced"]:
+            synced = "1"
+        elif state["peak"] and state["sync"]["sync_mode"]:
+            synced = "2"
+        else:
+            synced = "0"
         event = BlockchainStateEvent(ts=datetime.now(),
                                      space=str(state["space"]),
                                      diffculty=state["difficulty"],
                                      peak_height=str(peak_height),
-                                     synced=state["sync"]["synced"])
+                                     synced=synced,
+                                     max_height=state["sync"]["sync_tip_height"] if synced == "2" else str(peak_height))
         await self.publish_event(event)
 
     async def get_connections(self) -> None:

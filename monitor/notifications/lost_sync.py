@@ -8,7 +8,7 @@ class LostSyncNotification(Notification):
     async def condition(self) -> bool:
         async with async_session() as db_session:
             sync_status = await get_sync_status(db_session)
-        return sync_status is not None and not sync_status
+        return sync_status is not None and sync_status == "0"
 
     async def trigger(self) -> None:
         return self.apobj.notify(
