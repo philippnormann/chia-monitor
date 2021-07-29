@@ -4,8 +4,9 @@ from sqlalchemy import Boolean, Column, DateTime, Integer, String
 
 class HarvesterPlotsEvent(ChiaEvent):
     __tablename__ = "harvester_events"
-    ts = Column(DateTime, primary_key=True)
-    host = Column(String(255), primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ts = Column(DateTime, index=True, nullable=False)
+    host = Column(String(255))
     plot_count = Column(Integer)
     portable_plot_count = Column(Integer)
     plot_size = Column(Integer)
@@ -14,7 +15,8 @@ class HarvesterPlotsEvent(ChiaEvent):
 
 class ConnectionsEvent(ChiaEvent):
     __tablename__ = "connection_events"
-    ts = Column(DateTime, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ts = Column(DateTime, index=True, nullable=False)
     full_node_count = Column(Integer)
     farmer_count = Column(Integer)
     wallet_count = Column(Integer)
@@ -23,7 +25,8 @@ class ConnectionsEvent(ChiaEvent):
 
 class BlockchainStateEvent(ChiaEvent):
     __tablename__ = "blockchain_state_events"
-    ts = Column(DateTime, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ts = Column(DateTime, index=True, nullable=False)
     space = Column(String(32))
     diffculty = Column(Integer)
     peak_height = Column(String(32))
@@ -32,7 +35,8 @@ class BlockchainStateEvent(ChiaEvent):
 
 class WalletBalanceEvent(ChiaEvent):
     __tablename__ = "wallet_balance_events"
-    ts = Column(DateTime, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ts = Column(DateTime, index=True, nullable=False)
     confirmed = Column(String(32))
     farmed = Column(String(32))
 
@@ -59,8 +63,9 @@ class FarmingInfoEvent(ChiaEvent):
 
 class PoolStateEvent(ChiaEvent):
     __tablename__ = "pool_state_events"
-    ts = Column(DateTime, primary_key=True)
-    p2_singleton_puzzle_hash = Column(String(66), primary_key=True,default="")
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ts = Column(DateTime, index=True, nullable=False)
+    p2_singleton_puzzle_hash = Column(String(66),default="")
     pool_url = Column(String(255))
     current_points = Column(Integer)
     current_difficulty = Column(Integer)
@@ -73,7 +78,8 @@ class PoolStateEvent(ChiaEvent):
 
 class PriceEvent(ChiaEvent):
     __tablename__ = "price_events"
-    ts = Column(DateTime, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ts = Column(DateTime, index=True, nullable=False)
     usd_cents = Column(Integer)
     eur_cents = Column(Integer)
     btc_satoshi = Column(Integer)
