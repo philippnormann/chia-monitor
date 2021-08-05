@@ -1,7 +1,7 @@
 """Remove unique constraint on ts for all tables
 
 Revision ID: 664882eb4c78
-Revises: ec38afa35b3f
+Revises: 704c57c068fb
 Create Date: 2021-07-29 23:28:39.161379
 
 """
@@ -11,7 +11,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = '664882eb4c78'
-down_revision = 'ec38afa35b3f'
+down_revision = '704c57c068fb'
 branch_labels = None
 depends_on = None
 
