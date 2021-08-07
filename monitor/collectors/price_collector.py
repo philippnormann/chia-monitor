@@ -18,13 +18,16 @@ PRICE_API = f"https://api.coingecko.com/api/v3/simple/price?ids=chia&vs_currenci
 
 class PriceCollector(Collector):
     session: aiohttp.ClientSession
+    refresh_interval_seconds: int
 
     @staticmethod
-    async def create(_root_path: Path, _net_config: Dict, event_queue: Queue[ChiaEvent]) -> Collector:
+    async def create(_root_path: Path, _net_config: Dict, event_queue: Queue[ChiaEvent],
+                     refresh_interval_seconds: int) -> Collector:
         self = PriceCollector()
         self.log = logging.getLogger(__name__)
         self.event_queue = event_queue
         self.session = aiohttp.ClientSession()
+        self.refresh_interval_seconds = refresh_interval_seconds
         return self
 
     async def get_current_prices(self) -> None:
@@ -44,8 +47,9 @@ class PriceCollector(Collector):
             try:
                 await self.get_current_prices()
             except Exception as e:
-                self.log.warning(f"Error while collecting prices. Trying again... {type(e).__name__}: {e}")
-            await asyncio.sleep(10)
+                self.log.warning(
+                    f"Error while collecting prices. Trying again... {type(e).__name__}: {e}")
+            await asyncio.sleep(self.refresh_interval_seconds)
 
     async def close(self) -> None:
         await self.session.close()

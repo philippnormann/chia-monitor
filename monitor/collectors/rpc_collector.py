@@ -30,9 +30,11 @@ class RpcCollector(Collector):
     net_config: Dict
     hostname: str
     tasks: List[Callable]
+    refresh_interval_seconds: int
 
     @staticmethod
-    async def create(root_path: Path, net_config: Dict, event_queue: Queue[ChiaEvent]) -> RpcCollector:
+    async def create(root_path: Path, net_config: Dict, event_queue: Queue[ChiaEvent],
+                     refresh_interval_seconds: int) -> RpcCollector:
         self = RpcCollector()
         self.log = logging.getLogger(__name__)
         self.event_queue = event_queue
@@ -42,6 +44,7 @@ class RpcCollector(Collector):
         self.hostname = net_config["self_hostname"]
         self.tasks = []
         self.harvester_clients = []
+        self.refresh_interval_seconds = refresh_interval_seconds
 
         try:
             full_node_rpc_port = net_config["full_node"]["rpc_port"]
@@ -55,7 +58,9 @@ class RpcCollector(Collector):
             if self.full_node_client is not None:
                 await RpcCollector.close_rpc_client(self.full_node_client)
                 self.full_node_client = None
-            self.log.warning(f"Failed to connect to full node RPC endpoint. Continuing without it. {type(e).__name__}: {e}")
+            self.log.warning(
+                f"Failed to connect to full node RPC endpoint. Continuing without it. {type(e).__name__}: {e}"
+            )
 
         try:
             wallet_rpc_port = net_config["wallet"]["rpc_port"]
@@ -67,7 +72,9 @@ class RpcCollector(Collector):
             if self.wallet_client is not None:
                 await RpcCollector.close_rpc_client(self.wallet_client)
                 self.wallet_client = None
-            self.log.warning(f"Failed to connect to wallet RPC endpoint. Continuing without it. {type(e).__name__}: {e}")
+            self.log.warning(
+                f"Failed to connect to wallet RPC endpoint. Continuing without it. {type(e).__name__}: {e}"
+            )
 
         try:
             farming_rpc_port = net_config["farmer"]["rpc_port"]
@@ -80,7 +87,9 @@ class RpcCollector(Collector):
             if self.farmer_client is not None:
                 await RpcCollector.close_rpc_client(self.farmer_client)
                 self.farmer_client = None
-            self.log.warning(f"Failed to connect to farmer RPC endpoint. Continuing without it. {type(e).__name__}: {e}")
+            self.log.warning(
+                f"Failed to connect to farmer RPC endpoint. Continuing without it. {type(e).__name__}: {e}"
+            )
 
         if len(self.tasks) < 1:
             raise ConnectionError(
@@ -97,7 +106,8 @@ class RpcCollector(Collector):
                 balance = await self.wallet_client.get_wallet_balance(wallet["id"])
                 confirmed_balances.append(balance["confirmed_wallet_balance"])
         except Exception as e:
-            raise ConnectionError(f"Failed to get wallet balance via RPC. Is your wallet running? {type(e).__name__}: {e}")
+            raise ConnectionError(
+                f"Failed to get wallet balance via RPC. Is your wallet running? {type(e).__name__}: {e}")
         event = WalletBalanceEvent(ts=datetime.now(),
                                    confirmed=str(sum(confirmed_balances)),
                                    farmed=str(farmed_amount['farmed_amount']))
@@ -196,8 +206,9 @@ class RpcCollector(Collector):
             try:
                 await asyncio.gather(*[task() for task in self.tasks])
             except Exception as e:
-                self.log.warning(f"Error while collecting events. Trying again... {type(e).__name__}: {e}")
-            await asyncio.sleep(10)
+                self.log.warning(
+                    f"Error while collecting events. Trying again... {type(e).__name__}: {e}")
+            await asyncio.sleep(self.refresh_interval_seconds)
 
     @staticmethod
     async def close_rpc_client(rpc_client: RpcClient) -> None:

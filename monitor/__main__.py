@@ -39,28 +39,34 @@ async def persist_event(event: ChiaEvent):
         await db_session.commit()
 
 
-async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier]) -> None:
+async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier], rpc_refresh_interval: int,
+                     price_refresh_interval: int) -> None:
     rpc_collector = None
     ws_collector = None
     event_queue = Queue()
 
     try:
         logging.info("🔌 Creating RPC Collector...")
-        rpc_collector = await RpcCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue)
+        rpc_collector = await RpcCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue,
+                                                  rpc_refresh_interval)
     except Exception as e:
-        logging.warning(f"Failed to create RPC collector. Continuing without it. {type(e).__name__}: {e}")
+        logging.warning(
+            f"Failed to create RPC collector. Continuing without it. {type(e).__name__}: {e}")
 
     try:
         logging.info("🔌 Creating WebSocket Collector...")
         ws_collector = await WsCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue)
     except Exception as e:
-        logging.warning(f"Failed to create WebSocket collector. Continuing without it. {type(e).__name__}: {e}")
+        logging.warning(
+            f"Failed to create WebSocket collector. Continuing without it. {type(e).__name__}: {e}")
 
     try:
         logging.info("🔌 Creating Price Collector...")
-        price_collector = await PriceCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue)
+        price_collector = await PriceCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue,
+                                                      price_refresh_interval)
     except Exception as e:
-        logging.warning(f"Failed to create Price collector. Continuing without it. {type(e).__name__}: {e}")
+        logging.warning(
+            f"Failed to create Price collector. Continuing without it. {type(e).__name__}: {e}")
 
     if rpc_collector and ws_collector:
         logging.info("🚀 Starting monitoring loop!")
@@ -113,7 +119,11 @@ if __name__ == "__main__":
 
     try:
         exporter_port = config["exporter_port"]
+        rpc_refresh_interval = config["rpc_collector"]["refresh_interval_seconds"]
+        price_refresh_interval = enable_notifications = config["price_collector"][
+            "refresh_interval_seconds"]
         enable_notifications = config["notifications"]["enable"]
+        notifications_refresh_interval = config["notifications"]["refresh_interval_seconds"]
         status_url = config["notifications"]["status_service_url"]
         alert_url = config["notifications"]["alert_service_url"]
         status_interval_minutes = config["notifications"]["status_interval_minutes"]
@@ -128,11 +138,11 @@ if __name__ == "__main__":
     exporter = ChiaExporter(exporter_port)
     if enable_notifications:
         notifier = Notifier(status_url, alert_url, status_interval_minutes, lost_plots_alert_threshold,
-                            disable_proof_found_alert)
+                            disable_proof_found_alert, notifications_refresh_interval)
     else:
         notifier = None
 
     try:
-        asyncio.run(aggregator(exporter, notifier))
+        asyncio.run(aggregator(exporter, notifier, rpc_refresh_interval, price_refresh_interval))
     except KeyboardInterrupt:
         logging.info("👋 Bye!")
