@@ -61,7 +61,10 @@ class SummaryNotification(Notification):
                 passed_filters_per_min
         ]):
             proportion = (last_og_plot_size + last_portable_plot_size) / int(last_state.space)
-            expected_minutes_to_win = int((SECONDS_PER_BLOCK / 60) / proportion)
+            try:
+                expected_minutes_to_win = int((SECONDS_PER_BLOCK / 60) / proportion)
+            except ZeroDivisionError:
+                expected_minutes_to_win = 0
             summary = "\n".join([
                 format_og_plot_count(last_og_plot_count),
                 format_portable_plot_count(last_portable_plot_count),
