@@ -1,0 +1,118 @@
+#--------------------------------------------------------------------------------------------------#
+#-- Name     : chia-monitor.service
+#-- Purpose  : Service file for chia-monitor prometheus stats exporter
+#-- Project  : https://github.com/philippnormann/chia-monitor
+#-- Alerts   : https://github.com/caronc/apprise/wiki
+#-- Requires : chia python3 pipenv git
+#------------:
+#-- Date     : 2021-08-31
+#-- Compat   : Tested w/ chia-monitor commit 9472b6c5adbf9c47f9ec9e4ab7f9ac73f79c64bf @ 2021-08-26
+#-- Version  : 1.0
+#------------:
+#-- Dev Todo : 1) Consider adding a systemd notifier top-level drop in command for service outage
+#--          : 2) Add a [Unit] call for "After=chia-proc.service" if/when Chia is run as a service
+#--------------------------------------------------------------------------------------------------#
+# Base: operating directory and git clone will be as follows:
+#       - /opt/chia-monitor
+#
+# Note: Chia process owner is assumed to be named 'chia-proc', replace as needed for your deployment
+#       - proc user will be the one running the main GUI or CLI farming processes
+#       - proc user will be the owner of the main chia config file
+#       - exporters should run as a separate user from the monitored process in general, however...
+#       - if you want chia-monitor.service running as the chia processes owner, modify these commands
+#       - to allow chia-monitor access to the chia config we will create a shared group for the users
+#
+# Create shared group for 'chia-monitor' and 'chia-proc' related user accounts
+#   sudo groupadd --gid 8001 chia
+#
+# User creation for chia-monitor service
+#   sudo groupadd --gid 8000 chia-monitor
+#   sudo useradd -d /opt/chia-monitor -g chia-monitor -M --shell /sbin/nologin --uid 8000 chia-monitor
+#
+# Group access mods for chia-monitor and chia-proc users
+#   sudo usermod --groups chia --append chia-monitor
+#   sudo usermod --groups chia --append chia-proc
+#   sudo chmod 770 /home/chia-proc
+#   sudo chown chia-proc:chia /home/chia-proc
+#   sudo chown -R chia-proc:chia /home/chia-proc/.chia
+#   sudo chmod 640 /home/chia-proc/.chia/mainnet/config/config.yaml
+#
+# Create operating environment for chia-monitor
+#   sudo cd /opt && git clone https://github.com/philippnormann/chia-monitor.git && cd /opt/chia-monitor
+#   sudo chown -R chia-monitor:chia /opt/chia-monitor
+#   sudo -u chia-monitor /usr/local/bin/pipenv install
+#   sudo -u chia-monitor /usr/local/bin/pipenv run alembic upgrade head
+#   sudo -u chia-monitor cp config-example.json config.json
+#   <edit config.json>
+#
+# Run chia-monitor command to test
+#   <ensure primary .chia directory and config is read-able by chia-monitor user according to previous commands>
+#   sudo -u chia-monitor /usr/local/bin/pipenv run python -m monitor
+#   <if chia-monitor is working correctly, ctrl-c to kill the test>
+#
+# Execute systemd commands for chia-monitor.service
+#   sudo cp chia-monitor.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl start chia-monitor
+#   sudo systemctl status chia-monitor
+#   <if service is running without errors then enable in next step>
+#   sudo systemctl enable chia-monitor
+#
+# Check to see if port is open and running as chia-monitor user
+#   sudo netstat -lntp | grep 8000
+#   <example output>:
+#   tcp        0      0 0.0.0.0:8000            0.0.0.0:*               LISTEN      3672604/python
+#
+# Check procs to ensure chia-monitor user is owner of the previously identified process on port 8000
+#   sudo ps auxf | grep chia-monitor | grep -v grep
+#   <example output>:
+#   chia-mo+ 3672604  1.0  0.0 883468 88568 ?        Ssl  Aug31   6:20 /opt/chia-monitor/.local/share/virtualenvs/chia-monitor-kBBgivIG/bin/python -m monitor
+#
+# Finally, ensure service is operating as expected (example output below)
+#   systemctl status chia-monitor
+#      ● chia-monitor.service - chia-monitor
+#       Loaded: loaded (/etc/systemd/system/chia-monitor.service; enabled; vendor preset: disabled)
+#       Active: active (running) since Tue 2021-08-31 17:40:20 PDT; 9h ago
+#     Main PID: 3672604 (python)
+#       Tasks: 4 (limit: 1649800)
+#       Memory: 76.0M
+#       CGroup: /system.slice/chia-monitor.service
+#               └─3672604 /opt/chia-monitor/.local/share/virtualenvs/chia-monitor-kBBgivIG/bin/python -m monitor
+#     Sep 01 03:30:00 pipenv[3672604]: 2021-09-01T03:30:00.315 INFO   🟡 Pool Found Last 24H: 3410
+#     Sep 01 03:30:00 pipenv[3672604]: 2021-09-01T03:30:00.315 INFO   🟢 Pool Acknowledged Last 24H: 3409
+#     Sep 01 03:30:00 pipenv[3672604]: 2021-09-01T03:30:00.316 INFO   ❌ Pool Errors 24h: 0
+#     Sep 01 03:30:00 pipenv[3672604]: 2021-09-01T03:30:00.341 INFO   📶 Full Node Peer Count: 8
+#     Sep 01 03:30:00 pipenv[3672604]: 2021-09-01T03:30:00.342 INFO   📶 Farmer Peer Count: 1
+#     Sep 01 03:30:00 pipenv[3672604]: 2021-09-01T03:30:00.342 INFO   📶 Harvester Peer Count: 1
+#     Sep 01 03:30:01 pipenv[3672604]: 2021-09-01T03:30:01.296 INFO   ---------------------------
+#
+# Ensure Prometheus can access the chia-monitor exporter via firewall
+#   <exec firewall command for TCP port 8000 according to your deployment: iptables, firewall-cmd, etc>
+#   sudo firewall-cmd --permanent --zone=public --add-port 8000/tcp
+#   sudo firewall-cmd --reload
+#
+# Done and done!
+#
+#--------------------------------------------------------------------------------------------------#
+[Unit]
+Description=chia-monitor
+After=network.target
+AssertPathExists=/opt/chia-monitor
+
+[Service]
+User=chia-monitor
+Group=chia-monitor
+PIDFile=/var/run/chia-monitor.pid
+Type=simple
+
+KillMode=mixed
+SendSIGKILL=yes
+TimeoutSec=30
+Restart=no
+
+WorkingDirectory=/opt/chia-monitor
+ExecStart=/usr/local/bin/pipenv run python -m monitor
+Restart=no
+
+[Install]
+WantedBy=multi-user.target
