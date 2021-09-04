@@ -1,17 +1,17 @@
-#--------------------------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------#
 #-- Name     : chia-monitor.service
 #-- Purpose  : Service file for chia-monitor prometheus stats exporter
 #-- Project  : https://github.com/philippnormann/chia-monitor
 #-- Alerts   : https://github.com/caronc/apprise/wiki
-#-- Requires : chia python3 pipenv git
+#-- Requires : chia python3 pipenv git rsyslog
 #------------:
-#-- Date     : 2021-08-31
-#-- Compat   : Tested w/ chia-monitor commit 9472b6c5adbf9c47f9ec9e4ab7f9ac73f79c64bf @ 2021-08-26
+#-- Date     : 2021-08-28
+#-- Compat   : Tested w/ chia-monitor commit 9472b6c5adbf9c47f9ec9e4ab7f9ac73f79c64bf / 2021-08-26
 #-- Version  : 1.0
 #------------:
-#-- Dev Todo : 1) Consider adding a systemd notifier top-level drop in command for service outage
+#-- Dev Todo : 1) Consider adding systemd notifier top-level drop in command for service outage webhook exec
 #--          : 2) Add a [Unit] call for "After=chia-proc.service" if/when Chia is run as a service
-#--------------------------------------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------#
 # Base: operating directory and git clone will be as follows:
 #       - /opt/chia-monitor
 #
@@ -49,6 +49,11 @@
 #   <ensure primary .chia directory and config is read-able by chia-monitor user according to previous commands>
 #   sudo -u chia-monitor /usr/local/bin/pipenv run python -m monitor
 #   <if chia-monitor is working correctly, ctrl-c to kill the test>
+#
+# Setup rsyslog config for chia-monitor to avoid system log flooding
+#   sudo touch /var/log/chia-monitor.log
+#   sudo cp etc/rsyslog.d/chia-monitor.conf /etc/rsyslog.d/
+#   sudo systemctl restart rsyslog
 #
 # Execute systemd commands for chia-monitor.service
 #   sudo cp chia-monitor.service /etc/systemd/system/
@@ -91,6 +96,14 @@
 #   sudo firewall-cmd --permanent --zone=public --add-port 8000/tcp
 #   sudo firewall-cmd --reload
 #
+# Check log file to ensure functionality as expected
+#   sudo tail -f /var/log/chia-monitor.log
+#   <output should be consistent status at INFO level>
+#
+# Setup logrotate config for log file to avoid clogging up disk space
+#   sudo cp /opt/chia-monitor/etc/logrotate.d/chia-monitor /etc/logrotate.d/chia-monitor
+#   sudo sed -i '\:/var/log/chia-monitor.log:d' /etc/logrotate.d/syslog
+#   sudo logrotate -f /etc/logrotate.conf
 # Done and done!
 #
 #--------------------------------------------------------------------------------------------------#
@@ -102,17 +115,20 @@ AssertPathExists=/opt/chia-monitor
 [Service]
 User=chia-monitor
 Group=chia-monitor
-PIDFile=/var/run/chia-monitor.pid
 Type=simple
+
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=chia-monitor
 
 KillMode=mixed
 SendSIGKILL=yes
 TimeoutSec=30
-Restart=no
 
 WorkingDirectory=/opt/chia-monitor
 ExecStart=/usr/local/bin/pipenv run python -m monitor
-Restart=no
+Restart=always
+RestartSec=600
 
 [Install]
 WantedBy=multi-user.target
