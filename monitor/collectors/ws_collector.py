@@ -35,7 +35,7 @@ class WsCollector(Collector):
             self_hostname = net_config["self_hostname"]
             daemon_port = net_config["daemon_port"]
             self.ws = await self.session.ws_connect(f"wss://{self_hostname}:{daemon_port}",
-                                                    ssl_context=self.ssl_context, max_msg_size=52428800)
+                                                    ssl_context=self.ssl_context, max_msg_size=5242880000)
             await self.subscribe()
         except:
             await self.session.close()
