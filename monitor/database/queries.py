@@ -165,3 +165,18 @@ async def get_passed_filters_per_minute(session: AsyncSession, interval: timedel
     if passed_filters is None:
         return None
     return passed_filters / (interval.seconds / 60)
+
+
+async def get_current_balance(session: AsyncSession) -> int:
+    result = await session.execute(
+        select(WalletBalanceEvent.confirmed).order_by(WalletBalanceEvent.ts.desc()))
+    return result.scalars().first()
+
+
+async def get_last_payment(session: AsyncSession) -> int:
+    current_balance = await get_current_balance(session)
+    previous_balance_query = await session.execute(
+        select(WalletBalanceEvent.confirmed).where(
+            WalletBalanceEvent.confirmed != current_balance).order_by(WalletBalanceEvent.ts.desc()))
+    last_balance = previous_balance_query.scalars().first()
+    return int(current_balance) - int(last_balance)
