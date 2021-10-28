@@ -83,7 +83,7 @@ async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier], rpc_r
                 await persist_event(event)
 
             except OperationalError:
-                logging.error(
+                logging.exception(
                     f"Failed to persist event to DB. Please initialize DB using: 'pipenv run alembic upgrade head'"
                 )
                 break

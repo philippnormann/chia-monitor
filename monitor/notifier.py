@@ -37,7 +37,7 @@ class Notifier:
                 await asyncio.gather(*tasks)
                 await asyncio.sleep(self.refresh_interval)
             except OperationalError:
-                logging.error(
+                logging.exception(
                     f"Failed to retrieve event from DB. Please initialize DB using: 'pipenv run alembic upgrade head'"
                 )
                 break
