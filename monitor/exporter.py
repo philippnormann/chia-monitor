@@ -18,6 +18,7 @@ class ChiaExporter:
     diffculty_gauge = Gauge('chia_diffculty', 'Current networks farming difficulty')
     height_gauge = Gauge('chia_peak_height', 'Block height of the current peak')
     sync_gauge = Gauge('chia_sync_status', 'Sync status of the connected full node')
+    max_height_gauge = Gauge('chia_max_height', 'Max height while syncing')
     connections_gauge = Gauge('chia_connections_count',
                               'Count of peers that the node is currently connected to', ["type"])
 
@@ -124,7 +125,8 @@ class ChiaExporter:
         self.height_gauge.set(int(event.peak_height))
         self.log.info(format_peak_height(int(event.peak_height), fix_indent=True))
         self.sync_gauge.set(event.synced)
-        self.log.info(format_synced(event.synced))
+        self.log.info(format_synced(event.synced, event.peak_height, event.max_height))
+        self.max_height_gauge.set(event.max_height)
 
     def update_wallet_balance_metrics(self, event: WalletBalanceEvent) -> None:
         self.log.info("-" * 64)

@@ -51,8 +51,9 @@ def format_peak_height(peak_height: int, fix_indent=False) -> str:
     return f"🏔️ {indent}Peak Height: {peak_height}"
 
 
-def format_synced(synced: int) -> str:
-    return f"🔄 Synced: {synced}"
+def format_synced(synced: str, peak_height: str, max_height: str) -> str:
+    value = "Yes" if synced == "1" else f"No, in progress ({peak_height}/{max_height})" if synced == "2" else "No"
+    return f"🔄 Synced: {value}"
 
 
 def format_full_node_count(full_node_count: int, node_type="Full Node") -> str:

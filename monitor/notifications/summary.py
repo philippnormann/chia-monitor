@@ -79,7 +79,7 @@ class SummaryNotification(Notification):
                 format_space(int(last_state.space)),
                 format_peak_height(last_state.peak_height),
                 format_full_node_count(last_connections.full_node_count),
-                format_synced(last_state.synced),
+                format_synced(last_state.synced, last_state.peak_height, last_state.max_height),
             ])
             sent = self.apobj.notify(title='** 👨‍🌾 Farm Status 👩‍🌾 **', body=summary)
             if sent:
