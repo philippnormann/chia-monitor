@@ -1,9 +1,8 @@
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy import MetaData, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import MetaData
 
-DATABASE_URL = "sqlite+aiosqlite:///history.sqlite"
+DATABASE_URL = "sqlite:///history.sqlite"
 
 meta = MetaData(
     naming_convention={
@@ -15,5 +14,5 @@ meta = MetaData(
     })
 ChiaEvent = declarative_base(metadata=meta)
 
-engine = create_async_engine(DATABASE_URL, echo=False)
-async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+engine = create_engine(DATABASE_URL, echo=False)
+session = sessionmaker(engine, expire_on_commit=False)

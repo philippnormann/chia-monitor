@@ -11,22 +11,22 @@ class Notification:
         self.apobj = apobj
         self.log = logging.getLogger(__name__)
 
-    async def condition(self) -> bool:
+    def condition(self) -> bool:
         raise NotImplementedError
 
-    async def trigger(self) -> bool:
+    def trigger(self) -> bool:
         raise NotImplementedError
 
-    async def recover(self) -> bool:
+    def recover(self) -> bool:
         return True
 
-    async def run(self) -> None:
-        if await self.condition():
+    def run(self) -> None:
+        if self.condition():
             if not self.firing:
-                sent = await self.trigger()
+                sent = self.trigger()
                 if sent:
                     self.firing = True
         elif self.firing:
-            sent = await self.recover()
+            sent = self.recover()
             if sent:
                 self.firing = False

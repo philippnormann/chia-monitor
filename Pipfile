@@ -7,7 +7,6 @@ name = "pypi"
 prometheus-client = "*"
 colorlog = "*"
 aiohttp = "*"
-aiosqlite = "*"
 SQLAlchemy = "*"
 alembic = "*"
 apprise = "*"
@@ -19,3 +18,4 @@ yapf = "*"
 
 [requires]
 python_version = "3"
+    

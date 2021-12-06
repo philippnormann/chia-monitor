@@ -1,14 +1,11 @@
 from datetime import datetime, timedelta
 
 from apprise import Apprise
-from monitor.database import async_session
-from monitor.database.queries import (get_blockchain_state, get_connections,
-                                      get_farming_start, get_og_plot_count,
-                                      get_og_plot_size,
-                                      get_passed_filters_per_minute,
-                                      get_plot_delta, get_portable_plot_count,
-                                      get_portable_plot_size, get_proofs_found,
-                                      get_signage_points_per_minute,
+from monitor.database import session
+from monitor.database.queries import (get_blockchain_state, get_connections, get_farming_start,
+                                      get_og_plot_count, get_og_plot_size, get_passed_filters_per_minute,
+                                      get_plot_delta, get_portable_plot_count, get_portable_plot_size,
+                                      get_proofs_found, get_signage_points_per_minute,
                                       get_wallet_balance)
 from monitor.format import *
 from monitor.notifications.notification import Notification
@@ -27,24 +24,24 @@ class SummaryNotification(Notification):
         self.summary_interval = timedelta(minutes=summary_interval_minutes)
         self.last_summary_ts: datetime = datetime.now() - self.summary_interval + self.startup_delay
 
-    async def condition(self) -> bool:
+    def condition(self) -> bool:
         if datetime.now() - self.last_summary_ts > self.summary_interval:
             return True
         else:
             return False
 
-    async def trigger(self) -> None:
-        async with async_session() as db_session:
-            last_state = await get_blockchain_state(db_session)
-            last_balance = await get_wallet_balance(db_session)
-            last_connections = await get_connections(db_session)
-            proofs_found = await get_proofs_found(db_session)
-            farming_start = await get_farming_start(db_session)
-            last_og_plot_count = await get_og_plot_count(db_session)
-            last_portable_plot_count = await get_portable_plot_count(db_session)
-            last_og_plot_size = await get_og_plot_size(db_session)
-            last_portable_plot_size = await get_portable_plot_size(db_session)
-            plot_count_delta, plot_size_delta = await get_plot_delta(db_session)
+    def trigger(self) -> None:
+        with session() as db_session:
+            last_state = get_blockchain_state(db_session)
+            last_balance = get_wallet_balance(db_session)
+            last_connections = get_connections(db_session)
+            proofs_found = get_proofs_found(db_session)
+            farming_start = get_farming_start(db_session)
+            last_og_plot_count = get_og_plot_count(db_session)
+            last_portable_plot_count = get_portable_plot_count(db_session)
+            last_og_plot_size = get_og_plot_size(db_session)
+            last_portable_plot_size = get_portable_plot_size(db_session)
+            plot_count_delta, plot_size_delta = get_plot_delta(db_session)
 
             signage_points_per_min = None
             passed_filters_per_min = None
@@ -52,8 +49,8 @@ class SummaryNotification(Notification):
                 farming_since: timedelta = datetime.now() - farming_start
                 interval = min(farming_since, self.summary_interval)
                 if interval.seconds > 0:
-                    signage_points_per_min = await get_signage_points_per_minute(db_session, interval)
-                    passed_filters_per_min = await get_passed_filters_per_minute(db_session, interval)
+                    signage_points_per_min = get_signage_points_per_minute(db_session, interval)
+                    passed_filters_per_min = get_passed_filters_per_minute(db_session, interval)
 
         if all(v is not None for v in [
                 last_og_plot_count, last_portable_plot_count, last_og_plot_size, last_portable_plot_size,

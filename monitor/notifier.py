@@ -1,11 +1,12 @@
-import asyncio
 import logging
+from threading import Thread
+from time import sleep
 
 from apprise import Apprise, AppriseAsset
 from sqlalchemy.exc import OperationalError
 
 from monitor.notifications import (FoundProofNotification, LostPlotsNotification, LostSyncNotification,
-                                   SummaryNotification, PaymentNotification)
+                                   PaymentNotification, SummaryNotification)
 
 
 class Notifier:
@@ -13,6 +14,7 @@ class Notifier:
     status_apobj = Apprise(asset=asset)
     alert_apobj = Apprise(asset=asset)
     refresh_interval: int
+    stopped = False
 
     def __init__(self, status_url: str, alert_url: str, status_interval_minutes: int,
                  lost_plots_alert_threshold: int, disable_proof_found_alert: bool,
@@ -30,16 +32,24 @@ class Notifier:
         if not disable_proof_found_alert:
             self.notifications.append(FoundProofNotification(self.status_apobj))
 
-    async def task(self) -> None:
+    def task(self) -> None:
         while True:
             try:
-                tasks = [n.run() for n in self.notifications]
-                await asyncio.gather(*tasks)
-                await asyncio.sleep(self.refresh_interval)
+                for notification in self.notifications:
+                    notification.run()
+                sleep(self.refresh_interval)
             except OperationalError:
                 logging.exception(
                     f"Failed to retrieve event from DB. Please initialize DB using: 'pipenv run alembic upgrade head'"
                 )
                 break
-            except asyncio.CancelledError:
+            if self.stopped:
                 break
+
+    def start(self) -> None:
+        self.thread = Thread(target=self.task)
+        self.thread.start()
+
+    def stop(self) -> None:
+        self.stopped = True
+        self.thread.join()

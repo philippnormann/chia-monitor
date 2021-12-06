@@ -12,7 +12,7 @@ from sqlalchemy.exc import OperationalError
 
 from monitor.collectors import RpcCollector, WsCollector
 from monitor.collectors.price_collector import PriceCollector
-from monitor.database import ChiaEvent, async_session
+from monitor.database import ChiaEvent, session
 from monitor.exporter import ChiaExporter
 from monitor.notifier import Notifier
 
@@ -33,10 +33,10 @@ def initilize_logging():
     logger.setLevel(logging.INFO)
 
 
-async def persist_event(event: ChiaEvent):
-    async with async_session.begin() as db_session:
+def persist_event(event: ChiaEvent):
+    with session.begin() as db_session:
         db_session.add(event)
-        await db_session.commit()
+        db_session.commit()
 
 
 async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier], rpc_refresh_interval: int,
@@ -70,17 +70,17 @@ async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier], rpc_r
 
     if rpc_collector and ws_collector:
         logging.info("🚀 Starting monitoring loop!")
-        asyncio.create_task(rpc_collector.task())
-        asyncio.create_task(ws_collector.task())
+        rpc_task = asyncio.create_task(rpc_collector.task())
+        ws_task = asyncio.create_task(ws_collector.task())
         if notifier is not None:
-            asyncio.create_task(notifier.task())
+            notifier.start()
         if price_collector is not None:
             asyncio.create_task(price_collector.task())
         while True:
             try:
                 event = await event_queue.get()
                 exporter.process_event(event)
-                await persist_event(event)
+                persist_event(event)
 
             except OperationalError:
                 logging.exception(
@@ -96,9 +96,13 @@ async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier], rpc_r
 
     logging.info("🛑 Shutting down!")
     if rpc_collector:
+        rpc_task.cancel()
         await rpc_collector.close()
     if ws_collector:
+        ws_task.cancel()
         await ws_collector.close()
+    if notifier:
+        notifier.stop()
 
 
 def read_config():

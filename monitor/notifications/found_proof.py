@@ -1,5 +1,5 @@
+from monitor.database import session
 from monitor.database.queries import get_proofs_found
-from monitor.database import async_session
 from monitor.format import *
 from monitor.notifications.notification import Notification
 
@@ -7,9 +7,9 @@ from monitor.notifications.notification import Notification
 class FoundProofNotification(Notification):
     last_proofs_found: int = None
 
-    async def condition(self) -> bool:
-        async with async_session() as db_session:
-            proofs_found = await get_proofs_found(db_session)
+    def condition(self) -> bool:
+        with session() as db_session:
+            proofs_found = get_proofs_found(db_session)
         if proofs_found is not None and self.last_proofs_found is not None and proofs_found > self.last_proofs_found:
             self.last_proofs_found = proofs_found
             return True
@@ -17,6 +17,6 @@ class FoundProofNotification(Notification):
             self.last_proofs_found = proofs_found
             return False
 
-    async def trigger(self) -> None:
+    def trigger(self) -> None:
         return self.apobj.notify(title='** 🤑 Proof found! 🤑 **',
                                  body="Your farm found a new partial or full proof")
