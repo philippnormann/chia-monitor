@@ -130,3 +130,7 @@ def format_pool_errors_24h(errors: int) -> str:
 def format_price(amount: int, currency: str, fix_indent=False) -> str:
     indent = " " * (1 if fix_indent else 0)
     return f"🏷️ {indent}Price in {currency}: {amount}"
+
+
+def format_mempool_size(mempool_size: int) -> str:
+    return f"🧮 Mempool Size: {mempool_size}"

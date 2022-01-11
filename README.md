@@ -33,6 +33,7 @@ Following notifications are currently sent to the `status_service_url`:
 🕰️ Time To Win: 2 weeks and 4 days
 💾 Current Netspace: 30.706 EiB
 🏔️ Peak Height: 544594
+🧮 Mempool Size: 15
 📶 Full Node Peer Count: 8
 🔄 Synced: True
 ```
@@ -97,6 +98,7 @@ The following statistics are collected from your local [Chia](https://chia.net) 
 
 - Sync status (`chia_sync_status`)
 - Peak height (`chia_peak_height`)
+- Mempool size (`chia_mempool_size`)
 - Difficulty (`chia_diffculty`)
 - Total netspace (`chia_network_space`)
 - Connection count (`chia_connections_count`)

@@ -75,6 +75,7 @@ class SummaryNotification(Notification):
                 format_expected_time_to_win(expected_minutes_to_win),
                 format_space(int(last_state.space)),
                 format_peak_height(last_state.peak_height),
+                format_mempool_size(last_state.mempool_size),
                 format_full_node_count(last_connections.full_node_count),
                 format_synced(last_state.synced),
             ])

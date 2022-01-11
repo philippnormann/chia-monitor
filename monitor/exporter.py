@@ -20,6 +20,7 @@ class ChiaExporter:
     sync_gauge = Gauge('chia_sync_status', 'Sync status of the connected full node')
     connections_gauge = Gauge('chia_connections_count',
                               'Count of peers that the node is currently connected to', ["type"])
+    mempool_size_gauge = Gauge('chia_mempool_size', 'Current mempool size')
 
     # Harvester metrics
     plot_count_gauge = Gauge('chia_plot_count', 'OG plot count being farmed by harvester', ["host"])
@@ -125,6 +126,8 @@ class ChiaExporter:
         self.log.info(format_peak_height(int(event.peak_height), fix_indent=True))
         self.sync_gauge.set(event.synced)
         self.log.info(format_synced(event.synced))
+        self.mempool_size_gauge.set(event.mempool_size)
+        self.log.info(format_mempool_size(event.mempool_size))
 
     def update_wallet_balance_metrics(self, event: WalletBalanceEvent) -> None:
         self.log.info("-" * 64)

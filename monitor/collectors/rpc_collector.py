@@ -174,6 +174,7 @@ class RpcCollector(Collector):
                                      space=str(state["space"]),
                                      diffculty=state["difficulty"],
                                      peak_height=str(peak_height),
+                                     mempool_size=state["mempool_size"],
                                      synced=state["sync"]["synced"])
         await self.publish_event(event)
 

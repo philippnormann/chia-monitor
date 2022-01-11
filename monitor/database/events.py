@@ -6,7 +6,7 @@ class HarvesterPlotsEvent(ChiaEvent):
     __tablename__ = "harvester_events"
     id = Column(Integer, primary_key=True, autoincrement=True)
     ts = Column(DateTime, index=True, nullable=False)
-    host = Column(String(255))
+    host = Column(String(255), nullable=False)
     plot_count = Column(Integer)
     portable_plot_count = Column(Integer)
     plot_size = Column(Integer)
@@ -30,6 +30,7 @@ class BlockchainStateEvent(ChiaEvent):
     space = Column(String(32))
     diffculty = Column(Integer)
     peak_height = Column(String(32))
+    mempool_size = Column(Integer)
     synced = Column(Boolean())
 
 
@@ -65,7 +66,7 @@ class PoolStateEvent(ChiaEvent):
     __tablename__ = "pool_state_events"
     id = Column(Integer, primary_key=True, autoincrement=True)
     ts = Column(DateTime, index=True, nullable=False)
-    p2_singleton_puzzle_hash = Column(String(66),default="")
+    p2_singleton_puzzle_hash = Column(String(66), default="", nullable=False)
     pool_url = Column(String(255))
     current_points = Column(Integer)
     current_difficulty = Column(Integer)
