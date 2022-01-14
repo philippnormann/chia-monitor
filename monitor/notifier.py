@@ -26,8 +26,8 @@ class Notifier:
         self.notifications = [
             LostSyncNotification(self.alert_apobj),
             LostPlotsNotification(self.alert_apobj, lost_plots_alert_threshold),
+            PaymentNotification(self.alert_apobj),
             SummaryNotification(self.status_apobj, status_interval_minutes),
-            PaymentNotification(self.status_apobj)
         ]
         if not disable_proof_found_alert:
             self.notifications.append(FoundProofNotification(self.status_apobj))
