@@ -23,12 +23,9 @@ class ChiaExporter:
     mempool_size_gauge = Gauge('chia_mempool_size', 'Current mempool size')
 
     # Harvester metrics
-    plot_count_gauge = Gauge('chia_plot_count', 'OG plot count being farmed by harvester', ["host"])
-    plot_size_gauge = Gauge('chia_plot_size', 'Size of OG plots being farmed by harvester', ["host"])
-    portable_plot_count_gauge = Gauge('chia_portable_plot_count',
-                                      'Portable plot count being farmed by harvester', ["host"])
-    portable_plot_size_gauge = Gauge('chia_portable_plot_size',
-                                     'Size of portable plots being farmed by harvester', ["host"])
+    plot_count_gauge = Gauge('chia_plot_count', 'Plot count being farmed by harvester', ["host", "type"])
+    plot_size_gauge = Gauge('chia_plot_size', 'Size of plots being farmed by harvester',
+                            ["host", "type"])
 
     # Farmer metrics
     signage_point_counter = Counter('chia_signage_points', 'Received signage points')
@@ -49,10 +46,10 @@ class ChiaExporter:
                                                        'Total number of pooling points acknowledged',
                                                        ['p2', 'url'])
     pool_points_found_24h_gauge = Gauge('chia_pool_points_found_24h',
-                                                'Number of pooling points found the last 24h', ['p2', 'url'])
+                                        'Number of pooling points found the last 24h', ['p2', 'url'])
     pool_points_acknowledged_24h_gauge = Gauge('chia_pool_points_acknowledged_24h',
-                                                       'Number of pooling points acknowledged the last 24h',
-                                                       ['p2', 'url'])
+                                               'Number of pooling points acknowledged the last 24h',
+                                               ['p2', 'url'])
     num_pool_errors_24h_gauge = Gauge('chia_num_pool_errors_24h',
                                       'Number of pool errors during the last 24 hours', ['p2', 'url'])
 
@@ -86,13 +83,13 @@ class ChiaExporter:
 
     def update_harvester_metrics(self, event: HarvesterPlotsEvent) -> None:
         self.log.info("-" * 64)
-        self.plot_count_gauge.labels(event.host).set(event.plot_count)
+        self.plot_count_gauge.labels(event.host, "OG").set(event.plot_count)
         self.log.info(format_og_plot_count(event.plot_count))
-        self.portable_plot_count_gauge.labels(event.host).set(event.portable_plot_count)
+        self.plot_count_gauge.labels(event.host, "portable").set(event.portable_plot_count)
         self.log.info(format_portable_plot_count(event.portable_plot_count))
-        self.plot_size_gauge.labels(event.host).set(event.plot_size)
+        self.plot_size_gauge.labels(event.host, "OG").set(event.plot_size)
         self.log.info(format_og_plot_size(event.plot_size))
-        self.portable_plot_size_gauge.labels(event.host).set(event.portable_plot_size)
+        self.plot_size_gauge.labels(event.host, "portable").set(event.portable_plot_size)
         self.log.info(format_portable_plot_size(event.portable_plot_size))
         self.log.info(format_hostname(event.host, fix_indent=True))
 
@@ -159,11 +156,11 @@ class ChiaExporter:
         self.pool_points_acknowledged_since_start_gauge.labels(
             event.p2_singleton_puzzle_hash, event.pool_url).set(event.points_acknowledged_since_start)
         self.log.info(format_points_found_24h(event.points_found_24h))
-        self.pool_points_found_24h_gauge.labels(
-            event.p2_singleton_puzzle_hash, event.pool_url).set(event.points_found_24h)
+        self.pool_points_found_24h_gauge.labels(event.p2_singleton_puzzle_hash,
+                                                event.pool_url).set(event.points_found_24h)
         self.log.info(format_points_acknowledged_24h(event.points_acknowledged_24h))
-        self.pool_points_acknowledged_24h_gauge.labels(
-            event.p2_singleton_puzzle_hash, event.pool_url).set(event.points_acknowledged_24h)
+        self.pool_points_acknowledged_24h_gauge.labels(event.p2_singleton_puzzle_hash,
+                                                       event.pool_url).set(event.points_acknowledged_24h)
         self.log.info(format_pool_errors_24h(event.num_pool_errors_24h))
         self.num_pool_errors_24h_gauge.labels(event.p2_singleton_puzzle_hash,
                                               event.pool_url).set(event.num_pool_errors_24h)
