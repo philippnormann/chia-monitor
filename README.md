@@ -83,6 +83,14 @@ Expected: 130, Found: 124
 Your farmer's plot count has recovered to its previous value
 ```
 
+### Payment alert
+
+```md
+🤑 Payment received! 🤑 
+Your wallet received a new payment
+🌱 +0.10240 XCH
+```
+
 ---
 
 ## Metrics
@@ -204,6 +212,7 @@ pipenv install
 pipenv run alembic upgrade head
 ```
 
+4. Import (Overwrite) the Grafana dashboard using the ID `14544` or using the `grafana/dashboard.json`
 ## Usage
 
 To use the tool, run the `monitor` module using `pipenv` from the `chia-monitor` directory
