@@ -29,6 +29,12 @@
       "version": "7.5.3"
     },
     {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
       "type": "datasource",
       "id": "prometheus",
       "name": "Prometheus",
@@ -59,7 +65,7 @@
   "gnetId": 14544,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1642197753083,
+  "iteration": 1643221537828,
   "links": [],
   "panels": [
     {
@@ -1703,7 +1709,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(chia_mempool_size)",
+          "expr": "round(avg_over_time(chia_mempool_size[5m]))",
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "Mempool Size",
@@ -1895,6 +1901,129 @@
       "timeShift": null,
       "title": "Proofs Found",
       "type": "bargauge"
+    },
+    {
+      "aliasColors": {
+        "Average": "green",
+        "Max": "blue",
+        "Min": "orange"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "fill": 5,
+      "fillGradient": 10,
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "hiddenSeries": false,
+      "id": 130,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "maxDataPoints": 999999,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum(rate(chia_lookup_time_seconds_sum[5m])) / sum(rate(chia_lookup_time_seconds_count[1m]))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Average",
+          "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "histogram_quantile(1., sum(rate(chia_lookup_time_seconds_bucket[1m])) by (le))",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "Max",
+          "refId": "C"
+        }
+      ],
+      "thresholds": [
+        {
+          "$$hashKey": "object:567",
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 5,
+          "yaxis": "left"
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Harvester Lookup Times",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:27",
+          "format": "s",
+          "label": null,
+          "logBase": 1,
+          "max": "6.5",
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:28",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": "15s",
@@ -1976,5 +2105,5 @@
   "timezone": "",
   "title": "Chia Monitor",
   "uid": "URpClhZga",
-  "version": 101
+  "version": 111
 }
