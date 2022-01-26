@@ -1,7 +1,8 @@
-from prometheus_client import Counter, Gauge, start_http_server
+from prometheus_client import Counter, Gauge, Histogram, start_http_server
 
 from monitor.database.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent, FarmingInfoEvent,
                                      HarvesterPlotsEvent, PoolStateEvent, PriceEvent, SignagePointEvent, WalletBalanceEvent)
+from monitor.database.queries import get_signage_point_ts
 
 
 class ChiaExporter:
@@ -27,6 +28,11 @@ class ChiaExporter:
     challenges_counter = Counter('chia_block_challenges', 'Attempted block challenges')
     passed_filter_counter = Counter('chia_plots_passed_filter', 'Plots passed filter')
     proofs_found_counter = Counter('chia_proofs_found', 'Proofs found')
+    lookup_time = Histogram('chia_lookup_time_seconds',
+                            'Plot lookup time',
+                            buckets=(.01, .05, .1, .25, .5, .75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5,
+                                     3.75, 4.0, 4.25, 4.5, 4.75, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0,
+                                     11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, float("inf")))
 
     # Pool metrics
     current_pool_points_gauge = Gauge('chia_current_pool_points',
@@ -77,10 +83,13 @@ class ChiaExporter:
         self.plot_size_gauge.labels(event.host, "OG").set(event.plot_size)
         self.plot_size_gauge.labels(event.host, "portable").set(event.portable_plot_size)
 
-    def update_farmer_metrics(self, event: FarmingInfoEvent):  # Observe 4.7 (seconds in this case)
+    def update_farmer_metrics(self, event: FarmingInfoEvent):
         self.challenges_counter.inc()
         self.passed_filter_counter.inc(event.passed_filter)
         self.proofs_found_counter.inc(event.proofs)
+        signage_point_ts = get_signage_point_ts(event.signage_point)
+        lookup_time = event.ts - signage_point_ts
+        self.lookup_time.observe(lookup_time.total_seconds())
 
     def update_connection_metrics(self, event: ConnectionsEvent) -> None:
         self.connections_gauge.labels("Full Node").set(event.full_node_count)

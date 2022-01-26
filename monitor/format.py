@@ -115,6 +115,7 @@ def format_points_found(points: int) -> str:
 def format_points_acknowledged(points: int) -> str:
     return f"🟢 Pool Acknowledged: {points}"
 
+
 def format_points_found_24h(points: int) -> str:
     return f"🟡 Pool Found Last 24H: {points}"
 
@@ -134,3 +135,8 @@ def format_price(amount: int, currency: str, fix_indent=False) -> str:
 
 def format_mempool_size(mempool_size: int) -> str:
     return f"🧮 Mempool Size: {mempool_size}"
+
+
+def format_lookup_time(lookup_time: int, fix_indent=False) -> str:
+    indent = " " * (1 if fix_indent else 0)
+    return f"⏱️ {indent}Lookup Time: {lookup_time * 1000:.2f}ms"

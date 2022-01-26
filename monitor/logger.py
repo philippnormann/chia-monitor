@@ -2,6 +2,7 @@ import logging
 
 from monitor.database.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent, FarmingInfoEvent,
                                      HarvesterPlotsEvent, PoolStateEvent, PriceEvent, SignagePointEvent, WalletBalanceEvent)
+from monitor.database.queries import get_signage_point_ts
 from monitor.format import *
 
 
@@ -43,6 +44,9 @@ class ChiaLogger:
         self.log.info(format_passed_filter(event.passed_filter))
         self.log.info(format_proofs(event.proofs))
         self.log.info(format_proofs(event.proofs))
+        signage_point_ts = get_signage_point_ts(event.signage_point)
+        lookup_time = event.ts - signage_point_ts
+        self.log.info(format_lookup_time(lookup_time.total_seconds(), fix_indent=True))
 
     def update_connection_metrics(self, event: ConnectionsEvent) -> None:
         self.log.info("-" * 64)

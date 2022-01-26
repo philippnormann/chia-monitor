@@ -90,7 +90,7 @@ Your farmer's plot count has recovered to its previous value
 ### Payment alert
 
 ```md
-🤑 Payment received! 🤑 
+** 🤑 Payment received! 🤑 **
 Your wallet received a new payment
 🌱 +0.10240 XCH
 ```
@@ -129,6 +129,7 @@ The following statistics are collected from your local [Chia](https://github.com
 - Attempted challenges (`chia_block_challenges`)
 - Plots passed filter (`chia_plots_passed_filter`)
 - Proofs found (`chia_proofs_found`)
+- Lookup time (`chia_lookup_time_seconds`)
 
 ### Supported pooling metrics
 
