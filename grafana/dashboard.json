@@ -69,7 +69,7 @@
   "links": [],
   "panels": [
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -276,7 +276,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -338,7 +338,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -400,7 +400,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -460,7 +460,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -526,7 +526,7 @@
       "type": "gauge"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -588,7 +588,7 @@
       "type": "gauge"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -650,7 +650,7 @@
       "type": "gauge"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -709,7 +709,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -768,7 +768,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -827,7 +827,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -887,7 +887,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -946,7 +946,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1006,7 +1006,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1073,7 +1073,7 @@
       "type": "bargauge"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1131,7 +1131,7 @@
       "type": "bargauge"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1190,7 +1190,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1249,7 +1249,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1309,7 +1309,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1368,7 +1368,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1427,7 +1427,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1488,7 +1488,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1548,7 +1548,7 @@
       "type": "bargauge"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1606,7 +1606,7 @@
       "type": "bargauge"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1664,7 +1664,7 @@
       "type": "bargauge"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1722,7 +1722,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1783,7 +1783,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1845,7 +1845,7 @@
       "type": "stat"
     },
     {
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1911,7 +1911,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": null,
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "unit": "s"
