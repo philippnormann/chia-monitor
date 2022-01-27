@@ -56,6 +56,8 @@ class ChiaExporter:
     price_btc_satoshi_gauge = Gauge('chia_price_btc_satoshi', 'Current Chia price in BTC satoshi')
     price_eth_gwei_gauge = Gauge('chia_price_eth_gwei', 'Current Chia price in ETH gwei')
 
+    last_signage_point: SignagePointEvent = None
+
     def __init__(self, port: int) -> None:
         start_http_server(port)
 
@@ -87,7 +89,10 @@ class ChiaExporter:
         self.challenges_counter.inc()
         self.passed_filter_counter.inc(event.passed_filter)
         self.proofs_found_counter.inc(event.proofs)
-        signage_point_ts = get_signage_point_ts(event.signage_point)
+        if self.last_signage_point.signage_point == event.signage_point:
+            signage_point_ts = self.last_signage_point.ts
+        else:
+            signage_point_ts = get_signage_point_ts(event.signage_point)
         lookup_time = event.ts - signage_point_ts
         self.lookup_time.observe(lookup_time.total_seconds())
 
@@ -110,6 +115,7 @@ class ChiaExporter:
     def update_signage_point_metrics(self, event: SignagePointEvent) -> None:
         self.signage_point_counter.inc()
         self.signage_point_index_gauge.set(event.signage_point_index)
+        self.last_signage_point = event
 
     def update_pool_state_metrics(self, event: PoolStateEvent) -> None:
         p2 = event.p2_singleton_puzzle_hash

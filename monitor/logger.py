@@ -7,6 +7,8 @@ from monitor.format import *
 
 
 class ChiaLogger:
+    last_signage_point: SignagePointEvent = None
+
     def __init__(self) -> None:
         self.log = logging.getLogger(__name__)
 
@@ -44,7 +46,10 @@ class ChiaLogger:
         self.log.info(format_passed_filter(event.passed_filter))
         self.log.info(format_proofs(event.proofs))
         self.log.info(format_proofs(event.proofs))
-        signage_point_ts = get_signage_point_ts(event.signage_point)
+        if self.last_signage_point.signage_point == event.signage_point:
+            signage_point_ts = self.last_signage_point.ts
+        else:
+            signage_point_ts = get_signage_point_ts(event.signage_point)
         lookup_time = event.ts - signage_point_ts
         self.log.info(format_lookup_time(lookup_time.total_seconds(), fix_indent=True))
 
@@ -72,6 +77,7 @@ class ChiaLogger:
         self.log.info(format_signage_point_index(event.signage_point_index))
         self.log.info(format_challenge_hash(event.challenge_hash))
         self.log.info(format_signage_point(event.signage_point))
+        self.last_signage_point = event
 
     def update_pool_state_metrics(self, event: PoolStateEvent) -> None:
         self.log.info("-" * 64)
