@@ -5,7 +5,7 @@
     notifempty
     daily
     rotate 3
-    create 0600 root root
+    create 640 syslog adm
     minsize 1M
     postrotate
         /usr/bin/systemctl restart chia-monitor.service > /dev/null 2>&1

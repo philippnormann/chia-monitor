@@ -40,23 +40,24 @@
 # Create operating environment for chia-monitor
 #   sudo cd /opt && git clone https://github.com/philippnormann/chia-monitor.git && cd /opt/chia-monitor
 #   sudo chown -R chia-monitor:chia /opt/chia-monitor
-#   sudo -u chia-monitor /usr/local/bin/pipenv install
-#   sudo -u chia-monitor /usr/local/bin/pipenv run alembic upgrade head
+#   sudo -u chia-monitor $(which pipenv) install
+#   sudo -u chia-monitor $(which pipenv) run alembic upgrade head
 #   sudo -u chia-monitor cp config-example.json config.json
 #   <edit config.json>
 #
 # Run chia-monitor command to test
 #   <ensure primary .chia directory and config is read-able by chia-monitor user according to previous commands>
-#   sudo -u chia-monitor /usr/local/bin/pipenv run python -m monitor
+#   sudo -u chia-monitor $(which pipenv) run python -m monitor
 #   <if chia-monitor is working correctly, ctrl-c to kill the test>
 #
 # Setup rsyslog config for chia-monitor to avoid system log flooding
 #   sudo touch /var/log/chia-monitor.log
+#   sudo chown syslog:adm /var/log/chia-monitor.log
 #   sudo cp etc/rsyslog.d/chia-monitor.conf /etc/rsyslog.d/
 #   sudo systemctl restart rsyslog
 #
 # Execute systemd commands for chia-monitor.service
-#   sudo cp chia-monitor.service /etc/systemd/system/
+#   sudo cp etc/systemd/system/chia-monitor.service /etc/systemd/system/
 #   sudo systemctl daemon-reload
 #   sudo systemctl start chia-monitor
 #   sudo systemctl status chia-monitor
@@ -100,8 +101,8 @@
 #   sudo tail -f /var/log/chia-monitor.log
 #   <output should be consistent status at INFO level>
 #
-# Setup logrotate config for log file to avoid clogging up disk space
-#   sudo cp /opt/chia-monitor/etc/logrotate.d/chia-monitor /etc/logrotate.d/chia-monitor
+# Optional: Setup logrotate config for log file to avoid clogging up disk space
+#   sudo cp etc/logrotate.d/chia-monitor /etc/logrotate.d/chia-monitor
 #   sudo sed -i '\:/var/log/chia-monitor.log:d' /etc/logrotate.d/syslog
 #   sudo logrotate -f /etc/logrotate.conf
 # Done and done!
@@ -126,7 +127,8 @@ SendSIGKILL=yes
 TimeoutSec=30
 
 WorkingDirectory=/opt/chia-monitor
-ExecStart=/usr/local/bin/pipenv run python -m monitor
+ExecStart=/usr/bin/env pipenv run python -m monitor
+Environment="CHIA_ROOT=/home/chia-proc/.chia/mainnet"
 Restart=always
 RestartSec=600
 
