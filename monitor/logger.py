@@ -46,6 +46,8 @@ class ChiaLogger:
         self.log.info(format_passed_filter(event.passed_filter))
         self.log.info(format_proofs(event.proofs))
         self.log.info(format_proofs(event.proofs))
+        if self.last_signage_point is None:
+            return
         if self.last_signage_point.signage_point == event.signage_point:
             signage_point_ts = self.last_signage_point.ts
         else:

@@ -89,6 +89,8 @@ class ChiaExporter:
         self.challenges_counter.inc()
         self.passed_filter_counter.inc(event.passed_filter)
         self.proofs_found_counter.inc(event.proofs)
+        if self.last_signage_point is None:
+            return
         if self.last_signage_point.signage_point == event.signage_point:
             signage_point_ts = self.last_signage_point.ts
         else:
