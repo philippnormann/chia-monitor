@@ -118,7 +118,7 @@ class RpcCollector(Collector):
             harvesters = await self.farmer_client.get_harvesters()
             ts = datetime.now()
             for harvester in harvesters["harvesters"]:
-                host = harvester["connection"]["host"]
+                host = "{}/{}".format(harvester["connection"]["host"], harvester["connection"]["node_id"][0:6])
                 plots = harvester["plots"]
                 og_plots = [plot for plot in plots if plot["pool_contract_puzzle_hash"] is None]
                 portable_plots = [
