@@ -15,7 +15,7 @@ from monitor.collectors.price_collector import PriceCollector
 from monitor.database import ChiaEvent, session
 from monitor.exporter import ChiaExporter
 from monitor.logger import ChiaLogger
-from monitor.notifier import Notifier
+from monitor.notifier import Notifier, NotifierConfiguration
 
 chia_config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
 
@@ -121,14 +121,16 @@ if __name__ == "__main__":
     try:
         exporter_port = config["exporter_port"]
         rpc_refresh_interval = config["rpc_collector"]["refresh_interval_seconds"]
-        price_refresh_interval = enable_notifications = config["price_collector"]["refresh_interval_seconds"]
-        enable_notifications = config["notifications"]["enable"]
-        notifications_refresh_interval = config["notifications"]["refresh_interval_seconds"]
-        status_url = config["notifications"]["status_service_url"]
-        alert_url = config["notifications"]["alert_service_url"]
-        status_interval_minutes = config["notifications"]["status_interval_minutes"]
-        lost_plots_alert_threshold = config["notifications"]["lost_plots_alert_threshold"]
-        disable_proof_found_alert = config["notifications"]["disable_proof_found_alert"]
+        price_refresh_interval = config["price_collector"]["refresh_interval_seconds"]
+        notifier_config = NotifierConfiguration(
+            config["notifications"]["enable"],
+            config["notifications"]["refresh_interval_seconds"],
+            config["notifications"]["status_interval_minutes"],
+            config["notifications"]["lost_plots_alert_threshold"],
+            config["notifications"]["disable_proof_found_alert"],
+            config["notifications"]["status_service_url"],
+            config["notifications"]["alert_service_url"]
+        )
     except KeyError as ex:
         logging.error(
             f"Failed to validate config. Missing required key {ex}. Please compare the fields of your config.json with the config-example.json and fix all inconsistencies."
@@ -136,9 +138,8 @@ if __name__ == "__main__":
         sys.exit(1)
 
     exporter = ChiaExporter(exporter_port)
-    if enable_notifications:
-        notifier = Notifier(status_url, alert_url, status_interval_minutes, lost_plots_alert_threshold,
-                            disable_proof_found_alert, notifications_refresh_interval)
+    if notifier_config.enable_notifications:
+        notifier = Notifier(notifier_config)
     else:
         notifier = None
 
