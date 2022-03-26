@@ -21,7 +21,7 @@ from monitor.notifier import Notifier
 chia_config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
 
 
-def initilize_logging():
+def initialize_logging():
     handler = colorlog.StreamHandler()
     log_date_format = "%Y-%m-%dT%H:%M:%S"
     handler.setFormatter(
@@ -105,7 +105,7 @@ async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier], confi
 
 
 if __name__ == "__main__":
-    initilize_logging()
+    initialize_logging()
     try:
         config = read_config()
     except RuntimeError as ex:
