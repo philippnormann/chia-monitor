@@ -4,6 +4,7 @@
         "refresh_interval_seconds": 10
     },
     "price_collector": {
+        "enable": true,
         "refresh_interval_seconds": 10
     },
     "notifications": {

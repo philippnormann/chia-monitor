@@ -29,6 +29,7 @@ def read_config() -> Configuration:
                 config_json["rpc_collector"]["refresh_interval_seconds"]
             ),
             PriceCollectorConfiguration(
+                config_json["price_collector"]["enable"],
                 config_json["price_collector"]["refresh_interval_seconds"]
             ),
             NotifierConfiguration(

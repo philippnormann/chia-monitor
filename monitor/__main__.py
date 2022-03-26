@@ -60,12 +60,13 @@ async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier], confi
     except Exception as e:
         logging.warning(f"Failed to create WebSocket collector. Continuing without it. {type(e).__name__}: {e}")
 
-    try:
-        logging.info("🔌 Creating Price Collector...")
-        price_collector = await PriceCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue,
-                                                      config.price_collector)
-    except Exception as e:
-        logging.warning(f"Failed to create Price collector. Continuing without it. {type(e).__name__}: {e}")
+    if config.price_collector.enable:
+        try:
+            logging.info("🔌 Creating Price Collector...")
+            price_collector = await PriceCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue,
+                                                          config.price_collector)
+        except Exception as e:
+            logging.warning(f"Failed to create Price collector. Continuing without it. {type(e).__name__}: {e}")
 
     if rpc_collector and ws_collector:
         logging.info("🚀 Starting monitoring loop!")
@@ -112,7 +113,7 @@ if __name__ == "__main__":
         logging.error(ex)
         sys.exit(1)
 
-    exporter = ChiaExporter(config.exporter_port)
+    exporter = ChiaExporter(config)
     if config.notifier.enable_notifications:
         notifier = Notifier(config.notifier)
     else:

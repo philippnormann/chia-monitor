@@ -19,6 +19,7 @@ PRICE_API = f"https://api.coingecko.com/api/v3/simple/price?ids=chia&vs_currenci
 
 @dataclass(frozen=True)
 class PriceCollectorConfiguration:
+    enable: bool
     refresh_interval_seconds: int
 
 
