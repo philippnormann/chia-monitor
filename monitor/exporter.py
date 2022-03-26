@@ -3,6 +3,7 @@ from prometheus_client import Counter, Gauge, Histogram, start_http_server
 from monitor.database.events import (BlockchainStateEvent, ChiaEvent, ConnectionsEvent, FarmingInfoEvent,
                                      HarvesterPlotsEvent, PoolStateEvent, PriceEvent, SignagePointEvent, WalletBalanceEvent)
 from monitor.database.queries import get_signage_point_ts
+from monitor.configuration import Configuration
 
 
 class ChiaExporter:
@@ -50,16 +51,18 @@ class ChiaExporter:
     num_pool_errors_24h_gauge = Gauge('chia_num_pool_errors_24h', 'Number of pool errors during the last 24 hours',
                                       ['p2', 'url'])
 
-    # Price metrics
-    price_usd_cents_gauge = Gauge('chia_price_usd_cent', 'Current Chia price in USD cent')
-    price_eur_cents_gauge = Gauge('chia_price_eur_cent', 'Current Chia price in EUR cent')
-    price_btc_satoshi_gauge = Gauge('chia_price_btc_satoshi', 'Current Chia price in BTC satoshi')
-    price_eth_gwei_gauge = Gauge('chia_price_eth_gwei', 'Current Chia price in ETH gwei')
-
     last_signage_point: SignagePointEvent = None
 
-    def __init__(self, port: int) -> None:
-        start_http_server(port)
+    def __init_price_metrics(self):
+        self.price_usd_cents_gauge = Gauge('chia_price_usd_cent', 'Current Chia price in USD cent')
+        self.price_eur_cents_gauge = Gauge('chia_price_eur_cent', 'Current Chia price in EUR cent')
+        self.price_btc_satoshi_gauge = Gauge('chia_price_btc_satoshi', 'Current Chia price in BTC satoshi')
+        self.price_eth_gwei_gauge = Gauge('chia_price_eth_gwei', 'Current Chia price in ETH gwei')
+
+    def __init__(self, config: Configuration) -> None:
+        if config.price_collector.enable:
+            self.__init_price_metrics()
+        start_http_server(config.exporter_port)
 
     def process_event(self, event: ChiaEvent) -> None:
         if isinstance(event, HarvesterPlotsEvent):

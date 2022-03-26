@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import asyncio
-import json
 import logging
 import time
 from asyncio import Queue
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Callable, Dict, List
@@ -21,6 +21,11 @@ from monitor.database.events import (BlockchainStateEvent, ChiaEvent, Connection
                                      HarvesterPlotsEvent, PoolStateEvent, WalletBalanceEvent)
 
 
+@dataclass(frozen=True)
+class RpcCollectorConfiguration:
+    refresh_interval_seconds: int
+
+
 class RpcCollector(Collector):
     full_node_client: FullNodeRpcClient
     wallet_client: WalletRpcClient
@@ -30,11 +35,11 @@ class RpcCollector(Collector):
     net_config: Dict
     hostname: str
     tasks: List[Callable]
-    refresh_interval_seconds: int
+    config: RpcCollectorConfiguration
 
     @staticmethod
     async def create(root_path: Path, net_config: Dict, event_queue: Queue[ChiaEvent],
-                     refresh_interval_seconds: int) -> RpcCollector:
+                     config: RpcCollectorConfiguration) -> RpcCollector:
         self = RpcCollector()
         self.log = logging.getLogger(__name__)
         self.event_queue = event_queue
@@ -44,7 +49,7 @@ class RpcCollector(Collector):
         self.hostname = net_config["self_hostname"]
         self.tasks = []
         self.harvester_clients = []
-        self.refresh_interval_seconds = refresh_interval_seconds
+        self.config = config
 
         try:
             full_node_rpc_port = net_config["full_node"]["rpc_port"]
@@ -209,7 +214,7 @@ class RpcCollector(Collector):
             except Exception as e:
                 self.log.warning(
                     f"Error while collecting events. Trying again... {type(e).__name__}: {e}")
-            await asyncio.sleep(self.refresh_interval_seconds)
+            await asyncio.sleep(self.config.refresh_interval_seconds)
 
     @staticmethod
     async def close_rpc_client(rpc_client: RpcClient) -> None:

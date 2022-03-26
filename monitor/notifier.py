@@ -1,4 +1,5 @@
 import logging
+from dataclasses import dataclass
 from threading import Thread
 from time import sleep
 
@@ -9,6 +10,17 @@ from monitor.notifications import (FoundProofNotification, LostPlotsNotification
                                    PaymentNotification, SummaryNotification)
 
 
+@dataclass(frozen=True)
+class NotifierConfiguration:
+    enable_notifications: bool
+    refresh_interval_seconds: int
+    status_interval_minutes: int
+    lost_plots_alert_threshold: int
+    disable_proof_found_alert: bool
+    status_url: str
+    alert_url: str
+
+
 class Notifier:
     asset = AppriseAsset(async_mode=False)
     status_apobj = Apprise(asset=asset)
@@ -16,20 +28,18 @@ class Notifier:
     refresh_interval: int
     stopped = False
 
-    def __init__(self, status_url: str, alert_url: str, status_interval_minutes: int,
-                 lost_plots_alert_threshold: int, disable_proof_found_alert: bool,
-                 refresh_interval_seconds: int) -> None:
+    def __init__(self, config: NotifierConfiguration) -> None:
         self.log = logging.getLogger(__name__)
-        self.status_apobj.add(status_url)
-        self.alert_apobj.add(alert_url)
-        self.refresh_interval = refresh_interval_seconds
+        self.status_apobj.add(config.status_url)
+        self.alert_apobj.add(config.alert_url)
+        self.refresh_interval = config.refresh_interval_seconds
         self.notifications = [
             LostSyncNotification(self.alert_apobj),
-            LostPlotsNotification(self.alert_apobj, lost_plots_alert_threshold),
+            LostPlotsNotification(self.alert_apobj, config.lost_plots_alert_threshold),
             PaymentNotification(self.alert_apobj),
-            SummaryNotification(self.status_apobj, status_interval_minutes),
+            SummaryNotification(self.status_apobj, config.status_interval_minutes),
         ]
-        if not disable_proof_found_alert:
+        if not config.disable_proof_found_alert:
             self.notifications.append(FoundProofNotification(self.status_apobj))
 
     def task(self) -> None:
