@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import logging
 from asyncio.queues import Queue
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Dict
@@ -16,18 +17,23 @@ VS_CURRENCIES = ["USD", "EUR", "BTC", "ETH"]
 PRICE_API = f"https://api.coingecko.com/api/v3/simple/price?ids=chia&vs_currencies={','.join(VS_CURRENCIES)}"
 
 
+@dataclass(frozen=True)
+class PriceCollectorConfiguration:
+    refresh_interval_seconds: int
+
+
 class PriceCollector(Collector):
     session: aiohttp.ClientSession
-    refresh_interval_seconds: int
+    config: PriceCollectorConfiguration
 
     @staticmethod
     async def create(_root_path: Path, _net_config: Dict, event_queue: Queue[ChiaEvent],
-                     refresh_interval_seconds: int) -> Collector:
+                     config: PriceCollectorConfiguration) -> Collector:
         self = PriceCollector()
+        self.config = config
         self.log = logging.getLogger(__name__)
         self.event_queue = event_queue
         self.session = aiohttp.ClientSession()
-        self.refresh_interval_seconds = refresh_interval_seconds
         return self
 
     async def get_current_prices(self) -> None:
@@ -49,7 +55,7 @@ class PriceCollector(Collector):
             except Exception as e:
                 self.log.warning(
                     f"Error while collecting prices. Trying again... {type(e).__name__}: {e}")
-            await asyncio.sleep(self.refresh_interval_seconds)
+            await asyncio.sleep(self.config.refresh_interval_seconds)
 
     async def close(self) -> None:
         await self.session.close()

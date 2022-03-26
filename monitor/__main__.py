@@ -10,8 +10,10 @@ from chia.util.config import load_config
 from chia.util.default_root import DEFAULT_ROOT_PATH
 from sqlalchemy.exc import OperationalError
 
-from monitor.collectors import RpcCollector, WsCollector
-from monitor.collectors.price_collector import PriceCollector
+from monitor.configuration import Configuration
+from monitor.collectors.ws_collector import WsCollector
+from monitor.collectors.rpc_collector import RpcCollector, RpcCollectorConfiguration
+from monitor.collectors.price_collector import PriceCollector, PriceCollectorConfiguration
 from monitor.database import ChiaEvent, session
 from monitor.exporter import ChiaExporter
 from monitor.logger import ChiaLogger
@@ -40,16 +42,16 @@ def persist_event(event: ChiaEvent):
         db_session.commit()
 
 
-async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier], rpc_refresh_interval: int,
-                     price_refresh_interval: int) -> None:
+async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier], config: Configuration) -> None:
     rpc_collector = None
     ws_collector = None
+    price_collector = None
     event_queue = Queue()
     logger = ChiaLogger()
 
     try:
         logging.info("🔌 Creating RPC Collector...")
-        rpc_collector = await RpcCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue, rpc_refresh_interval)
+        rpc_collector = await RpcCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue, config.rpc_collector)
     except Exception as e:
         logging.warning(f"Failed to create RPC collector. Continuing without it. {type(e).__name__}: {e}")
 
@@ -61,7 +63,8 @@ async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier], rpc_r
 
     try:
         logging.info("🔌 Creating Price Collector...")
-        price_collector = await PriceCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue, price_refresh_interval)
+        price_collector = await PriceCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue,
+                                                      config.price_collector)
     except Exception as e:
         logging.warning(f"Failed to create Price collector. Continuing without it. {type(e).__name__}: {e}")
 
@@ -111,7 +114,7 @@ def read_config():
 if __name__ == "__main__":
     initilize_logging()
     try:
-        config = read_config()
+        config_json = read_config()
     except:
         logging.error(
             "Failed to read config.json. Please copy the config-example.json to config.json and configure it to your preferences."
@@ -119,17 +122,23 @@ if __name__ == "__main__":
         sys.exit(1)
 
     try:
-        exporter_port = config["exporter_port"]
-        rpc_refresh_interval = config["rpc_collector"]["refresh_interval_seconds"]
-        price_refresh_interval = config["price_collector"]["refresh_interval_seconds"]
-        notifier_config = NotifierConfiguration(
-            config["notifications"]["enable"],
-            config["notifications"]["refresh_interval_seconds"],
-            config["notifications"]["status_interval_minutes"],
-            config["notifications"]["lost_plots_alert_threshold"],
-            config["notifications"]["disable_proof_found_alert"],
-            config["notifications"]["status_service_url"],
-            config["notifications"]["alert_service_url"]
+        config = Configuration(
+            config_json["exporter_port"],
+            RpcCollectorConfiguration(
+                config_json["rpc_collector"]["refresh_interval_seconds"]
+            ),
+            PriceCollectorConfiguration(
+                config_json["price_collector"]["refresh_interval_seconds"]
+            ),
+            NotifierConfiguration(
+                config_json["notifications"]["enable"],
+                config_json["notifications"]["refresh_interval_seconds"],
+                config_json["notifications"]["status_interval_minutes"],
+                config_json["notifications"]["lost_plots_alert_threshold"],
+                config_json["notifications"]["disable_proof_found_alert"],
+                config_json["notifications"]["status_service_url"],
+                config_json["notifications"]["alert_service_url"]
+            )
         )
     except KeyError as ex:
         logging.error(
@@ -137,13 +146,13 @@ if __name__ == "__main__":
         )
         sys.exit(1)
 
-    exporter = ChiaExporter(exporter_port)
-    if notifier_config.enable_notifications:
-        notifier = Notifier(notifier_config)
+    exporter = ChiaExporter(config.exporter_port)
+    if config.notifier.enable_notifications:
+        notifier = Notifier(config.notifier)
     else:
         notifier = None
 
     try:
-        asyncio.run(aggregator(exporter, notifier, rpc_refresh_interval, price_refresh_interval))
+        asyncio.run(aggregator(exporter, notifier, config))
     except KeyboardInterrupt:
         logging.info("👋 Bye!")
