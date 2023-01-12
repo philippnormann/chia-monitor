@@ -1,6 +1,7 @@
 {
     "exporter_port": 8000,
     "rpc_collector" : {
+        "hostname": "",
         "refresh_interval_seconds": 10
     },
     "price_collector": {

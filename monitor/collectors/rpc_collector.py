@@ -34,14 +34,14 @@ class RpcCollector(Collector):
 
     @staticmethod
     async def create(root_path: Path, net_config: Dict, event_queue: Queue[ChiaEvent],
-                     refresh_interval_seconds: int) -> RpcCollector:
+                     hostname: str, refresh_interval_seconds: int) -> RpcCollector:
         self = RpcCollector()
         self.log = logging.getLogger(__name__)
         self.event_queue = event_queue
 
         self.root_path = root_path
         self.net_config = net_config
-        self.hostname = net_config["self_hostname"]
+        self.hostname = hostname or net_config["self_hostname"]
         self.tasks = []
         self.harvester_clients = []
         self.refresh_interval_seconds = refresh_interval_seconds
