@@ -7,4 +7,7 @@ RUN pipenv install
 COPY . .
 RUN pipenv run alembic upgrade head
 
+VOLUME [ "/chia-monitor/config.json", "/root/.chia" ]
+EXPOSE 8000
+
 ENTRYPOINT pipenv run python -m monitor
