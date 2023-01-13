@@ -40,7 +40,7 @@ def persist_event(event: ChiaEvent):
         db_session.commit()
 
 
-async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier], rpc_refresh_interval: int,
+async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier], chia_hostname: str, rpc_refresh_interval: int,
                      price_refresh_interval: int) -> None:
     rpc_collector = None
     ws_collector = None
@@ -49,13 +49,13 @@ async def aggregator(exporter: ChiaExporter, notifier: Optional[Notifier], rpc_r
 
     try:
         logging.info("🔌 Creating RPC Collector...")
-        rpc_collector = await RpcCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue, rpc_refresh_interval)
+        rpc_collector = await RpcCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue, chia_hostname, rpc_refresh_interval)
     except Exception as e:
         logging.warning(f"Failed to create RPC collector. Continuing without it. {type(e).__name__}: {e}")
 
     try:
         logging.info("🔌 Creating WebSocket Collector...")
-        ws_collector = await WsCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue)
+        ws_collector = await WsCollector.create(DEFAULT_ROOT_PATH, chia_config, event_queue, chia_hostname)
     except Exception as e:
         logging.warning(f"Failed to create WebSocket collector. Continuing without it. {type(e).__name__}: {e}")
 
@@ -120,6 +120,7 @@ if __name__ == "__main__":
 
     try:
         exporter_port = config["exporter_port"]
+        chia_hostname = config["chia_hostname"]
         rpc_refresh_interval = config["rpc_collector"]["refresh_interval_seconds"]
         price_refresh_interval = enable_notifications = config["price_collector"]["refresh_interval_seconds"]
         enable_notifications = config["notifications"]["enable"]
@@ -143,6 +144,6 @@ if __name__ == "__main__":
         notifier = None
 
     try:
-        asyncio.run(aggregator(exporter, notifier, rpc_refresh_interval, price_refresh_interval))
+        asyncio.run(aggregator(exporter, notifier, chia_hostname, rpc_refresh_interval, price_refresh_interval))
     except KeyboardInterrupt:
         logging.info("👋 Bye!")

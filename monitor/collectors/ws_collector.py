@@ -20,7 +20,8 @@ class WsCollector(Collector):
     closed = False
 
     @staticmethod
-    async def create(root_path: Path, net_config: Dict, event_queue: Queue[ChiaEvent]) -> WsCollector:
+    async def create(root_path: Path, net_config: Dict, event_queue: Queue[ChiaEvent],
+                     chia_hostname: str) -> WsCollector:
         self = WsCollector()
         self.log = logging.getLogger(__name__)
         self.event_queue = event_queue
@@ -32,7 +33,7 @@ class WsCollector(Collector):
         self.ssl_context = ssl_context_for_client(ca_crt_path, ca_key_path, crt_path, key_path)
         try:
             self.session = aiohttp.ClientSession()
-            self_hostname = net_config["self_hostname"]
+            self_hostname = chia_hostname or net_config["self_hostname"]
             daemon_port = net_config["daemon_port"]
             self.ws = await self.session.ws_connect(f"wss://{self_hostname}:{daemon_port}",
                                                     ssl_context=self.ssl_context, max_msg_size=5242880000)
